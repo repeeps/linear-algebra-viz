@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>선형대수, 눈으로 보기 · 인터랙티브 시각화</title>
+<link rel="stylesheet" href="shared/theme.css">
+<style>
+  .hero{text-align:center; padding:30px 0 10px;}
+  .hero .tag{font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:.25em; text-transform:uppercase; color:var(--q);}
+  .hero h1{font-size:clamp(32px,6vw,56px); font-weight:800; letter-spacing:-.03em; margin:14px 0 12px; line-height:1.05;
+    background:linear-gradient(100deg,#fff,#9bb6ff 55%,var(--v)); -webkit-background-clip:text; background-clip:text; color:transparent;}
+  .hero p{color:var(--muted); max-width:640px; margin:0 auto; font-size:16px;}
+  .seclabel{font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:.18em; text-transform:uppercase;
+    color:var(--muted); margin:46px 0 16px; padding-bottom:8px; border-bottom:1px solid var(--line);}
+  .cards{display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:16px;}
+  .ccard{display:block; text-decoration:none; background:var(--panel); border:1px solid var(--line); border-radius:18px;
+    padding:22px; transition:.22s; position:relative; overflow:hidden;}
+  .ccard::before{content:''; position:absolute; inset:0 auto 0 0; width:4px; background:var(--accent,var(--q)); opacity:.8;}
+  .ccard:hover{transform:translateY(-4px); border-color:var(--accent,var(--q)); box-shadow:0 14px 36px rgba(0,0,0,.35);}
+  .ccard .num{font-family:'JetBrains Mono',monospace; font-size:12px; color:var(--accent,var(--q)); font-weight:700;}
+  .ccard h3{margin:8px 0 8px; font-size:19px; color:var(--ink); letter-spacing:-.01em;}
+  .ccard p{margin:0; font-size:13.5px; color:var(--muted); line-height:1.6;}
+  .ccard .chips{margin-top:14px; display:flex; gap:6px; flex-wrap:wrap;}
+  .ccard .chip{font-family:'JetBrains Mono',monospace; font-size:10px; padding:3px 8px; border-radius:6px;
+    background:var(--panel-2); border:1px solid var(--line); color:var(--muted);}
+  .foot{margin-top:60px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="hero">
+    <div class="tag">Linear Algebra · Visualized · Interactive</div>
+    <h1>선형대수, 눈으로 보기</h1>
+    <p>벡터부터 SVD·PCA까지 — 선형대수의 핵심을 <b style="color:var(--hot)">공간이 휘는 격자</b>와 <b style="color:var(--hot)">실시간 계산</b>으로 직접 만지며 익히는 인터랙티브 학습 자료입니다.</p>
+  </div>
+
+  <div class="seclabel">PART 1 · 벡터와 공간</div>
+  <div class="cards">
+    <a class="ccard" style="--accent:var(--hot)" href="01-vectors.html">
+      <div class="num">01</div><h3>벡터란 무엇인가</h3>
+      <p>화살표이자 숫자 목록. 덧셈과 스칼라배를 드래그로 직접.</p>
+      <div class="chips"><span class="chip">add</span><span class="chip">scale</span></div>
+    </a>
+    <a class="ccard" style="--accent:var(--q)" href="02-span.html">
+      <div class="num">02</div><h3>선형결합 · span · 기저</h3>
+      <p>두 벡터의 조합으로 평면을 채우기. 기저가 공간을 만드는 법.</p>
+      <div class="chips"><span class="chip">span</span><span class="chip">basis</span></div>
+    </a>
+    <a class="ccard" style="--accent:var(--v)" href="03-independence.html">
+      <div class="num">03</div><h3>선형독립과 차원</h3>
+      <p>벡터가 겹치면 span이 납작해진다. 진짜 새 방향이란?</p>
+      <div class="chips"><span class="chip">independent</span><span class="chip">dimension</span></div>
+    </a>
+  </div>
+
+  <div class="seclabel">PART 2 · 선형변환과 행렬</div>
+  <div class="cards">
+    <a class="ccard" style="--accent:var(--hot)" href="04-transform.html">
+      <div class="num">04</div><h3>선형변환 = 공간 변형</h3>
+      <p>행렬은 공간을 늘이고 돌리는 함수. 격자가 휘는 걸 슬라이더로.</p>
+      <div class="chips"><span class="chip">grid</span><span class="chip">î ĵ</span></div>
+    </a>
+    <a class="ccard" style="--accent:var(--q)" href="05-matrix.html">
+      <div class="num">05</div><h3>행렬 = 변환의 좌표</h3>
+      <p>두 열이 î·ĵ의 행선지. 행렬·벡터 곱의 의미.</p>
+      <div class="chips"><span class="chip">columns</span><span class="chip">Mv</span></div>
+    </a>
+    <a class="ccard" style="--accent:var(--v)" href="06-matmul.html">
+      <div class="num">06</div><h3>행렬곱 = 변환의 합성</h3>
+      <p>두 변환을 연달아 적용 = 한 행렬. 순서가 중요한 이유.</p>
+      <div class="chips"><span class="chip">compose</span><span class="chip">order</span></div>
+    </a>
+    <a class="ccard" style="--accent:var(--pink)" href="07-determinant.html">
+      <div class="num">07</div><h3>행렬식 = 넓이 배율</h3>
+      <p>단위 넓이가 몇 배 되는가. 음수면 뒤집힘, 0이면 붕괴.</p>
+      <div class="chips"><span class="chip">det</span><span class="chip">area</span></div>
+    </a>
+  </div>
+
+  <div class="seclabel">PART 3 · 연립방정식과 역</div>
+  <div class="cards">
+    <a class="ccard" style="--accent:var(--q)" href="08-linear-systems.html">
+      <div class="num">08</div><h3>연립방정식 Ax = b</h3>
+      <p>직선들의 교점 찾기. 소거법이 푸는 과정.</p>
+      <div class="chips"><span class="chip">elimination</span><span class="chip">Ax=b</span></div>
+    </a>
+    <a class="ccard" style="--accent:var(--good)" href="09-inverse.html">
+      <div class="num">09</div><h3>역행렬 · 열공간 · 영공간</h3>
+      <p>변환 되돌리기. 납작해지면 되돌릴 수 없는 이유.</p>
+      <div class="chips"><span class="chip">inverse</span><span class="chip">null space</span></div>
+    </a>
+    <a class="ccard" style="--accent:var(--v)" href="10-rank-subspaces.html">
+      <div class="num">10</div><h3>rank와 부분공간</h3>
+      <p>변환이 살려내는 차원 수. 정보가 줄어드는 변환.</p>
+      <div class="chips"><span class="chip">rank</span><span class="chip">subspace</span></div>
+    </a>
+  </div>
+
+  <div class="seclabel">PART 4 · 내적과 직교</div>
+  <div class="cards">
+    <a class="ccard" style="--accent:var(--blue)" href="11-dot-product.html">
+      <div class="num">11</div><h3>내적 = 투영 · 유사도</h3>
+      <p>한 벡터를 다른 벡터에 그림자 내리기. 길이·각도·닮음.</p>
+      <div class="chips"><span class="chip">dot</span><span class="chip">projection</span></div>
+    </a>
+    <a class="ccard" style="--accent:var(--good)" href="12-least-squares.html">
+      <div class="num">12</div><h3>정사영과 최소제곱</h3>
+      <p>점들에 가장 가까운 직선 찾기 = 회귀의 기하학.</p>
+      <div class="chips"><span class="chip">projection</span><span class="chip">regression</span></div>
+    </a>
+    <a class="ccard" style="--accent:var(--hot)" href="13-gram-schmidt.html">
+      <div class="num">13</div><h3>직교기저 · Gram-Schmidt</h3>
+      <p>비스듬한 축을 직각으로 정돈하는 절차.</p>
+      <div class="chips"><span class="chip">orthogonal</span><span class="chip">Q</span></div>
+    </a>
+  </div>
+
+  <div class="seclabel">PART 5 · 고유값과 분해</div>
+  <div class="cards">
+    <a class="ccard" style="--accent:var(--k)" href="14-eigen.html">
+      <div class="num">14</div><h3>고유값 · 고유벡터</h3>
+      <p>변환해도 방향이 안 바뀌는 특별한 벡터 찾기.</p>
+      <div class="chips"><span class="chip">eigen</span><span class="chip">λ</span></div>
+    </a>
+    <a class="ccard" style="--accent:var(--v)" href="15-diagonalization.html">
+      <div class="num">15</div><h3>대각화 · 행렬 거듭제곱</h3>
+      <p>고유기저로 보면 변환이 단순한 스케일. 반복 적용의 거동.</p>
+      <div class="chips"><span class="chip">diagonalize</span><span class="chip">Aⁿ</span></div>
+    </a>
+    <a class="ccard" style="--accent:var(--q)" href="16-svd.html">
+      <div class="num">16</div><h3>SVD — 모든 행렬의 분해</h3>
+      <p>어떤 행렬이든 회전→스케일→회전 세 단계로.</p>
+      <div class="chips"><span class="chip">SVD</span><span class="chip">UΣVᵀ</span></div>
+    </a>
+    <a class="ccard" style="--accent:var(--good)" href="17-pca.html">
+      <div class="num">17</div><h3>PCA — 차원 축소</h3>
+      <p>데이터 구름의 주축을 찾아 가장 중요한 방향만 남기기.</p>
+      <div class="chips"><span class="chip">PCA</span><span class="chip">variance</span></div>
+    </a>
+  </div>
+
+  <p class="foot">// 선형대수 핵심 개념을 직접 만든 비영리 인터랙티브 학습 자료 · 모든 격자·수치는 브라우저에서 실시간 계산</p>
+</div>
+</body>
+</html>

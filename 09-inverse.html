@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>09 역행렬 · 선형대수, 눈으로 보기</title>
+<link rel="stylesheet" href="shared/theme.css">
+</head>
+<body>
+<div class="wrap">
+  <div class="topnav" id="topnav"></div>
+
+  <header>
+    <div class="tag">PART 3 · EQUATIONS &amp; INVERSE</div>
+    <h1>역행렬 — 변환을 거꾸로 되감기</h1>
+    <p class="intro">변환이 공간을 늘이고 돌렸다면, <b>역행렬 M⁻¹</b>은 그걸 정확히 원래대로 되돌려요. 단, 변환이 공간을 <b>납작하게 짜부라뜨렸다면(det=0)</b> 정보가 사라져 되돌릴 수 없죠. 이 챕터에서 <b>역행렬·열공간·영공간</b>을 눈으로 봅니다.</p>
+  </header>
+
+  <nav class="stepper" id="stepper">
+    <button data-s="0" class="active">00 · 되돌리기</button>
+    <button data-s="1">01 · 역행렬 공식</button>
+    <button data-s="2">02 · 열공간</button>
+    <button data-s="3">03 · 영공간</button>
+  </nav>
+
+  <!-- STEP 0 -->
+  <section class="panel show" data-panel="0">
+    <span class="kicker" style="color:var(--hot)">Step 00 — Undo the Transform</span>
+    <h2>역행렬 = 변환 되돌리기</h2>
+    <p class="lead">행렬 <code class="mono">M</code>으로 격자를 변형한 뒤, <b>M⁻¹</b>을 이어서 적용하면 격자가 <b>정확히 원래대로</b> 돌아와요. 두 변환을 합치면 아무것도 안 한 것과 같죠 — 즉 <b>M·M⁻¹ = I</b>(항등). 버튼으로 직접 보세요.</p>
+    <div class="row" style="gap:24px;justify-content:center;align-items:flex-start">
+      <div style="text-align:center"><div class="label" id="board0lab" style="color:var(--hot)">변환 전 (항등)</div><div id="board0"></div></div>
+      <div style="flex:1;min-width:240px">
+        <div id="step0mat"></div>
+        <div class="row" style="margin-top:14px">
+          <button class="btn" id="btnApply">① M 적용</button>
+          <button class="btn" id="btnInv">② M⁻¹ 적용 (되돌리기)</button>
+          <button class="btn" id="btnReset">↺ 리셋</button>
+        </div>
+        <p class="note" id="step0note" style="margin-top:14px"></p>
+      </div>
+    </div>
+    <div class="callout good" style="margin-top:18px">
+      <div class="ttl">M·M⁻¹ = I</div>
+      <p>역행렬은 "되감기 버튼"이에요. M이 한 일을 한 치 오차 없이 취소하므로, 둘을 곱하면 <b>항등행렬</b>이 됩니다.</p>
+    </div>
+  </section>
+
+  <!-- STEP 1 -->
+  <section class="panel" data-panel="1">
+    <span class="kicker" style="color:var(--q)">Step 01 — The 2×2 Formula</span>
+    <h2>역행렬 공식과 실제 계산 (2×2)</h2>
+    <p class="lead">2×2 행렬 <code class="mono">M = [[a, c], [b, d]]</code>의 역행렬은
+      <code class="mono">M⁻¹ = (1/det)·[[d, −c], [−b, a]]</code> 예요. 대각은 자리 바꾸고, 비대각은 부호를 뒤집은 뒤 <b>det로 나눕니다</b>. 슬라이더로 M을 바꿔 실제 계산을 보세요.</p>
+    <div class="row" style="gap:24px;align-items:flex-start;justify-content:center">
+      <div style="flex:1;min-width:240px">
+        <div class="label">행렬 M</div>
+        <div class="ctrl"><label style="color:var(--q)">a</label><input type="range" id="a" min="-3" max="3" step="0.5" value="2"><span class="val" id="av">2.0</span></div>
+        <div class="ctrl"><label style="color:var(--q)">b</label><input type="range" id="b" min="-3" max="3" step="0.5" value="1"><span class="val" id="bv">1.0</span></div>
+        <div class="ctrl"><label style="color:var(--k)">c</label><input type="range" id="c" min="-3" max="3" step="0.5" value="1"><span class="val" id="cv">1.0</span></div>
+        <div class="ctrl"><label style="color:var(--k)">d</label><input type="range" id="d" min="-3" max="3" step="0.5" value="1.5"><span class="val" id="dv">1.5</span></div>
+      </div>
+      <div style="flex:1;min-width:240px">
+        <div id="invMat"></div>
+        <div id="invCalc" class="callout q" style="margin-top:14px"></div>
+        <div id="invWarn"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- STEP 2 -->
+  <section class="panel" data-panel="2">
+    <span class="kicker" style="color:var(--v)">Step 02 — Column Space</span>
+    <h2>열공간 — 변환의 출력이 닿는 곳</h2>
+    <p class="lead">변환 후 <b>모든 출력 벡터가 채우는 영역</b>이 열공간이에요. 일반 2×2(det≠0)면 입력 공간 전체가 <b>평면 전체</b>로 가고, det=0이면 모든 점이 <b>한 직선</b> 위로 짜부라져 그 직선이 열공간이 됩니다.</p>
+    <div class="view-toggle" id="colPresets" style="flex-wrap:wrap"></div>
+    <div class="row" style="gap:24px;align-items:flex-start;justify-content:center;margin-top:8px">
+      <div id="board2"></div>
+      <div style="flex:1;min-width:220px">
+        <div id="colMat"></div>
+        <p class="note" id="colNote" style="margin-top:12px"></p>
+      </div>
+    </div>
+    <p class="note" style="margin-top:6px">→ î(파랑)와 ĵ(빨강)가 가는 두 벡터가 만드는 영역이 곧 열공간이에요. 둘이 같은 직선 위에 놓이면(det=0) 평면이 직선으로 무너집니다. <b>열공간의 차원 = rank</b>.</p>
+  </section>
+
+  <!-- STEP 3 -->
+  <section class="panel" data-panel="3">
+    <span class="kicker" style="color:var(--good)">Step 03 — Null Space</span>
+    <h2>영공간 — Mx = 0 이 되는 x</h2>
+    <p class="lead">변환 후 <b>원점으로 가버리는 입력 벡터들</b>의 모임이 영공간이에요. det≠0이면 <b>원점 하나뿐</b>(아무것도 안 사라짐). det=0이면 <b>한 직선 전체</b>가 원점으로 짜부라지고, 그 직선이 곧 영공간입니다.</p>
+    <div class="view-toggle" id="nullPresets" style="flex-wrap:wrap"></div>
+    <div class="row" style="gap:24px;align-items:flex-start;justify-content:center;margin-top:8px">
+      <div id="board3"></div>
+      <div style="flex:1;min-width:220px">
+        <div id="nullMat"></div>
+        <div id="nullCalc" class="callout good" style="margin-top:12px"></div>
+      </div>
+    </div>
+    <p class="note" style="margin-top:6px">→ 보라색 직선이 <b>변환 전 영공간</b>(원점으로 갈 후보들), 그 위 점들이 변환 후 전부 <b>원점에 겹쳐</b>요. det≠0이면 영공간은 원점 하나라 직선이 없습니다.</p>
+  </section>
+
+  <p class="foot">// 모든 격자·역행렬은 실제로 계산해 그립니다. · <a href="index.html">목차</a></p>
+</div>
+
+<script src="shared/lib.js"></script>
+<script>
+VZ.mountTopnav('#topnav', '09 · Inverse');
+VZ.setupStepper();
+const LA = VZ.LA;
+const matHTML = (M, acc='var(--hot)') => VZ.mxMatrix(M, {acc, fmtCell:v=>VZ.fmt(v,2)});
+
+// 2×2 역행렬 (열표기 M=[[a,c],[b,d]]). 행 배열 그대로 표준 공식 적용.
+function inverse2(M){
+  const d = LA.det(M);
+  if (Math.abs(d) < 1e-9) return null;
+  return [[ M[1][1]/d, -M[0][1]/d],
+          [-M[1][0]/d,  M[0][0]/d]];
+}
+
+// ---------- STEP 0 ----------
+(function(){
+  const b = LA.board({W:300,H:300,unit:30});
+  const M   = [[1, 0.5], [-0.6, 1.2]];   // 되돌릴 변환
+  const Minv = inverse2(M);
+  const lab = document.getElementById('board0lab');
+  const note = document.getElementById('step0note');
+  let busy = false;
+
+  document.getElementById('step0mat').innerHTML =
+    VZ.opRow([matHTML(M,'var(--q)'), matHTML(Minv,'var(--v)')], ['그리고 ⁻¹ →']);
+
+  // 현재 누적 변환행렬 (시각상태)
+  function render(curM){ document.getElementById('board0').innerHTML = LA.transformSVG(b, curM, {R:6}); }
+  function setLab(t,c){ lab.textContent = t; lab.style.color = c; }
+
+  render([[1,0],[0,1]]);
+  note.innerHTML = '① <b>M 적용</b>을 누르면 격자가 휘어요. 이어서 ② <b>M⁻¹</b>을 누르면 원래대로 돌아옵니다.';
+
+  document.getElementById('btnApply').onclick = ()=>{
+    if (busy) return; busy = true;
+    LA.animateTo(M, render, 800, ()=>{ busy=false; setLab('M 적용됨 (변형 상태)','var(--q)'); });
+    note.innerHTML = '이제 ② <b style="color:var(--v)">M⁻¹ 적용</b>을 눌러 되돌려 보세요.';
+  };
+  // M⁻¹ 적용 = 현재 M 상태에서 항등으로 보간 (M·M⁻¹=I 시각화)
+  document.getElementById('btnInv').onclick = ()=>{
+    if (busy) return; busy = true;
+    // M 에서 I 로 가도록: lerpM은 I→target 이므로, 역방향 보간을 직접 구성
+    const t0 = performance.now(), dur = 800;
+    (function frame(now){
+      let t = Math.min(1, (now - t0)/dur);
+      t = t < .5 ? 2*t*t : 1 - Math.pow(-2*t+2,2)/2;
+      // M*(M⁻¹ 의 t 보간) = M 에서 I 로 직선 보간
+      const cur = [[M[0][0]+(1-M[0][0])*t, M[0][1]+(0-M[0][1])*t],
+                   [M[1][0]+(0-M[1][0])*t, M[1][1]+(1-M[1][1])*t]];
+      render(cur);
+      if (t<1) requestAnimationFrame(frame);
+      else { busy=false; setLab('원래대로! (M·M⁻¹ = I)','var(--good)');
+             note.innerHTML = '<b style="color:var(--good)">완벽히 복원!</b> M이 한 일을 M⁻¹이 정확히 취소했어요.'; }
+    })(performance.now());
+  };
+  document.getElementById('btnReset').onclick = ()=>{
+    if (busy) return; busy=false;
+    render([[1,0],[0,1]]); setLab('변환 전 (항등)','var(--hot)');
+    note.innerHTML = '① <b>M 적용</b>을 누르면 격자가 휘어요. 이어서 ② <b>M⁻¹</b>을 누르면 원래대로 돌아옵니다.';
+  };
+})();
+
+// ---------- STEP 1 ----------
+(function(){
+  const ids = ['a','b','c','d'];
+  function read(){ return ids.map(i=>+document.getElementById(i).value); }
+  function draw(){
+    const [a,b,c,d] = read();
+    ids.forEach(i=>document.getElementById(i+'v').textContent = VZ.fmt(+document.getElementById(i).value,1));
+    const M = [[a,c],[b,d]];                 // 열 = î(a,b), ĵ(c,d)
+    const det = LA.det(M);
+    const Minv = inverse2(M);
+
+    document.getElementById('invMat').innerHTML =
+      VZ.opRow([matHTML(M,'var(--q)'),
+                Minv ? matHTML(Minv,'var(--good)') : matHTML([['∅','∅'],['∅','∅']],'var(--k)')],
+               ['⁻¹ =']);
+
+    if (Minv){
+      document.getElementById('invCalc').innerHTML =
+        `<div class="ttl">실제 계산</div>
+         <p class="mono" style="margin:0">det = a·d − c·b = ${VZ.fmt(a*d,2)} − ${VZ.fmt(c*b,2)} = <b style="color:var(--hot)">${VZ.fmt(det,2)}</b></p>
+         <p class="mono" style="margin:8px 0 0">adj(M) = [[d, −c], [−b, a]] = [[${VZ.fmt(d,1)}, ${VZ.fmt(-c,1)}], [${VZ.fmt(-b,1)}, ${VZ.fmt(a,1)}]]</p>
+         <p class="mono" style="margin:8px 0 0">M⁻¹ = (1/${VZ.fmt(det,2)})·adj(M)
+           = [[${VZ.fmt(Minv[0][0],2)}, ${VZ.fmt(Minv[0][1],2)}], [${VZ.fmt(Minv[1][0],2)}, ${VZ.fmt(Minv[1][1],2)}]]</p>`;
+      // M·M⁻¹ 검산
+      const I = VZ.matMul(M, Minv);
+      document.getElementById('invWarn').innerHTML =
+        `<p class="note" style="margin-top:12px">검산 M·M⁻¹ =
+          [[${VZ.fmt(I[0][0],2)}, ${VZ.fmt(I[0][1],2)}], [${VZ.fmt(I[1][0],2)}, ${VZ.fmt(I[1][1],2)}]]
+          → <b style="color:var(--good)">항등행렬 I</b> ✓</p>`;
+    } else {
+      document.getElementById('invCalc').innerHTML =
+        `<div class="ttl" style="color:var(--k)">역행렬 없음</div>
+         <p class="mono" style="margin:0">det = a·d − c·b = ${VZ.fmt(a*d,2)} − ${VZ.fmt(c*b,2)} = <b style="color:var(--k)">0</b></p>
+         <p style="margin:8px 0 0">1/det 으로 나눌 수 없어요. 변환이 공간을 <b>납작하게</b> 만들어 정보가 사라졌기 때문에 <b>되돌릴 수 없습니다</b>(비가역).</p>`;
+      document.getElementById('invWarn').innerHTML =
+        `<div class="callout v" style="margin-top:12px;background:rgba(251,113,133,.07);border-color:rgba(251,113,133,.3)">
+          <p style="margin:0">⚠️ <b style="color:var(--k)">det = 0 → 역행렬이 존재하지 않습니다.</b></p>
+        </div>`;
+    }
+  }
+  ids.forEach(i=>document.getElementById(i).addEventListener('input',draw));
+  draw();
+})();
+
+// ---------- STEP 2 (열공간) ----------
+(function(){
+  const b = LA.board({W:360,H:360,unit:40});
+  const PRESETS = [
+    ['평면 전체 (det≠0)', [[1.5,0.5],[0.3,1.2]],
+      '<b>full rank</b> — î, ĵ가 서로 다른 방향을 가리켜요. 출력이 평면 전체를 덮으니 열공간 = <b>ℝ² 전체</b> (차원 2).'],
+    ['직선 (det=0)', [[2,1],[2,1]],
+      '<b>rank 1</b> — 두 열 (2,2)와 (1,1)이 같은 직선 위! 출력은 그 <b>직선만</b> 채워요. 열공간 = 직선 (차원 1).'],
+    ['직선 (det=0)·다른 기울기', [[1,-1],[-2,2]],
+      '<b>rank 1</b> — 열 (1,−2)와 (−1,2)가 한 직선. 평면이 직선으로 무너졌어요 (차원 1).'],
+  ];
+  const wrap = document.getElementById('colPresets');
+  wrap.innerHTML = PRESETS.map((p,i)=>`<button data-i="${i}" class="${i===0?'on':''}">${p[0]}</button>`).join('');
+
+  function colSpaceLine(M, R=6){
+    // det=0 일 때 열공간 직선을 그린다. 0 아닌 열 방향으로 R배 양쪽.
+    let v = [M[0][0], M[1][0]];
+    if (Math.hypot(v[0],v[1]) < 1e-9) v = [M[0][1], M[1][1]];
+    const n = Math.hypot(v[0],v[1]) || 1;
+    const ux = v[0]/n, uy = v[1]/n;
+    const x1=b.X(-ux*R), y1=b.Y(-uy*R), x2=b.X(ux*R), y2=b.Y(uy*R);
+    return `<line x1="${x1.toFixed(1)}" y1="${y1.toFixed(1)}" x2="${x2.toFixed(1)}" y2="${y2.toFixed(1)}" stroke="var(--v)" stroke-width="4" stroke-linecap="round" opacity="0.85"/>`;
+  }
+  function show(i){
+    const [name,M,desc] = PRESETS[i];
+    const flat = Math.abs(LA.det(M)) < 1e-9;
+    LA.animateTo(M, cur=>{
+      let svg = LA.transformSVG(b, cur, {R:6});
+      if (flat){ // 직선 강조 오버레이를 닫는 </svg> 앞에 삽입
+        svg = svg.replace('</svg>', colSpaceLine(M) + '</svg>');
+      }
+      document.getElementById('board2').innerHTML = svg;
+    });
+    document.getElementById('colMat').innerHTML = matHTML(M,'var(--v)') +
+      `<p class="note" style="margin-top:10px">det = <b style="color:${flat?'var(--k)':'var(--good)'}">${VZ.fmt(LA.det(M),2)}</b> · rank = <b>${flat?1:2}</b></p>`;
+    document.getElementById('colNote').innerHTML = desc +
+      (flat ? '<br><span style="color:var(--v)">— 보라색 선이 열공간입니다.</span>' : '');
+  }
+  wrap.addEventListener('click',e=>{
+    const x=e.target.closest('button'); if(!x)return;
+    wrap.querySelectorAll('button').forEach(z=>z.classList.toggle('on',z===x));
+    show(+x.dataset.i);
+  });
+  show(0);
+})();
+
+// ---------- STEP 3 (영공간) ----------
+(function(){
+  const b = LA.board({W:360,H:360,unit:40});
+  const PRESETS = [
+    ['원점뿐 (det≠0)', [[1.5,0.5],[0.3,1.2]],
+      '가역 변환이라 짜부라지는 방향이 없어요. Mx=0의 해는 <b>x = (0,0)</b> 단 하나. 영공간 = {원점}.'],
+    ['직선 영공간 (det=0)', [[1,-2],[1,-2]],
+      '두 열이 한 직선 → 어떤 입력 방향은 통째로 원점으로! 그 방향이 영공간 직선이에요.'],
+    ['직선 영공간 (det=0)·2', [[2,1],[-2,-1]],
+      'rank 1이라 한 직선이 0으로 짜부라져요. 그 직선 위 모든 점이 Mx=0을 만족합니다.'],
+  ];
+  const wrap = document.getElementById('nullPresets');
+  wrap.innerHTML = PRESETS.map((p,i)=>`<button data-i="${i}" class="${i===0?'on':''}">${p[0]}</button>`).join('');
+
+  // Mx=0 의 비자명해 방향(영공간 벡터). det=0 가정. M=[[a,c],[b,d]] → a·x+c·y=0 → (c,-a) 또는 (d,-b).
+  function nullVec(M){
+    const a=M[0][0], c=M[0][1], bb=M[1][0], d=M[1][1];
+    let v = [c, -a];
+    if (Math.hypot(v[0],v[1]) < 1e-9) v = [d, -bb];
+    if (Math.hypot(v[0],v[1]) < 1e-9) v = [1, 0];
+    const n = Math.hypot(v[0],v[1]);
+    return [v[0]/n, v[1]/n];
+  }
+  function nullLine(u, R=6, color='var(--v)'){
+    const x1=b.X(-u[0]*R), y1=b.Y(-u[1]*R), x2=b.X(u[0]*R), y2=b.Y(u[1]*R);
+    return `<line x1="${x1.toFixed(1)}" y1="${y1.toFixed(1)}" x2="${x2.toFixed(1)}" y2="${y2.toFixed(1)}" stroke="${color}" stroke-width="4" stroke-linecap="round" opacity="0.85"/>`;
+  }
+  function show(i){
+    const [name,M,desc] = PRESETS[i];
+    const flat = Math.abs(LA.det(M)) < 1e-9;
+    const u = flat ? nullVec(M) : null;
+    // 영공간 직선 위의 표본 점들 — "입력 공간"에서의 위치(변환 전)
+    const samplePts = flat ? [-3,-2,-1,1,2,3].map(t=>[u[0]*t, u[1]*t, 'var(--hot)', '']) : [];
+    // 배경 격자를 '입력 공간'(항등)으로 고정해, 변환 전 영공간 직선과 점을 한 좌표계에서 본다.
+    // (변환된 격자에 변환 전 직선을 겹치면 좌표계가 섞여 혼란스러움)
+    let svg = LA.transformSVG(b, [[1,0],[0,1]], {R:6, shape:null, showBasis:false, pts: samplePts});
+    if (flat){
+      svg = svg.replace('</svg>', nullLine(u) + '</svg>');   // 영공간 직선(이 위 모든 점이 M으로 0이 됨)
+    }
+    document.getElementById('board3').innerHTML = svg;
+
+    document.getElementById('nullMat').innerHTML = matHTML(M,'var(--good)') +
+      `<p class="note" style="margin-top:10px">det = <b style="color:${flat?'var(--k)':'var(--good)'}">${VZ.fmt(LA.det(M),2)}</b></p>`;
+
+    if (flat){
+      // 검증: M·u ≈ 0
+      const Mu = LA.apply(M, u[0], u[1]);
+      document.getElementById('nullCalc').innerHTML =
+        `<div class="ttl">영공간 = 직선</div>
+         <p class="mono" style="margin:0">영공간 방향 x = (${VZ.fmt(u[0],2)}, ${VZ.fmt(u[1],2)})</p>
+         <p class="mono" style="margin:6px 0 0">M·x = (${VZ.fmt(Mu[0],2)}, ${VZ.fmt(Mu[1],2)}) ≈ <b style="color:var(--good)">(0, 0)</b> ✓</p>
+         <p style="margin:8px 0 0">이 방향의 <b>모든 배수</b>가 원점으로 가요. 그래서 영공간은 점이 아니라 <b>직선 전체</b>입니다.</p>`;
+    } else {
+      document.getElementById('nullCalc').innerHTML =
+        `<div class="ttl">영공간 = {원점}</div>
+         <p style="margin:0">det ≠ 0 이라 가역이에요. Mx=0의 해는 <b style="color:var(--good)">x = (0,0)</b> 단 하나뿐.
+         아무 방향도 짜부라지지 않으니 영공간은 <b>원점</b>만 포함합니다.</p>`;
+    }
+  }
+  wrap.addEventListener('click',e=>{
+    const x=e.target.closest('button'); if(!x)return;
+    wrap.querySelectorAll('button').forEach(z=>z.classList.toggle('on',z===x));
+    show(+x.dataset.i);
+  });
+  show(0);
+})();
+</script>
+</body>
+</html>

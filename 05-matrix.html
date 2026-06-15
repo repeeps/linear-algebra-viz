@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>05 행렬·벡터 곱 · 선형대수, 눈으로 보기</title>
+<link rel="stylesheet" href="shared/theme.css">
+</head>
+<body>
+<div class="wrap">
+  <div class="topnav" id="topnav"></div>
+
+  <header>
+    <div class="tag">PART 2 · TRANSFORMATIONS</div>
+    <h1>행렬·벡터 곱 — 열의 가중합으로 보기</h1>
+    <p class="intro">행렬 <code class="mono">M</code>은 <b>변환의 좌표</b>예요. 두 열에 î와 ĵ가 도착할 자리를 적어둔 표죠. 그래서 <code class="mono">M·v</code>는 어렵게 외울 공식이 아니라, <b>1열을 x배, 2열을 y배해서 더하는</b> 아주 단순한 일이에요. 슬라이더로 그 덧셈을 직접 따라가 봐요.</p>
+  </header>
+
+  <nav class="stepper" id="stepper">
+    <button data-s="0" class="active">00 · 두 열 = î,ĵ의 행선지</button>
+    <button data-s="1">01 · M·v = 열의 가중합</button>
+    <button data-s="2">02 · 성분별 계산</button>
+    <button data-s="3">03 · 행렬 종류</button>
+  </nav>
+
+  <!-- STEP 0 -->
+  <section class="panel show" data-panel="0">
+    <span class="kicker" style="color:var(--hot)">Step 00 — Columns Are Destinations</span>
+    <h2>행렬의 두 열 = î와 ĵ가 도착하는 좌표</h2>
+    <p class="lead">행렬 <code class="mono">M = [[a,c],[b,d]]</code>에서 <b style="color:var(--q)">1열 (a,b)</b>는 î가 가는 곳, <b style="color:var(--k)">2열 (c,d)</b>는 ĵ가 가는 곳이에요. 이 두 화살표만 정하면 격자 전체가 따라옵니다.</p>
+    <div class="row" style="gap:24px;align-items:flex-start;justify-content:center">
+      <div id="board0"></div>
+      <div style="flex:1;min-width:240px">
+        <div class="label">행렬 M (열 = 행선지)</div>
+        <div id="mat0" style="margin-bottom:8px"></div>
+        <div class="callout q" style="margin-top:8px">
+          <div class="ttl">읽는 법</div>
+          <p class="mono" style="margin:0">1열 = î' = (<b style="color:var(--q)">a, b</b>)</p>
+          <p class="mono" style="margin:4px 0 0">2열 = ĵ' = (<b style="color:var(--k)">c, d</b>)</p>
+        </div>
+        <p class="note" style="margin-top:10px">→ 04장 복습이에요. 여기선 이 두 열을 <b>재료</b> 삼아 곱을 직접 계산해 볼게요.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- STEP 1 -->
+  <section class="panel" data-panel="1">
+    <span class="kicker" style="color:var(--q)">Step 01 — Weighted Sum of Columns</span>
+    <h2>M·v = x·(1열) + y·(2열)</h2>
+    <p class="lead">핵심이에요. 점 <code class="mono">v=(x,y)</code>를 변환하는 건 <b style="color:var(--q)">1열을 x배</b> 한 뒤, 그 끝에서 <b style="color:var(--k)">2열을 y배</b> 이어붙이는 일과 똑같아요. 두 화살표를 머리-꼬리로 더한 자리가 바로 <b style="color:var(--good)">M·v</b>입니다.</p>
+    <div class="row" style="gap:24px;align-items:flex-start;justify-content:center">
+      <div id="board1"></div>
+      <div style="flex:1;min-width:240px">
+        <div class="ctrl"><label>점 x</label><input type="range" id="vx" min="-3" max="3" step="0.5" value="2"><span class="val" id="vxv">2.0</span></div>
+        <div class="ctrl"><label>점 y</label><input type="range" id="vy" min="-3" max="3" step="0.5" value="1.5"><span class="val" id="vyv">1.5</span></div>
+        <div id="sumCalc" class="callout q" style="margin-top:12px"></div>
+        <p class="note" style="margin-top:10px">→ <b style="color:var(--q)">파란 화살표</b> = x·(1열), <b style="color:var(--k)">빨간 점선</b> = y·(2열)을 이어붙인 것. 둘의 합이 <b style="color:var(--good)">초록 v'</b>예요.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- STEP 2 -->
+  <section class="panel" data-panel="2">
+    <span class="kicker" style="color:var(--v)">Step 02 — Component Breakdown</span>
+    <h2>성분별로 풀어쓰면 x' = ax+cy, y' = bx+dy</h2>
+    <p class="lead">가중합을 좌표별로 모으면 익숙한 공식이 나와요. <b>x'</b>는 두 열의 x성분끼리, <b>y'</b>는 y성분끼리 모은 것뿐이에요. 슬라이더와 연동된 표로 확인해 봐요.</p>
+    <div class="row" style="gap:24px;align-items:flex-start;justify-content:center">
+      <div id="board2"></div>
+      <div style="flex:1;min-width:260px">
+        <div class="ctrl"><label>점 x</label><input type="range" id="cx" min="-3" max="3" step="0.5" value="2"><span class="val" id="cxv">2.0</span></div>
+        <div class="ctrl"><label>점 y</label><input type="range" id="cy" min="-3" max="3" step="0.5" value="1"><span class="val" id="cyv">1.0</span></div>
+        <table class="calc" id="calcTable"></table>
+        <p class="note" style="margin-top:10px">→ 노란 행은 <b>x'</b>(첫 행끼리), 보라 행은 <b>y'</b>(둘째 행끼리)를 모은 결과예요.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- STEP 3 -->
+  <section class="panel" data-panel="3">
+    <span class="kicker" style="color:var(--good)">Step 03 — Kinds of Matrices</span>
+    <h2>단위 · 대각 · 회전 — 같은 v가 어떻게 가나</h2>
+    <p class="lead">행렬의 성격은 곧 변환의 성격이에요. 같은 점 <code class="mono">v</code>를 두고 행렬만 바꿔 보면, 각 종류가 무슨 일을 하는지 한눈에 보여요.</p>
+    <div class="view-toggle" id="kinds" style="flex-wrap:wrap"></div>
+    <div class="row" style="gap:24px;align-items:flex-start;justify-content:center;margin-top:8px">
+      <div id="board3"></div>
+      <div style="flex:1;min-width:240px">
+        <div id="kindMat"></div>
+        <div id="kindCalc" class="callout good" style="margin-top:12px"></div>
+        <p class="note" id="kindNote" style="margin-top:10px"></p>
+      </div>
+    </div>
+  </section>
+
+  <p class="foot">// M·v 는 항상 열의 가중합으로 실제 계산합니다. · <a href="index.html">목차</a></p>
+</div>
+
+<script src="shared/lib.js"></script>
+<script>
+VZ.mountTopnav('#topnav', '05 · Matrix·Mv');
+VZ.setupStepper();
+const LA = VZ.LA;
+const fmt = VZ.fmt;
+
+// 본문 공통 변환 (회전+약간의 스케일, det>0): 열 = î'=(a,b), ĵ'=(c,d)
+const M = [[1, 0.6], [0.5, 1.2]];
+const matHTML = (mat, opts = {}) => VZ.mxMatrix(mat, Object.assign({ acc: 'var(--hot)', fmtCell: v => fmt(v, 1) }, opts));
+
+// ---------- STEP 0 ----------
+(function () {
+  const b = LA.board({ W: 340, H: 340, unit: 40 });
+  document.getElementById('board0').innerHTML = LA.transformSVG(b, M, { R: 6 });
+  // 1열을 cyan, 2열을 coral 강조 (mxMatrix의 hlCol로 열 강조)
+  document.getElementById('mat0').innerHTML = matHTML(M);
+})();
+
+// 화살표를 임의 시작점(꼬리)에서 끝점까지 그리는 헬퍼 (lib.arrow는 원점 고정이라 직접 그림)
+function segArrow(b, x0, y0, x1, y1, color, opts = {}) {
+  const { lw = 2.5, dash = false, label = '' } = opts;
+  const X0 = b.X(x0), Y0 = b.Y(y0), X1 = b.X(x1), Y1 = b.Y(y1);
+  const id = 'sa' + Math.round(Math.abs(x0 * 7 + y0 * 13 + x1 * 17 + y1 * 23) * 10) + color.replace(/[^a-z0-9]/gi, '');
+  let s = `<defs><marker id="${id}" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+    <path d="M0,0 L9,4.5 L0,9 Z" fill="${color}"/></marker></defs>`;
+  s += `<line x1="${X0.toFixed(1)}" y1="${Y0.toFixed(1)}" x2="${X1.toFixed(1)}" y2="${Y1.toFixed(1)}" stroke="${color}" stroke-width="${lw}"${dash ? ' stroke-dasharray="6 4"' : ''} marker-end="url(#${id})"/>`;
+  if (label) s += `<text x="${((X0 + X1) / 2 + 8).toFixed(1)}" y="${((Y0 + Y1) / 2 - 6).toFixed(1)}" fill="${color}" font-size="12" font-weight="700" font-family="JetBrains Mono">${label}</text>`;
+  return s;
+}
+
+// ---------- STEP 1 ----------
+(function () {
+  const b = LA.board({ W: 360, H: 360, unit: 36 });
+  function draw() {
+    const x = +document.getElementById('vx').value, y = +document.getElementById('vy').value;
+    document.getElementById('vxv').textContent = fmt(x, 1);
+    document.getElementById('vyv').textContent = fmt(y, 1);
+
+    const col1 = [M[0][0], M[1][0]];   // î' = (a,b)
+    const col2 = [M[0][1], M[1][1]];   // ĵ' = (c,d)
+    // 단계 1: 원점 → x·col1
+    const p1 = [col1[0] * x, col1[1] * x];
+    // 단계 2: p1 → p1 + y·col2 = Mv
+    const mv = [p1[0] + col2[0] * y, p1[1] + col2[1] * y];
+
+    // 변형 격자 (옅게) + 가중합 화살표
+    let svg = `<svg width="${b.W}" height="${b.H}" viewBox="0 0 ${b.W} ${b.H}" style="max-width:100%;display:block">`;
+    svg += LA.gridPaths(b, M, 6);
+    // x·(1열): 원점→p1
+    svg += segArrow(b, 0, 0, p1[0], p1[1], 'var(--q)', { label: 'x·1열' });
+    // y·(2열): p1→mv (점선)
+    svg += segArrow(b, p1[0], p1[1], mv[0], mv[1], 'var(--k)', { dash: true, label: 'y·2열' });
+    // 결과 v'
+    svg += LA.arrow(b, mv[0], mv[1], 'var(--good)', "v'", { dot: true });
+    svg += `</svg>`;
+    document.getElementById('board1').innerHTML = svg;
+
+    document.getElementById('sumCalc').innerHTML =
+      `<div class="ttl">M · v = x·(1열) + y·(2열)</div>
+       <p class="mono" style="margin:0">v = (${fmt(x, 1)}, ${fmt(y, 1)})</p>
+       <p class="mono" style="margin:6px 0 0"><b style="color:var(--q)">${fmt(x, 1)}·(${fmt(col1[0], 1)}, ${fmt(col1[1], 1)})</b> + <b style="color:var(--k)">${fmt(y, 1)}·(${fmt(col2[0], 1)}, ${fmt(col2[1], 1)})</b></p>
+       <p class="mono" style="margin:6px 0 0">= (${fmt(p1[0], 2)}, ${fmt(p1[1], 2)}) + (${fmt(col2[0] * y, 2)}, ${fmt(col2[1] * y, 2)})</p>
+       <p class="mono" style="margin:6px 0 0">= <b style="color:var(--good)">(${fmt(mv[0], 2)}, ${fmt(mv[1], 2)})</b></p>`;
+  }
+  document.getElementById('vx').addEventListener('input', draw);
+  document.getElementById('vy').addEventListener('input', draw);
+  draw();
+})();
+
+// ---------- STEP 2 ----------
+(function () {
+  const b = LA.board({ W: 340, H: 340, unit: 36 });
+  const [a, c] = [M[0][0], M[0][1]], [bb, d] = [M[1][0], M[1][1]];
+  function draw() {
+    const x = +document.getElementById('cx').value, y = +document.getElementById('cy').value;
+    document.getElementById('cxv').textContent = fmt(x, 1);
+    document.getElementById('cyv').textContent = fmt(y, 1);
+    const nx = a * x + c * y, ny = bb * x + d * y;
+
+    document.getElementById('board2').innerHTML =
+      LA.transformSVG(b, M, { R: 6, shape: null, pts: [[x, y, 'var(--good)', "v'"]] });
+
+    document.getElementById('calcTable').innerHTML =
+      `<thead><tr><th>성분</th><th>1열×x</th><th>2열×y</th><th>=</th></tr></thead>
+       <tbody>
+       <tr style="color:var(--hot)"><td>x'</td><td>${fmt(a, 1)}·${fmt(x, 1)} = ${fmt(a * x, 2)}</td><td>${fmt(c, 1)}·${fmt(y, 1)} = ${fmt(c * y, 2)}</td><td><b>${fmt(nx, 2)}</b></td></tr>
+       <tr style="color:var(--v)"><td>y'</td><td>${fmt(bb, 1)}·${fmt(x, 1)} = ${fmt(bb * x, 2)}</td><td>${fmt(d, 1)}·${fmt(y, 1)} = ${fmt(d * y, 2)}</td><td><b>${fmt(ny, 2)}</b></td></tr>
+       </tbody>`;
+  }
+  document.getElementById('cx').addEventListener('input', draw);
+  document.getElementById('cy').addEventListener('input', draw);
+  draw();
+})();
+
+// ---------- STEP 3 ----------
+(function () {
+  const b = LA.board({ W: 360, H: 360, unit: 40 });
+  const v = [2, 1];   // 고정 입력점
+  const r = Math.PI / 4;
+  const KINDS = [
+    ['단위행렬', [[1, 0], [0, 1]], '대각선만 1, 나머지는 0. 모든 점을 제자리에 둬요 — 아무것도 안 하는 변환(I).'],
+    ['대각행렬', [[2, 0], [0, 0.5]], '대각 성분만 있는 행렬. x축으로 2배, y축으로 0.5배 — 축별로 따로 스케일해요.'],
+    ['회전행렬', [[Math.cos(r), -Math.sin(r)], [Math.sin(r), Math.cos(r)]], '열이 단위 직교벡터라 길이·각도를 보존해요. 여기선 45° 회전 (det=1).'],
+  ];
+  const btns = document.getElementById('kinds');
+  btns.innerHTML = KINDS.map((k, i) => `<button data-i="${i}" class="${i === 0 ? 'on' : ''}">${k[0]}</button>`).join('');
+  let anim3 = null;
+  function show(i) {
+    const [name, mat, desc] = KINDS[i];
+    if (anim3) anim3();   // 이전 애니메이션 취소(연타 겹침 방지)
+    anim3 = LA.animateTo(mat, cur => {
+      document.getElementById('board3').innerHTML =
+        LA.transformSVG(b, cur, { R: 6, pts: [[v[0], v[1], 'var(--good)', "v'"]] });
+    });
+    document.getElementById('kindMat').innerHTML = matHTML(mat);
+    const nx = mat[0][0] * v[0] + mat[0][1] * v[1], ny = mat[1][0] * v[0] + mat[1][1] * v[1];
+    document.getElementById('kindCalc').innerHTML =
+      `<div class="ttl">M · v 계산</div>
+       <p class="mono" style="margin:0">v = (${fmt(v[0], 1)}, ${fmt(v[1], 1)})</p>
+       <p class="mono" style="margin:6px 0 0">v' = <b style="color:var(--good)">(${fmt(nx, 2)}, ${fmt(ny, 2)})</b></p>`;
+    document.getElementById('kindNote').innerHTML = `<b>${name}</b> — ${desc}`;
+  }
+  btns.addEventListener('click', e => {
+    const x = e.target.closest('button'); if (!x) return;
+    btns.querySelectorAll('button').forEach(z => z.classList.toggle('on', z === x));
+    show(+x.dataset.i);
+  });
+  show(0);
+})();
+</script>
+</body>
+</html>

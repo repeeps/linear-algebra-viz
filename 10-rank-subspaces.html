@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>10 랭크와 부분공간 · 선형대수, 눈으로 보기</title>
+<link rel="stylesheet" href="shared/theme.css">
+</head>
+<body>
+<div class="wrap">
+  <div class="topnav" id="topnav"></div>
+
+  <header>
+    <div class="tag">PART 3 · EQUATIONS &amp; INVERSE</div>
+    <h1>랭크와 부분공간 — 변환이 살려내는 차원</h1>
+    <p class="intro"><b>rank(랭크)</b>는 행렬이라는 변환이 출력으로 <b>살려내는 차원의 수</b>예요. 2D를 그대로 평면으로 보내면 rank 2, 직선으로 짓이기면 rank 1, 원점 한 점으로 모으면 rank 0. 랭크는 곧 <b>독립인 열의 개수</b>이고, 열들이 만드는 공간이 <b>열공간</b>이에요. 슬라이더로 차원이 살고 죽는 걸 직접 보세요.</p>
+  </header>
+
+  <nav class="stepper" id="stepper">
+    <button data-s="0" class="active">00 · rank = 살아남는 차원</button>
+    <button data-s="1">01 · rank 2 vs rank 1</button>
+    <button data-s="2">02 · 열공간 = 열들의 span</button>
+    <button data-s="3">03 · rank-nullity</button>
+  </nav>
+
+  <!-- STEP 0 -->
+  <section class="panel show" data-panel="0">
+    <span class="kicker" style="color:var(--hot)">Step 00 — Rank = Surviving Dimension</span>
+    <h2>rank = 변환이 살려내는 차원 수</h2>
+    <p class="lead">행렬 네 칸을 직접 움직여 보세요. 출력이 <b>평면 전체</b>면 rank 2, <b>직선 하나</b>로 납작해지면 rank 1, <b>원점 한 점</b>으로 모이면 rank 0이에요. rank는 <b>서로 독립인 열의 개수</b>와 같아요.</p>
+    <div class="row" style="gap:24px;align-items:flex-start;justify-content:center">
+      <div id="board0"></div>
+      <div style="flex:1;min-width:240px">
+        <div class="label">행렬 M (열 = î, ĵ의 행선지)</div>
+        <div id="mat0" style="margin-bottom:14px"></div>
+        <div class="ctrl"><label style="color:var(--q)">î.x (a)</label><input type="range" id="a0" min="-2" max="2" step="0.1" value="1"><span class="val" id="a0v">1.0</span></div>
+        <div class="ctrl"><label style="color:var(--q)">î.y (b)</label><input type="range" id="b0" min="-2" max="2" step="0.1" value="0.5"><span class="val" id="b0v">0.5</span></div>
+        <div class="ctrl"><label style="color:var(--k)">ĵ.x (c)</label><input type="range" id="c0" min="-2" max="2" step="0.1" value="-0.5"><span class="val" id="c0v">-0.5</span></div>
+        <div class="ctrl"><label style="color:var(--k)">ĵ.y (d)</label><input type="range" id="d0" min="-2" max="2" step="0.1" value="1"><span class="val" id="d0v">1.0</span></div>
+        <div id="rank0Note" class="callout" style="margin-top:12px"></div>
+      </div>
+    </div>
+    <p class="note" style="margin-top:6px">→ 두 열(î, ĵ)이 <b>평행</b>해지면(한 열이 다른 열의 배수) 출력이 직선으로 붕괴해 rank가 2에서 1로 떨어져요. 두 열이 모두 0이면 rank 0.</p>
+  </section>
+
+  <!-- STEP 1 -->
+  <section class="panel" data-panel="1">
+    <span class="kicker" style="color:var(--q)">Step 01 — Rank 2 vs Rank 1</span>
+    <h2>rank 2(평면 유지) vs rank 1(직선 붕괴)</h2>
+    <p class="lead">두 행렬을 토글로 비교해요. 왼쪽 <b>rank 2</b> 행렬은 격자를 <b>평면 그대로</b> 보내지만, 오른쪽 <b>rank 1</b> 행렬은 두 열이 <b>평행</b>해서 격자 전체가 <b>한 직선</b> 위로 짜부라져요.</p>
+    <div class="view-toggle" id="rankToggle"></div>
+    <div class="row" style="gap:24px;align-items:flex-start;justify-content:center;margin-top:8px">
+      <div id="board1"></div>
+      <div style="flex:1;min-width:220px">
+        <div id="mat1"></div>
+        <div id="rank1Note" class="callout" style="margin-top:12px"></div>
+      </div>
+    </div>
+    <p class="note" style="margin-top:6px">→ rank 1 행렬에서 두 열 <code class="mono">(2,1)</code>과 <code class="mono">(4,2)</code>는 한쪽이 다른 쪽의 <b>2배</b>예요. 같은 방향이라 새 차원을 못 만들어요.</p>
+  </section>
+
+  <!-- STEP 2 -->
+  <section class="panel" data-panel="2">
+    <span class="kicker" style="color:var(--v)">Step 02 — Column Space = span of columns</span>
+    <h2>열공간 = 열 벡터들의 span</h2>
+    <p class="lead">행렬의 <b>두 열</b>을 벡터로 그렸어요. 이 두 벡터가 만드는 <b>span</b>(가능한 모든 조합)이 <b>열공간</b>이에요. 두 열이 다른 방향이면 span은 <b>평면</b>(음영 전체) = rank 2, 평행하면 <b>직선</b> = rank 1. <b>rank = 열공간의 차원</b>이에요.</p>
+    <div class="row" style="gap:24px;align-items:flex-start;justify-content:center">
+      <div id="board2"></div>
+      <div style="flex:1;min-width:240px">
+        <div class="label">열 벡터 두 개</div>
+        <div class="ctrl"><label style="color:var(--q)">열1.x</label><input type="range" id="c1x" min="-3" max="3" step="0.5" value="2"><span class="val" id="c1xv">2.0</span></div>
+        <div class="ctrl"><label style="color:var(--q)">열1.y</label><input type="range" id="c1y" min="-3" max="3" step="0.5" value="1"><span class="val" id="c1yv">1.0</span></div>
+        <div class="ctrl"><label style="color:var(--v)">열2.x</label><input type="range" id="c2x" min="-3" max="3" step="0.5" value="-1"><span class="val" id="c2xv">-1.0</span></div>
+        <div class="ctrl"><label style="color:var(--v)">열2.y</label><input type="range" id="c2y" min="-3" max="3" step="0.5" value="1.5"><span class="val" id="c2yv">1.5</span></div>
+        <div id="colNote" class="callout v" style="margin-top:12px"></div>
+      </div>
+    </div>
+    <p class="note" style="margin-top:6px">→ 두 열을 평행하게 맞춰 보세요(예: 열2를 열1의 배수로). 음영이 <b>평면에서 직선</b>으로 줄며 열공간 차원이 2 → 1로 떨어져요.</p>
+  </section>
+
+  <!-- STEP 3 -->
+  <section class="panel" data-panel="3">
+    <span class="kicker" style="color:var(--good)">Step 03 — Rank-Nullity</span>
+    <h2>rank + nullity = 입력 차원</h2>
+    <p class="lead"><b>rank-nullity 정리</b>: <code class="mono">rank + nullity = 입력 차원(여기선 2)</code>. <b>nullity</b>는 변환이 <b>0(원점)으로 보내버리는 입력</b>들이 이루는 공간(영공간)의 차원이에요. 살아남는 차원(rank)과 으스러지는 차원(nullity)을 합치면 항상 입력 차원이 돼요.</p>
+    <div class="view-toggle" id="nullToggle"></div>
+    <div class="row" style="gap:24px;align-items:flex-start;justify-content:center;margin-top:8px">
+      <div id="board3"></div>
+      <div style="flex:1;min-width:240px">
+        <div id="mat3"></div>
+        <div id="nullNote" class="callout good" style="margin-top:12px"></div>
+      </div>
+    </div>
+    <p class="callout q" style="margin-top:10px"><span class="ttl">ML 연결 — 저랭크 근사</span>
+      큰 가중치 행렬을 <b>rank를 일부러 낮춰</b> 근사하면, 정보의 <b>중요한 방향 몇 개만</b> 남기고 나머지는 버려요. 파라미터가 확 줄죠. 딥러닝의 <code>LoRA</code>가 바로 이 아이디어예요 — 무거운 행렬을 <b>두 개의 얇은(저랭크) 행렬 곱</b>으로 대체해 핵심 방향만 학습시켜요.</p>
+  </section>
+
+  <p class="foot">// 모든 격자·span은 행렬을 점마다 실제로 적용해 그립니다. · <a href="index.html">목차</a></p>
+</div>
+
+<script src="shared/lib.js"></script>
+<script>
+VZ.mountTopnav('#topnav', '10 · Rank');
+VZ.setupStepper();
+const LA = VZ.LA;
+const matHTML = (M) => VZ.mxMatrix(M, {acc:'var(--hot)', fmtCell:v=>VZ.fmt(v,1)});
+
+// 2×2 행렬의 rank 계산 (열 독립성 기반)
+function rank2(M){
+  const c1 = [M[0][0], M[1][0]];   // 열1 (î)
+  const c2 = [M[0][1], M[1][1]];   // 열2 (ĵ)
+  const n1 = Math.hypot(c1[0], c1[1]);
+  const n2 = Math.hypot(c2[0], c2[1]);
+  const eps = 0.04;
+  if (n1 < eps && n2 < eps) return 0;          // 둘 다 0 → 점
+  if (n1 < eps || n2 < eps) return 1;          // 한 열만 0 → 직선
+  const cross = c1[0]*c2[1] - c1[1]*c2[0];     // 평행이면 0
+  const sinTheta = Math.abs(cross) / (n1 * n2); // 정규화 = 두 열 사잇각의 sin (크기 무관)
+  return sinTheta < 0.04 ? 1 : 2;              // 거의 평행할 때만 rank 1
+
+}
+
+// ---------- STEP 0 ----------
+(function(){
+  const b = LA.board({W:360,H:360,unit:40});
+  const ids = ['a0','b0','c0','d0'];
+  function read(){ return ids.map(i=>+document.getElementById(i).value); }
+  function draw(){
+    const [a,bb,c,d] = read();
+    ids.forEach(i=>document.getElementById(i+'v').textContent = VZ.fmt(+document.getElementById(i).value,1));
+    const M = [[a,c],[bb,d]];        // 열 = î(a,b), ĵ(c,d)
+    document.getElementById('board0').innerHTML = LA.transformSVG(b, M, {R:6});
+    document.getElementById('mat0').innerHTML = matHTML(M);
+    const r = rank2(M);
+    const out = r===2 ? '평면 전체 (2차원)' : r===1 ? '직선 하나 (1차원)' : '원점 한 점 (0차원)';
+    const cls = r===2 ? 'good' : r===1 ? 'v' : 'q';
+    document.getElementById('rank0Note').className = 'callout ' + cls;
+    document.getElementById('rank0Note').innerHTML =
+      `<div class="ttl">rank = ${r}</div>
+       <p style="margin:0">출력 공간 = <b>${out}</b></p>
+       <p style="margin:6px 0 0">det = ${VZ.fmt(LA.det(M),2)} ` +
+       (r<2 ? '→ <b>0에 가까움 = 차원 붕괴</b> (열들이 같은 방향이거나 0)' : '→ 두 열이 독립 → 차원 보존') +
+       `</p>`;
+  }
+  ids.forEach(i=>document.getElementById(i).addEventListener('input',draw));
+  draw();
+})();
+
+// ---------- STEP 1 ----------
+(function(){
+  const b = LA.board({W:360,H:360,unit:40});
+  const CASES = [
+    ['rank 2', [[1,-0.5],[0.5,1]],
+      '두 열 <span class="mono">(1,0.5)</span>·<span class="mono">(-0.5,1)</span>이 서로 다른 방향 → 격자가 <b>평면</b>으로 펼쳐져요. 독립 열 2개 → rank 2.', 'good'],
+    ['rank 1', [[2,4],[1,2]],
+      '두 열 <span class="mono">(2,1)</span>·<span class="mono">(4,2)</span>이 <b>평행</b>(4,2 = 2×(2,1)) → 격자가 <b>한 직선</b>으로 붕괴. 독립 열 1개 → rank 1.', 'v'],
+  ];
+  const tog = document.getElementById('rankToggle');
+  tog.innerHTML = CASES.map((c,i)=>`<button data-i="${i}" class="${i===0?'on':''}">${c[0]}</button>`).join('');
+  function show(i){
+    const [name,M,desc,cls] = CASES[i];
+    LA.animateTo(M, cur=>{ document.getElementById('board1').innerHTML = LA.transformSVG(b, cur, {R:6}); });
+    document.getElementById('mat1').innerHTML = matHTML(M);
+    const r = rank2(M);
+    document.getElementById('rank1Note').className = 'callout ' + cls;
+    document.getElementById('rank1Note').innerHTML =
+      `<div class="ttl">${name} · det = ${VZ.fmt(LA.det(M),2)}</div><p style="margin:0">${desc}</p>`;
+  }
+  tog.addEventListener('click',e=>{
+    const x=e.target.closest('button'); if(!x)return;
+    tog.querySelectorAll('button').forEach(z=>z.classList.toggle('on',z===x));
+    show(+x.dataset.i);
+  });
+  show(0);
+})();
+
+// ---------- STEP 2 ----------
+(function(){
+  const b = LA.board({W:360,H:360,unit:40});
+  const ids = ['c1x','c1y','c2x','c2y'];
+  function read(){ return ids.map(i=>+document.getElementById(i).value); }
+  // 열공간 음영: rank 2면 큰 평행사변형(평면 근사), rank 1이면 직선 띠
+  function spanShade(c1, c2, r){
+    if (r === 0) return '';
+    if (r === 2){
+      // rank 2 = 평면 전체. 두 열이 거의 평행이면 평행사변형이 얇은 띠로 보여 오해를 주므로,
+      // 보드 전체를 옅게 칠해 "닿을 수 있는 공간 = 평면 전부"임을 명확히 한다.
+      return `<rect x="0" y="0" width="${b.W}" height="${b.H}" fill="rgba(192,132,252,.12)" stroke="none"/>`;
+    }
+    // rank 1: 0이 아닌 방향으로 직선
+    const dir = (Math.hypot(c1[0],c1[1]) > 0.01) ? c1 : c2;
+    const k = 8;
+    return `<line x1="${b.X(-k*dir[0]).toFixed(1)}" y1="${b.Y(-k*dir[1]).toFixed(1)}" x2="${b.X(k*dir[0]).toFixed(1)}" y2="${b.Y(k*dir[1]).toFixed(1)}" stroke="rgba(192,132,252,.55)" stroke-width="10" stroke-linecap="round"/>`;
+  }
+  function draw(){
+    const [x1,y1,x2,y2] = read();
+    ids.forEach(i=>document.getElementById(i+'v').textContent = VZ.fmt(+document.getElementById(i).value,1));
+    const c1=[x1,y1], c2=[x2,y2];
+    const M = [[x1,x2],[y1,y2]];     // 열 = c1, c2
+    const r = rank2(M);
+    let s = `<svg width="${b.W}" height="${b.H}" viewBox="0 0 ${b.W} ${b.H}" style="max-width:100%;display:block">`;
+    s += LA.gridPaths(b, [[1,0],[0,1]], 6);   // 고정 좌표계 격자
+    s += spanShade(c1, c2, r);
+    s += LA.arrow(b, x1, y1, 'var(--q)', '열1');
+    s += LA.arrow(b, x2, y2, 'var(--v)', '열2');
+    s += `</svg>`;
+    document.getElementById('board2').innerHTML = s;
+    const dim = r===2 ? '평면 (2차원)' : r===1 ? '직선 (1차원)' : '점 (0차원)';
+    document.getElementById('colNote').className = 'callout ' + (r===2?'good':r===1?'v':'q');
+    document.getElementById('colNote').innerHTML =
+      `<div class="ttl">열공간 차원 = rank = ${r}</div>
+       <p style="margin:0">두 열의 span = <b>${dim}</b></p>
+       <p style="margin:6px 0 0">${r===2 ? '두 열이 다른 방향 → 음영 평면 전체를 채워요.' : r===1 ? '두 열이 평행(또는 한쪽이 0) → span이 직선으로 줄어요.' : '두 열 모두 0 → span은 원점뿐.'}</p>`;
+  }
+  ids.forEach(i=>document.getElementById(i).addEventListener('input',draw));
+  draw();
+})();
+
+// ---------- STEP 3 ----------
+(function(){
+  const b = LA.board({W:360,H:360,unit:40});
+  const CASES = [
+    ['rank 2', [[1,-0.5],[0.5,1]], 2,
+      'rank 2 → nullity 0. <b>0으로 보내지는 입력은 원점뿐</b>이에요. 정보가 하나도 안 뭉개져서 변환을 되돌릴 수 있어요(가역).', 'good'],
+    ['rank 1', [[2,4],[1,2]], 1,
+      'rank 1 → nullity 1. 열들이 평행해 <b>직선 하나(영공간)가 통째로 0으로</b> 빨려 들어가요. 그 방향 정보는 영영 사라져요(비가역).', 'v'],
+  ];
+  const tog = document.getElementById('nullToggle');
+  tog.innerHTML = CASES.map((c,i)=>`<button data-i="${i}" class="${i===0?'on':''}">${c[0]}</button>`).join('');
+  // 영공간: M·v=0 의 해 방향. rank1일 때 열들과 평행한 방향이 0으로 감 → 영공간은 그에 수직? 실제 계산.
+  function nullDir(M){
+    // M v = 0.  [[a,c],[b,d]] v = 0.  rank1 가정: 행 (a,c) 의 영공간 = (-c, a) 방향
+    const a=M[0][0], c=M[0][1], bb=M[1][0], d=M[1][1];
+    if (Math.hypot(a,c) > 0.01) return [-c, a];
+    if (Math.hypot(bb,d) > 0.01) return [-d, bb];
+    return [1, 0];
+  }
+  function show(i){
+    const [name,M,r,desc,cls] = CASES[i];
+    const nullity = 2 - r;
+    LA.animateTo(M, cur=>{
+      let s = `<svg width="${b.W}" height="${b.H}" viewBox="0 0 ${b.W} ${b.H}" style="max-width:100%;display:block">`;
+      s += LA.gridPaths(b, cur, 6);
+      // 영공간(0으로 가는 입력 방향)을 원래 좌표계 위에 표시 (rank1일 때만 직선)
+      if (nullity === 1){
+        const nd = nullDir(M); const k = 8;
+        s += `<line x1="${b.X(-k*nd[0]).toFixed(1)}" y1="${b.Y(-k*nd[1]).toFixed(1)}" x2="${b.X(k*nd[0]).toFixed(1)}" y2="${b.Y(k*nd[1]).toFixed(1)}" stroke="rgba(251,191,36,.5)" stroke-width="8" stroke-linecap="round" stroke-dasharray="2 6"/>`;
+      }
+      const ic = LA.apply(cur,1,0), jc = LA.apply(cur,0,1);
+      s += LA.arrow(b, ic[0], ic[1], 'var(--q)', 'î');
+      s += LA.arrow(b, jc[0], jc[1], 'var(--k)', 'ĵ');
+      s += `</svg>`;
+      document.getElementById('board3').innerHTML = s;
+    });
+    document.getElementById('mat3').innerHTML = matHTML(M);
+    document.getElementById('nullNote').className = 'callout ' + cls;
+    document.getElementById('nullNote').innerHTML =
+      `<div class="ttl">rank ${r} + nullity ${nullity} = 2</div>
+       <p style="margin:0">${desc}</p>` +
+      (nullity===1 ? `<p style="margin:6px 0 0" class="note">→ 점선(노랑)이 <b>0으로 빨려가는 입력 직선(영공간)</b>이에요.</p>` : '');
+  }
+  tog.addEventListener('click',e=>{
+    const x=e.target.closest('button'); if(!x)return;
+    tog.querySelectorAll('button').forEach(z=>z.classList.toggle('on',z===x));
+    show(+x.dataset.i);
+  });
+  show(0);
+})();
+</script>
+</body>
+</html>

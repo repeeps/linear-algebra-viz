@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>07 행렬식 · 선형대수, 눈으로 보기</title>
+<link rel="stylesheet" href="shared/theme.css">
+</head>
+<body>
+<div class="wrap">
+  <div class="topnav" id="topnav"></div>
+
+  <header>
+    <div class="tag">PART 2 · TRANSFORMATIONS</div>
+    <h1>행렬식 — 넓이가 몇 배로 변하는가</h1>
+    <p class="intro">행렬식(determinant)은 행렬이 <b>공간의 넓이를 몇 배로 늘리거나 줄이는지</b> 알려주는 단 하나의 숫자예요. 넓이 1짜리 단위정사각형이 변형 뒤 가지는 넓이가 바로 <b>|det|</b>입니다. 부호는 <b>방향이 뒤집혔는지</b>, 0은 <b>차원이 무너졌는지</b>를 말해줘요.</p>
+  </header>
+
+  <nav class="stepper" id="stepper">
+    <button data-s="0" class="active">00 · det = 넓이 배율</button>
+    <button data-s="1">01 · 공식 ad − bc</button>
+    <button data-s="2">02 · 음수 = 뒤집힘</button>
+    <button data-s="3">03 · det = 0 = 붕괴</button>
+  </nav>
+
+  <!-- STEP 0 -->
+  <section class="panel show" data-panel="0">
+    <span class="kicker" style="color:var(--hot)">Step 00 — det as Area Scale</span>
+    <h2>det = 단위 넓이가 몇 배 되는가</h2>
+    <p class="lead">왼쪽 격자에서 <b>넓이 1짜리 단위정사각형</b>(음영)이 변형되며 평행사변형이 돼요. 그 <b>넓이</b>가 곧 <b>|det|</b>입니다. 슬라이더로 î, ĵ를 옮기며 넓이가 실시간으로 변하는 걸 보세요.</p>
+    <div class="row" style="gap:24px;align-items:flex-start;justify-content:center">
+      <div id="board0"></div>
+      <div style="flex:1;min-width:240px">
+        <div class="label">행렬 M (열 = î, ĵ의 행선지)</div>
+        <div id="mat0" style="margin-bottom:14px"></div>
+        <div class="ctrl"><label style="color:var(--q)">î.x (a)</label><input type="range" id="s0a" min="-2" max="2" step="0.1" value="1.5"><span class="val" id="s0av">1.5</span></div>
+        <div class="ctrl"><label style="color:var(--q)">î.y (b)</label><input type="range" id="s0b" min="-2" max="2" step="0.1" value="0"><span class="val" id="s0bv">0.0</span></div>
+        <div class="ctrl"><label style="color:var(--k)">ĵ.x (c)</label><input type="range" id="s0c" min="-2" max="2" step="0.1" value="0.5"><span class="val" id="s0cv">0.5</span></div>
+        <div class="ctrl"><label style="color:var(--k)">ĵ.y (d)</label><input type="range" id="s0d" min="-2" max="2" step="0.1" value="1.3"><span class="val" id="s0dv">1.3</span></div>
+        <div id="area0" class="callout good" style="margin-top:12px"></div>
+      </div>
+    </div>
+    <p class="note" style="margin-top:6px">→ 음영의 색은 부호 신호예요. <b style="color:var(--q)">파랑</b>=양수(방향 유지), <b style="color:var(--k)">분홍</b>=음수(뒤집힘). 넓이 자체는 항상 |det|입니다.</p>
+  </section>
+
+  <!-- STEP 1 -->
+  <section class="panel" data-panel="1">
+    <span class="kicker" style="color:var(--q)">Step 01 — Formula ad − bc</span>
+    <h2>공식 det = ad − bc</h2>
+    <p class="lead">2×2 행렬 <code class="mono">[[a, c], [b, d]]</code>의 행렬식은 <b>ad − bc</b>예요. 주대각 곱 <b style="color:var(--good)">a·d</b>에서 반대각 곱 <b style="color:var(--k)">b·c</b>를 빼는 거죠. 슬라이더로 직접 계산을 색으로 분해해 봐요.</p>
+    <div class="row" style="gap:24px;align-items:flex-start;justify-content:center">
+      <div style="flex:1;min-width:240px">
+        <div class="label">행렬 M</div>
+        <div id="mat1" style="margin-bottom:14px"></div>
+        <div class="ctrl"><label>a</label><input type="range" id="s1a" min="-3" max="3" step="0.5" value="2"><span class="val" id="s1av">2.0</span></div>
+        <div class="ctrl"><label>b</label><input type="range" id="s1b" min="-3" max="3" step="0.5" value="1"><span class="val" id="s1bv">1.0</span></div>
+        <div class="ctrl"><label>c</label><input type="range" id="s1c" min="-3" max="3" step="0.5" value="1"><span class="val" id="s1cv">1.0</span></div>
+        <div class="ctrl"><label>d</label><input type="range" id="s1d" min="-3" max="3" step="0.5" value="3"><span class="val" id="s1dv">3.0</span></div>
+      </div>
+      <div style="flex:1;min-width:240px">
+        <div id="calc1" class="callout q"></div>
+        <p class="note" style="margin-top:12px">→ <b style="color:var(--good)">a·d</b>는 î와 ĵ가 만드는 "기본 넓이", <b style="color:var(--k)">b·c</b>는 둘이 서로 엇갈린 정도. 그 차이가 실제 평행사변형 넓이(부호 포함)예요.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- STEP 2 -->
+  <section class="panel" data-panel="2">
+    <span class="kicker" style="color:var(--k)">Step 02 — Negative = Flip</span>
+    <h2>음수 det = 방향이 뒤집힘 (orientation)</h2>
+    <p class="lead">det가 <b>양수</b>면 î에서 ĵ로 가는 회전 방향(반시계)이 유지돼요. det가 <b>음수</b>면 그 순서가 뒤집혀 <b>거울상</b>이 됩니다. 버튼으로 양수·음수 변환을 비교해 보세요.</p>
+    <div class="view-toggle" id="presets2" style="flex-wrap:wrap"></div>
+    <div class="row" style="gap:24px;align-items:flex-start;justify-content:center;margin-top:8px">
+      <div id="board2"></div>
+      <div style="flex:1;min-width:220px">
+        <div id="mat2"></div>
+        <div id="orient2" class="callout" style="margin-top:12px"></div>
+      </div>
+    </div>
+    <p class="note" style="margin-top:6px">→ î(파랑)와 ĵ(빨강)의 좌우 순서를 보세요. 양수면 ĵ가 î의 <b>왼쪽</b>, 음수면 <b>오른쪽</b>으로 와요. 종이를 뒤집은 것과 같죠.</p>
+  </section>
+
+  <!-- STEP 3 -->
+  <section class="panel" data-panel="3">
+    <span class="kicker" style="color:var(--v)">Step 03 — Zero = Collapse</span>
+    <h2>det = 0 = 차원 붕괴</h2>
+    <p class="lead">두 열(î, ĵ)이 <b>평행</b>해지면 단위정사각형이 <b>선분</b>으로 납작해져요. 넓이 0, 즉 <b>det = 0</b>. 이건 정보 손실이라 되돌릴 수 없어요(<b>비가역</b>). 슬라이더로 ĵ를 î와 평행하게 맞춰 보세요.</p>
+    <div class="row" style="gap:24px;align-items:flex-start;justify-content:center">
+      <div id="board3"></div>
+      <div style="flex:1;min-width:240px">
+        <div class="label">î는 (2, 1)로 고정. ĵ를 조절해 평행하게 만들어요.</div>
+        <div id="mat3" style="margin:10px 0 14px"></div>
+        <div class="ctrl"><label style="color:var(--k)">ĵ.x</label><input type="range" id="s3c" min="-3" max="3" step="0.1" value="-1"><span class="val" id="s3cv">-1.0</span></div>
+        <div class="ctrl"><label style="color:var(--k)">ĵ.y</label><input type="range" id="s3d" min="-3" max="3" step="0.1" value="1.5"><span class="val" id="s3dv">1.5</span></div>
+        <button class="btn" id="snap3" style="margin:6px 0">↳ 평행하게 맞추기 (det=0)</button>
+        <div id="state3" class="callout" style="margin-top:8px"></div>
+      </div>
+    </div>
+    <p class="note" style="margin-top:6px">→ det=0이면 변환을 거꾸로 풀 수 없어요. 넓이가 0이라 "어디서 왔는지" 알 수 없거든요. 역행렬이 존재하지 않는 이유 — 자세한 건 <b>09 역행렬</b>에서.</p>
+  </section>
+
+  <p class="foot">// 모든 넓이는 행렬을 실제로 적용해 계산합니다. · <a href="index.html">목차</a></p>
+</div>
+
+<script src="shared/lib.js"></script>
+<script>
+VZ.mountTopnav('#topnav', '07 · Determinant');
+VZ.setupStepper();
+const LA = VZ.LA;
+const matHTML = (M) => VZ.mxMatrix(M, {acc:'var(--hot)', fmtCell:v=>VZ.fmt(v,1)});
+
+// ---------- STEP 0 : det = 넓이 배율 ----------
+(function(){
+  const b = LA.board({W:360,H:360,unit:42});
+  const ids = ['s0a','s0b','s0c','s0d'];
+  function read(){ return ids.map(i=>+document.getElementById(i).value); }
+  function draw(){
+    const [a,bb,c,d] = read();
+    ids.forEach(i=>document.getElementById(i+'v').textContent = VZ.fmt(+document.getElementById(i).value,1));
+    const M = [[a,c],[bb,d]];          // 열 = î(a,b), ĵ(c,d)
+    document.getElementById('board0').innerHTML = LA.transformSVG(b, M, {R:6, shape:'square'});
+    document.getElementById('mat0').innerHTML = matHTML(M);
+    const det = LA.det(M);
+    const area = Math.abs(det);
+    const sign = det < 0
+      ? '<b style="color:var(--k)">음수 → 방향 뒤집힘</b>'
+      : (Math.abs(det) < 0.04 ? '<b style="color:var(--k)">≈ 0 → 납작</b>' : '<b style="color:var(--q)">양수 → 방향 유지</b>');
+    document.getElementById('area0').innerHTML =
+      `<div class="ttl">변형된 넓이 = |det|</div>
+       <p style="margin:0" class="mono">단위정사각형 넓이 = 1</p>
+       <p style="margin:6px 0 0;font-size:18px" class="mono">|det| = <b style="color:var(--good)">${VZ.fmt(area,2)}</b> → 넓이 <b style="color:var(--good)">${VZ.fmt(area,2)}배</b></p>
+       <p style="margin:6px 0 0" class="mono">det = ${VZ.fmt(det,2)} (${sign})</p>`;
+  }
+  ids.forEach(i=>document.getElementById(i).addEventListener('input',draw));
+  draw();
+})();
+
+// ---------- STEP 1 : 공식 ad - bc ----------
+(function(){
+  const ids = ['s1a','s1b','s1c','s1d'];
+  function read(){ return ids.map(i=>+document.getElementById(i).value); }
+  function draw(){
+    const [a,bb,c,d] = read();
+    ids.forEach(i=>document.getElementById(i+'v').textContent = VZ.fmt(+document.getElementById(i).value,1));
+    const M = [[a,c],[bb,d]];          // a=M[0][0], b=M[1][0], c=M[0][1], d=M[1][1]
+    document.getElementById('mat1').innerHTML = matHTML(M);
+    const ad = a*d, bc = bb*c, det = ad - bc;
+    document.getElementById('calc1').innerHTML =
+      `<div class="ttl">det = a·d − b·c</div>
+       <p style="margin:0" class="mono">주대각 <b style="color:var(--good)">a·d</b> = ${VZ.fmt(a,1)}·${VZ.fmt(d,1)} = <b style="color:var(--good)">${VZ.fmt(ad,2)}</b></p>
+       <p style="margin:6px 0 0" class="mono">반대각 <b style="color:var(--k)">b·c</b> = ${VZ.fmt(bb,1)}·${VZ.fmt(c,1)} = <b style="color:var(--k)">${VZ.fmt(bc,2)}</b></p>
+       <p style="margin:10px 0 0;font-size:18px" class="mono">det = <b style="color:var(--good)">${VZ.fmt(ad,2)}</b> − <b style="color:var(--k)">${VZ.fmt(bc,2)}</b> = <b style="color:var(--hot)">${VZ.fmt(det,2)}</b></p>`;
+  }
+  ids.forEach(i=>document.getElementById(i).addEventListener('input',draw));
+  draw();
+})();
+
+// ---------- STEP 2 : 음수 = 뒤집힘 ----------
+(function(){
+  const b = LA.board({W:360,H:360,unit:42});
+  const PRESETS = [
+    ['양수 (회전)', [[0.9,-0.4],[0.4,0.9]]],
+    ['양수 (스케일)', [[1.4,0],[0,1.2]]],
+    ['음수 (x축 반사)', [[1,0],[0,-1]]],
+    ['음수 (열 교환)', [[0.4,1.2],[1.2,0.4]]],
+  ];
+  const btns = document.getElementById('presets2');
+  btns.innerHTML = PRESETS.map((p,i)=>`<button data-i="${i}" class="${i===0?'on':''}">${p[0]}</button>`).join('');
+  function show(i){
+    const [name,M] = PRESETS[i];
+    LA.animateTo(M, cur=>{ document.getElementById('board2').innerHTML = LA.transformSVG(b, cur, {R:6, shape:'square'}); });
+    document.getElementById('mat2').innerHTML = matHTML(M);
+    const det = LA.det(M);
+    const pos = det >= 0;
+    const cls = pos ? 'q' : 'v';
+    document.getElementById('orient2').className = 'callout ' + cls;
+    document.getElementById('orient2').innerHTML =
+      `<div class="ttl">${pos ? '방향 유지 ✓' : '거울상 (뒤집힘) ⇄'}</div>
+       <p style="margin:0;font-size:18px" class="mono">det = <b style="color:${pos?'var(--q)':'var(--k)'}">${VZ.fmt(det,2)}</b> (${pos?'양수':'음수'})</p>
+       <p style="margin:8px 0 0">${pos
+          ? 'î → ĵ 순서(반시계)가 그대로예요. 손바닥을 안 뒤집은 상태.'
+          : 'î → ĵ 순서가 반대(시계)로 바뀌었어요. 종이를 뒤집은 거울상!'}</p>`;
+  }
+  btns.addEventListener('click',e=>{
+    const x=e.target.closest('button'); if(!x)return;
+    btns.querySelectorAll('button').forEach(z=>z.classList.toggle('on',z===x));
+    show(+x.dataset.i);
+  });
+  show(0);
+})();
+
+// ---------- STEP 3 : det = 0 = 차원 붕괴 ----------
+(function(){
+  const b = LA.board({W:360,H:360,unit:42});
+  const I = [2,1];                       // î 고정 (a=2, b=1)
+  function draw(){
+    const c=+document.getElementById('s3c').value, d=+document.getElementById('s3d').value;
+    document.getElementById('s3cv').textContent=VZ.fmt(c,1);
+    document.getElementById('s3dv').textContent=VZ.fmt(d,1);
+    const M = [[I[0],c],[I[1],d]];        // 열 = î(2,1), ĵ(c,d)
+    document.getElementById('board3').innerHTML = LA.transformSVG(b, M, {R:6, shape:'square'});
+    document.getElementById('mat3').innerHTML = matHTML(M);
+    const det = LA.det(M);
+    const flat = Math.abs(det) < 0.06;
+    const el = document.getElementById('state3');
+    el.className = 'callout ' + (flat ? 'v' : 'good');
+    el.innerHTML = flat
+      ? `<div class="ttl">차원 붕괴 — det ≈ 0</div>
+         <p style="margin:0;font-size:18px" class="mono">det = <b style="color:var(--v)">${VZ.fmt(det,2)}</b></p>
+         <p style="margin:8px 0 0">두 열이 평행해서 정사각형이 <b>선분</b>으로 납작해졌어요. 넓이 0 = 정보 손실 = <b>비가역</b>.</p>`
+      : `<div class="ttl">아직 넓이가 있어요</div>
+         <p style="margin:0;font-size:18px" class="mono">|det| = <b style="color:var(--good)">${VZ.fmt(Math.abs(det),2)}</b></p>
+         <p style="margin:8px 0 0">ĵ를 î와 평행하게 만들면 det가 0으로 가요. (ĵ ∥ î ⇔ ĵ = k·(2,1))</p>`;
+  }
+  document.getElementById('snap3').addEventListener('click',()=>{
+    // ĵ를 î(2,1)와 평행하게: 현재 ĵ.x에 맞춰 ĵ.y = x/2 로 스냅 → det=0
+    const c=+document.getElementById('s3c').value;
+    const d = c/2;                        // (c, c/2) ∥ (2,1)
+    document.getElementById('s3d').value = Math.max(-3, Math.min(3, d));
+    draw();
+  });
+  document.getElementById('s3c').addEventListener('input',draw);
+  document.getElementById('s3d').addEventListener('input',draw);
+  draw();
+})();
+</script>
+</body>
+</html>

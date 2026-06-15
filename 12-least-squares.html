@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>12 최소제곱 · 선형대수, 눈으로 보기</title>
+<link rel="stylesheet" href="shared/theme.css">
+</head>
+<body>
+<div class="wrap">
+  <div class="topnav" id="topnav"></div>
+
+  <header>
+    <div class="tag">PART 4 · DOT & ORTHOGONALITY</div>
+    <h1>최소제곱 — 가장 가까운 점은 수직으로 내린다</h1>
+    <p class="intro">데이터에 직선을 맞추는 일은 결국 <b>정사영</b> 문제예요. 점들을 정확히 지나는 직선이 없을 때, 우리는 <b>오차(잔차)가 가장 작은</b> 직선을 찾습니다. 그리고 그 최선의 답에서는 언제나 <b>오차벡터가 데이터공간에 수직</b>이에요. 이게 바로 선형회귀의 기하학입니다.</p>
+  </header>
+
+  <nav class="stepper" id="stepper">
+    <button data-s="0" class="active">00 · 정사영 = 가장 가까운 점</button>
+    <button data-s="1">01 · 직선 맞추기 (SSE)</button>
+    <button data-s="2">02 · 정규방정식으로 정답</button>
+    <button data-s="3">03 · 왜 직교?</button>
+  </nav>
+
+  <!-- STEP 0 -->
+  <section class="panel show" data-panel="0">
+    <span class="kicker" style="color:var(--hot)">Step 00 — Projection = Closest Point</span>
+    <h2>직선 위에서 b에 가장 가까운 점 p</h2>
+    <p class="lead">벡터 <b>b</b>를 한 직선(1차원 부분공간) 위로 <b>정사영</b>해 볼게요. 직선 위 무수한 점들 중 b에 <b>가장 가까운 점 p</b>는 단 하나, 바로 <b>b에서 직선으로 수직으로 내린 발</b>이에요. 그때 오차 <code class="mono">e = b − p</code>는 직선에 <b>수직</b>입니다.</p>
+    <div class="row" style="gap:24px;align-items:flex-start;justify-content:center">
+      <div id="board0"></div>
+      <div style="flex:1;min-width:240px">
+        <div class="ctrl"><label>b.x</label><input type="range" id="bx" min="-4" max="4" step="0.2" value="3"><span class="val" id="bxv">3.0</span></div>
+        <div class="ctrl"><label>b.y</label><input type="range" id="by" min="-4" max="4" step="0.2" value="2.6"><span class="val" id="byv">2.6</span></div>
+        <div class="ctrl"><label>직선 기울기</label><input type="range" id="adir" min="-2" max="2" step="0.1" value="0.5"><span class="val" id="adirv">0.5</span></div>
+        <div id="projCalc" class="callout q" style="margin-top:12px"></div>
+      </div>
+    </div>
+    <p class="note" style="margin-top:6px">→ p는 직선 위 점 중 b와의 거리가 최소예요. 다른 어떤 점을 골라도 b까지의 거리는 더 멉니다. <b>"가장 가까움" = "수직으로 내림"</b> — 이 한 문장이 최소제곱의 전부예요.</p>
+  </section>
+
+  <!-- STEP 1 -->
+  <section class="panel" data-panel="1">
+    <span class="kicker" style="color:var(--q)">Step 01 — Fit a Line, Minimize SSE</span>
+    <h2>잔차제곱합(SSE)을 직접 줄여 보기</h2>
+    <p class="lead">산점도 위 점들에 직선 <code class="mono">y = m·x + c</code>를 맞춰요. 각 점에서 직선까지의 <b>세로 거리(잔차)</b>를 모아 제곱해 더한 게 <b>SSE</b>입니다. 슬라이더로 <b>m, c</b>를 움직여 SSE를 최대한 작게 만들어 보세요.</p>
+    <div class="row" style="gap:24px;align-items:flex-start;justify-content:center">
+      <div id="board1"></div>
+      <div style="flex:1;min-width:240px">
+        <div class="ctrl"><label>기울기 m</label><input type="range" id="m1" min="-1" max="3" step="0.05" value="0.5"><span class="val" id="m1v">0.50</span></div>
+        <div class="ctrl"><label>절편 c</label><input type="range" id="c1" min="-3" max="4" step="0.05" value="1"><span class="val" id="c1v">1.00</span></div>
+        <div id="sseBox" class="callout q" style="margin-top:12px"></div>
+        <button class="btn" id="snapBtn" style="margin-top:10px">최적값으로 맞추기 →</button>
+      </div>
+    </div>
+    <p class="note" style="margin-top:6px">→ 빨간 세로선이 <b>잔차</b>예요. 길수록 손해(제곱이니까 더 크게). SSE가 가장 작아지는 m, c를 손으로 찾기는 꽤 어렵죠? 그래서 <b>닫힌형 공식</b>이 필요합니다.</p>
+  </section>
+
+  <!-- STEP 2 -->
+  <section class="panel" data-panel="2">
+    <span class="kicker" style="color:var(--v)">Step 02 — Normal Equations</span>
+    <h2>정규방정식이 한 번에 정답을 준다</h2>
+    <p class="lead">손으로 더듬을 필요 없이, <b>정규방정식</b> <code class="mono">AᵀA x̂ = Aᵀb</code>를 풀면 SSE를 최소로 하는 <b>m, c</b>가 즉시 나와요. 아래는 Step 01의 데이터로 실제 계산한 최적 직선입니다.</p>
+    <div class="row" style="gap:24px;align-items:flex-start;justify-content:center">
+      <div id="board2"></div>
+      <div style="flex:1;min-width:240px">
+        <div id="bestBox" class="callout good"></div>
+        <div class="label" style="margin-top:14px">내가 맞춘 값 vs 최적값</div>
+        <div class="ctrl"><label>내 m</label><input type="range" id="m2" min="-1" max="3" step="0.05" value="0.5"><span class="val" id="m2v">0.50</span></div>
+        <div class="ctrl"><label>내 c</label><input type="range" id="c2" min="-3" max="4" step="0.05" value="1"><span class="val" id="c2v">1.00</span></div>
+        <div id="cmpBox" class="callout q" style="margin-top:10px"></div>
+      </div>
+    </div>
+    <p class="note" style="margin-top:6px">→ 최적 직선(초록)에서 SSE가 진짜 바닥이에요. 어떤 m, c로 바꿔도 SSE는 이보다 작아지지 않아요. <b>수직 정사영이 곧 최소오차</b>라는 게 식으로 증명됩니다.</p>
+  </section>
+
+  <!-- STEP 3 -->
+  <section class="panel" data-panel="3">
+    <span class="kicker" style="color:var(--good)">Step 03 — Why Orthogonal?</span>
+    <h2>최적일 때 잔차는 데이터공간에 직교</h2>
+    <p class="lead">최소제곱 해 <code class="mono">x̂</code>에서, 예측값 <b>p = A·x̂</b>는 A의 열들이 펼치는 <b>데이터공간(열공간)</b> 안에 있어요. 그리고 잔차 <b>e = b − p</b>는 그 공간에 <b>완벽히 수직</b>입니다. 즉 <code class="mono">Aᵀe = 0</code>.</p>
+    <div id="orthBox" class="callout v" style="margin-top:4px"></div>
+    <div class="callout good">
+      <div class="ttl">머신러닝과의 연결</div>
+      <p><b>선형회귀가 바로 이것이에요.</b> 특징 행렬 A, 정답 b가 주어지면, 가중치 x̂를 <code>AᵀA x̂ = Aᵀb</code>로 닫힌형으로 구할 수 있어요 — 경사하강 없이도요.</p>
+      <p>우리 딥러닝 시리즈의 <b>회귀(regression)</b>는 결국 이 정사영을 더 높은 차원에서, 더 많은 특징으로 하는 일이에요. 손실(MSE)을 줄인다는 건 b를 모델이 표현 가능한 공간으로 <b>수직 정사영</b>한다는 뜻입니다.</p>
+      <p>비선형 모델로 가면 정사영이 곡면 위로 바뀌어 닫힌형이 사라지고, 그때부터 <b>경사하강</b>이 등장해요. 하지만 "오차가 줄면 직교에 가까워진다"는 직관은 그대로 유지됩니다.</p>
+    </div>
+    <p class="note" style="margin-top:6px">→ 직교 조건 <code class="mono">Aᵀe = 0</code>을 전개하면 그대로 정규방정식 <code class="mono">AᵀA x̂ = Aᵀb</code>가 나와요. 기하(수직)와 대수(방정식)가 같은 말을 하고 있는 거예요.</p>
+  </section>
+
+  <p class="foot">// 모든 직선·잔차·SSE는 데이터에서 실제로 계산합니다. · <a href="index.html">목차</a></p>
+</div>
+
+<script src="shared/lib.js"></script>
+<script>
+VZ.mountTopnav('#topnav', '12 · Least Squares');
+VZ.setupStepper();
+const LA = VZ.LA;
+const fmt = VZ.fmt;
+
+// 공유 데이터셋 (산점도 점) — Step 1,2,3 에서 함께 사용
+const DATA = [[-2,-0.4],[-1,1.0],[0,1.1],[1,2.6],[2,2.9],[3,4.2]];
+
+// ---------- 최소제곱 닫힌형 (단변량 y = m x + c) ----------
+function leastSquares(pts){
+  const n = pts.length;
+  let sx=0, sy=0, sxx=0, sxy=0;
+  for(const [x,y] of pts){ sx+=x; sy+=y; sxx+=x*x; sxy+=x*y; }
+  const denom = n*sxx - sx*sx;
+  const m = (n*sxy - sx*sy) / denom;
+  const c = (sy - m*sx) / n;
+  return {m, c};
+}
+function sse(pts, m, c){
+  return pts.reduce((s,[x,y])=>{ const r = y-(m*x+c); return s + r*r; }, 0);
+}
+const BEST = leastSquares(DATA);
+
+// 산점도 보드 SVG 헬퍼 (항등 격자 위에 점 + 직선 + 잔차)
+function scatterSVG(b, opts={}){
+  const { m=null, c=null, residuals=false, lineColor='var(--good)', best=null } = opts;
+  let s = `<svg width="${b.W}" height="${b.H}" viewBox="0 0 ${b.W} ${b.H}" style="max-width:100%;display:block">`;
+  s += LA.gridPaths(b, [[1,0],[0,1]], 6);
+  // 최적 직선(참고용, 회색 점선)
+  if(best){
+    const x1=-6, x2=6;
+    s += `<line x1="${b.X(x1)}" y1="${b.Y(best.m*x1+best.c)}" x2="${b.X(x2)}" y2="${b.Y(best.m*x2+best.c)}" stroke="var(--faint)" stroke-width="1.5" stroke-dasharray="4 4"/>`;
+  }
+  // 맞춘 직선
+  if(m!==null && c!==null){
+    const x1=-6, x2=6;
+    s += `<line x1="${b.X(x1)}" y1="${b.Y(m*x1+c)}" x2="${b.X(x2)}" y2="${b.Y(m*x2+c)}" stroke="${lineColor}" stroke-width="2.5"/>`;
+    // 잔차 세로선
+    if(residuals){
+      for(const [x,y] of DATA){
+        const yhat = m*x+c;
+        s += `<line x1="${b.X(x)}" y1="${b.Y(y)}" x2="${b.X(x)}" y2="${b.Y(yhat)}" stroke="var(--k)" stroke-width="2" stroke-dasharray="2 2"/>`;
+      }
+    }
+  }
+  // 데이터 점
+  for(const [x,y] of DATA){
+    s += `<circle cx="${b.X(x)}" cy="${b.Y(y)}" r="4.5" fill="var(--hot)" stroke="#1a1304" stroke-width="1"/>`;
+  }
+  s += `</svg>`;
+  return s;
+}
+
+// ---------- STEP 0 : 정사영 ----------
+(function(){
+  const b = LA.board({W:360,H:360,unit:38});
+  function read(){ return {bx:+document.getElementById('bx').value, by:+document.getElementById('by').value, a:+document.getElementById('adir').value}; }
+  function draw(){
+    const {bx,by,a} = read();
+    document.getElementById('bxv').textContent = fmt(bx,1);
+    document.getElementById('byv').textContent = fmt(by,1);
+    document.getElementById('adirv').textContent = fmt(a,1);
+    // 직선 방향벡터 d = (1, a). 정사영 p = ((b·d)/(d·d)) d
+    const d = [1, a];
+    const bb = [bx, by];
+    const scal = (bb[0]*d[0] + bb[1]*d[1]) / (d[0]*d[0] + d[1]*d[1]);
+    const p = [scal*d[0], scal*d[1]];
+    const e = [bb[0]-p[0], bb[1]-p[1]];
+    // SVG
+    let s = `<svg width="${b.W}" height="${b.H}" viewBox="0 0 ${b.W} ${b.H}" style="max-width:100%;display:block">`;
+    s += LA.gridPaths(b, [[1,0],[0,1]], 6);
+    // 직선 (방향 d, 양끝으로 길게)
+    const t=6;
+    s += `<line x1="${b.X(-t*d[0])}" y1="${b.Y(-t*d[1])}" x2="${b.X(t*d[0])}" y2="${b.Y(t*d[1])}" stroke="var(--q)" stroke-width="2"/>`;
+    // 오차선 b->p (수직)
+    s += `<line x1="${b.X(bb[0])}" y1="${b.Y(bb[1])}" x2="${b.X(p[0])}" y2="${b.Y(p[1])}" stroke="var(--k)" stroke-width="2.5" stroke-dasharray="4 3"/>`;
+    // 벡터 b, p
+    s += LA.arrow(b, bb[0], bb[1], 'var(--hot)', 'b', {dot:true});
+    s += LA.arrow(b, p[0], p[1], 'var(--good)', 'p', {dot:true});
+    // 수직 직각 표식 (p에서 직선방향·오차방향으로 작은 ㄱ자)
+    const dist = Math.hypot(e[0],e[1]);
+    const dn = Math.hypot(d[0],d[1]);
+    if (dist > 0.15 && dn > 1e-6){
+      const sz = 0.32;                                  // 좌표 단위 마커 크기
+      const ud = [d[0]/dn, d[1]/dn];                    // 직선 방향
+      const ue = [e[0]/dist, e[1]/dist];                // 오차 방향 (p→b)
+      const c1 = [p[0]+ud[0]*sz, p[1]+ud[1]*sz];
+      const c2 = [c1[0]+ue[0]*sz, c1[1]+ue[1]*sz];
+      const c3 = [p[0]+ue[0]*sz, p[1]+ue[1]*sz];
+      s += `<polyline points="${b.X(c1[0])},${b.Y(c1[1])} ${b.X(c2[0])},${b.Y(c2[1])} ${b.X(c3[0])},${b.Y(c3[1])}" fill="none" stroke="var(--muted)" stroke-width="1.5"/>`;
+    }
+    s += `</svg>`;
+    document.getElementById('board0').innerHTML = s;
+    document.getElementById('projCalc').innerHTML =
+      `<div class="ttl">정사영 p = ((b·d)/(d·d))·d</div>
+       <p style="margin:0" class="mono">d = (1, ${fmt(a,1)})  방향벡터</p>
+       <p style="margin:6px 0 0" class="mono">스칼라 = (b·d)/(d·d) = ${fmt(scal,3)}</p>
+       <p style="margin:2px 0 0" class="mono">p = (${fmt(p[0],2)}, ${fmt(p[1],2)})</p>
+       <p style="margin:6px 0 0" class="mono">오차 |e| = ${fmt(dist,3)}  (최소거리)</p>
+       <p style="margin:6px 0 0" class="mono">e·d = ${fmt(e[0]*d[0]+e[1]*d[1],4)} ≈ 0 → <b style="color:var(--good)">직선에 수직 ✓</b></p>`;
+  }
+  ['bx','by','adir'].forEach(i=>document.getElementById(i).addEventListener('input',draw));
+  draw();
+})();
+
+// ---------- STEP 1 : 직선 맞추기 + SSE ----------
+(function(){
+  const b = LA.board({W:360,H:360,unit:38});
+  function draw(){
+    const m = +document.getElementById('m1').value;
+    const c = +document.getElementById('c1').value;
+    document.getElementById('m1v').textContent = fmt(m,2);
+    document.getElementById('c1v').textContent = fmt(c,2);
+    document.getElementById('board1').innerHTML = scatterSVG(b, {m, c, residuals:true, lineColor:'var(--q)'});
+    const e = sse(DATA, m, c);
+    const eBest = sse(DATA, BEST.m, BEST.c);
+    const gap = e - eBest;
+    document.getElementById('sseBox').innerHTML =
+      `<div class="ttl">잔차제곱합 SSE = ${fmt(e,3)}</div>
+       <p style="margin:0" class="mono">y = ${fmt(m,2)}·x + ${fmt(c,2)}</p>
+       <p style="margin:6px 0 0" class="mono">최소가능 SSE = ${fmt(eBest,3)}</p>
+       <p style="margin:2px 0 0" class="mono">차이 = ${fmt(gap,3)} ${gap<0.01?'<b style="color:var(--good)">→ 거의 최적! ✓</b>':''}</p>`;
+  }
+  document.getElementById('m1').addEventListener('input',draw);
+  document.getElementById('c1').addEventListener('input',draw);
+  document.getElementById('snapBtn').addEventListener('click',()=>{
+    document.getElementById('m1').value = BEST.m.toFixed(2);
+    document.getElementById('c1').value = BEST.c.toFixed(2);
+    draw();
+  });
+  draw();
+})();
+
+// ---------- STEP 2 : 정규방정식 정답 + 비교 ----------
+(function(){
+  const b = LA.board({W:360,H:360,unit:38});
+  // 정규방정식 행렬 표시용 합계
+  const n = DATA.length;
+  let sx=0,sy=0,sxx=0,sxy=0;
+  for(const [x,y] of DATA){ sx+=x; sy+=y; sxx+=x*x; sxy+=x*y; }
+  document.getElementById('bestBox').innerHTML =
+    `<div class="ttl">최적 직선 (정규방정식 해)</div>
+     <p style="margin:0" class="mono">AᵀA = [[${n}, ${fmt(sx,1)}], [${fmt(sx,1)}, ${fmt(sxx,1)}]]</p>
+     <p style="margin:2px 0 0" class="mono">Aᵀb = [${fmt(sy,1)}, ${fmt(sxy,1)}]</p>
+     <p style="margin:8px 0 0" class="mono">⇒ m* = <b style="color:var(--good)">${fmt(BEST.m,4)}</b>,  c* = <b style="color:var(--good)">${fmt(BEST.c,4)}</b></p>
+     <p style="margin:6px 0 0" class="mono">최소 SSE = ${fmt(sse(DATA,BEST.m,BEST.c),4)}</p>`;
+  function draw(){
+    const m = +document.getElementById('m2').value;
+    const c = +document.getElementById('c2').value;
+    document.getElementById('m2v').textContent = fmt(m,2);
+    document.getElementById('c2v').textContent = fmt(c,2);
+    // 초록=최적, 빨강(파랑)=내 직선, 회색점선=최적 참조
+    let s = scatterSVG(b, {m:BEST.m, c:BEST.c, residuals:false, lineColor:'var(--good)'});
+    // 내 직선을 위에 덧그림: scatterSVG 끝의 </svg> 앞에 삽입
+    s = s.replace('</svg>', (function(){
+      const x1=-6,x2=6;
+      return `<line x1="${b.X(x1)}" y1="${b.Y(m*x1+c)}" x2="${b.X(x2)}" y2="${b.Y(m*x2+c)}" stroke="var(--hot)" stroke-width="2" stroke-dasharray="5 4"/></svg>`;
+    })());
+    document.getElementById('board2').innerHTML = s;
+    const e = sse(DATA, m, c);
+    const eBest = sse(DATA, BEST.m, BEST.c);
+    document.getElementById('cmpBox').innerHTML =
+      `<div class="ttl">비교</div>
+       <p style="margin:0" class="mono"><span style="color:var(--hot)">내 직선</span>  SSE = ${fmt(e,3)}</p>
+       <p style="margin:2px 0 0" class="mono"><span style="color:var(--good)">최적 직선</span> SSE = ${fmt(eBest,3)}</p>
+       <p style="margin:6px 0 0">${e-eBest<0.01?'<b style="color:var(--good)">최적에 도달했어요! 더는 못 줄여요.</b>':'아직 '+fmt(e-eBest,3)+'만큼 더 줄일 수 있어요.'}</p>`;
+  }
+  document.getElementById('m2').addEventListener('input',draw);
+  document.getElementById('c2').addEventListener('input',draw);
+  draw();
+})();
+
+// ---------- STEP 3 : 직교 검산 ----------
+(function(){
+  // A = [[x_i, 1]], b = [y_i].  잔차 e = b - A x̂.  Aᵀe = [Σ x_i e_i, Σ e_i]
+  const m = BEST.m, c = BEST.c;
+  let dot_x = 0, sum_e = 0;
+  const rows = DATA.map(([x,y])=>{
+    const yhat = m*x+c;
+    const e = y - yhat;
+    dot_x += x*e; sum_e += e;
+    return {x, y, yhat, e};
+  });
+  const rowsHTML = rows.map(r=>
+    `<p style="margin:2px 0 0" class="mono">x=${fmt(r.x,1)}  y=${fmt(r.y,2)}  ŷ=${fmt(r.yhat,2)}  e=${fmt(r.e,3)}</p>`
+  ).join('');
+  document.getElementById('orthBox').innerHTML =
+    `<div class="ttl">직교 검산: Aᵀe = 0</div>
+     <p style="margin:0 0 6px">A의 열은 (x들)과 (1들). 잔차 e가 둘 모두에 수직이어야 해요.</p>
+     ${rowsHTML}
+     <p style="margin:8px 0 0" class="mono">열1·e = Σ xᵢeᵢ = <b style="color:var(--good)">${fmt(dot_x,4)}</b> ≈ 0 ✓</p>
+     <p style="margin:2px 0 0" class="mono">열2·e = Σ eᵢ   = <b style="color:var(--good)">${fmt(sum_e,4)}</b> ≈ 0 ✓</p>
+     <p style="margin:8px 0 0">두 내적이 모두 0 → 잔차벡터 e가 데이터공간(열공간)에 <b style="color:var(--v)">완벽히 직교</b>합니다.</p>`;
+})();
+</script>
+</body>
+</html>

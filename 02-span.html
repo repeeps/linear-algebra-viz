@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>02 Span · 선형대수, 눈으로 보기</title>
+<link rel="stylesheet" href="shared/theme.css">
+</head>
+<body>
+<div class="wrap">
+  <div class="topnav" id="topnav"></div>
+
+  <header>
+    <div class="tag">PART 1 · VECTORS &amp; SPACE</div>
+    <h1>Span — 두 벡터로 닿을 수 있는 모든 곳</h1>
+    <p class="intro">벡터 두 개를 <b>늘이고(스칼라 곱)</b> <b>더하면(합)</b> 어떤 점들에 닿을 수 있을까요? 이 "닿을 수 있는 모든 점의 집합"을 <b>span</b>이라고 불러요. 슬라이더로 직접 닿는 점을 옮겨 보고, span이 평면 전체로 채워지는 순간과 직선으로 무너지는 순간을 눈으로 확인해 보세요.</p>
+  </header>
+
+  <nav class="stepper" id="stepper">
+    <button data-s="0" class="active">00 · 선형결합</button>
+    <button data-s="1">01 · span = 닿는 모든 곳</button>
+    <button data-s="2">02 · 평행하면 무너진다</button>
+    <button data-s="3">03 · 기저(basis)</button>
+  </nav>
+
+  <!-- STEP 0 -->
+  <section class="panel show" data-panel="0">
+    <span class="kicker" style="color:var(--hot)">Step 00 — Linear Combination</span>
+    <h2>선형결합 a·v + b·w</h2>
+    <p class="lead">고정된 두 벡터 <b style="color:var(--q)">v</b>와 <b style="color:var(--k)">w</b>가 있어요. 각각에 스칼라 <b>a</b>, <b>b</b>를 곱해 더한 <code class="mono">a·v + b·w</code>가 바로 <b>선형결합</b>이에요. 슬라이더로 a, b를 바꾸면 도달점(초록)이 움직입니다.</p>
+    <div class="row" style="gap:24px;align-items:flex-start;justify-content:center">
+      <div id="board0"></div>
+      <div style="flex:1;min-width:240px">
+        <div class="ctrl"><label style="color:var(--q)">a (v에 곱)</label><input type="range" id="a0" min="-2" max="2" step="0.1" value="1.5"><span class="val" id="a0v">1.5</span></div>
+        <div class="ctrl"><label style="color:var(--k)">b (w에 곱)</label><input type="range" id="b0" min="-2" max="2" step="0.1" value="0.5"><span class="val" id="b0v">0.5</span></div>
+        <div id="combCalc" class="callout good" style="margin-top:12px"></div>
+        <p class="note" style="margin-top:6px">→ <b>a·v</b>(파랑 점선)와 <b>b·w</b>(빨강 점선)를 머리-꼬리로 이으면 그 끝이 도달점이에요.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- STEP 1 -->
+  <section class="panel" data-panel="1">
+    <span class="kicker" style="color:var(--q)">Step 01 — The Span</span>
+    <h2>span = 닿을 수 있는 모든 곳</h2>
+    <p class="lead">a, b를 가능한 모든 값으로 훑으면 도달점들이 어디를 채울까요? 아래 점들은 a, b를 격자처럼 여러 값으로 바꿔 실제로 계산한 <code class="mono">a·v + b·w</code> 들이에요. <b>두 독립 벡터의 span = 평면 전체</b>입니다.</p>
+    <div class="row" style="gap:24px;align-items:flex-start;justify-content:center">
+      <div id="board1"></div>
+      <div style="flex:1;min-width:240px">
+        <div class="ctrl"><label>훑는 촘촘함</label><input type="range" id="dens1" min="3" max="11" step="2" value="7"><span class="val" id="dens1v">7</span></div>
+        <p class="note">→ a, b 각각 <span id="dens1n" class="mono" style="color:var(--hot)">7</span>개 값 → <span id="cnt1" class="mono" style="color:var(--hot)">49</span>개의 도달점.</p>
+        <div class="callout q" style="margin-top:8px">
+          <div class="ttl">왜 평면 전체일까?</div>
+          <p>v와 w가 <b>서로 다른 방향</b>을 가리키면, 평면 위 어떤 점 (x,y)든 그것을 만드는 a, b가 <b>꼭 하나씩</b> 존재해요. 빈틈이 없죠.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- STEP 2 -->
+  <section class="panel" data-panel="2">
+    <span class="kicker" style="color:var(--k)">Step 02 — Collapse</span>
+    <h2>평행하면 span이 무너진다</h2>
+    <p class="lead">슬라이더로 <b style="color:var(--k)">w</b>를 <b style="color:var(--q)">v</b>의 배수(<code class="mono">w = k·v</code>)에 가깝게 만들어 보세요. 두 벡터가 같은 직선 위로 정렬되면, 아무리 a, b를 바꿔도 도달점은 <b>직선 하나</b>를 벗어나지 못해요. 평면이 직선으로 납작해집니다.</p>
+    <div class="row" style="gap:24px;align-items:flex-start;justify-content:center">
+      <div id="board2"></div>
+      <div style="flex:1;min-width:240px">
+        <div class="ctrl"><label>w 기울이기</label><input type="range" id="t2" min="0" max="1" step="0.02" value="0"><span class="val" id="t2v">0.00</span></div>
+        <p class="note">0 = 독립(평면), 1 = 완전히 v와 평행(직선).</p>
+        <div id="collapseCalc" class="callout" style="margin-top:10px"></div>
+        <p class="note" style="margin-top:6px">→ 두 벡터가 평행 = 한쪽이 군더더기. 이게 <b>선형종속</b>이고, 자세한 건 <b>03 독립</b>에서 다뤄요.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- STEP 3 -->
+  <section class="panel" data-panel="3">
+    <span class="kicker" style="color:var(--good)">Step 03 — Basis</span>
+    <h2>기저(basis) — 평면을 만드는 최소 벡터 집합</h2>
+    <p class="lead">평면 전체를 span하면서 <b>군더더기 없는</b> 벡터 집합이 <b>기저</b>예요. 가장 익숙한 건 <b>표준기저</b> <code class="mono">î=(1,0)</code>, <code class="mono">ĵ=(0,1)</code>. 어떤 점 (x,y)든 <code class="mono">x·î + y·ĵ</code>로 쓸 수 있죠. 그런데 <b>다른 기저</b>로도 같은 점을 표현할 수 있어요.</p>
+    <div class="view-toggle" id="basisToggle">
+      <button data-v="std" class="on">표준기저 î, ĵ</button>
+      <button data-v="alt">다른 기저 u₁, u₂</button>
+    </div>
+    <div class="row" style="gap:24px;align-items:flex-start;justify-content:center;margin-top:8px">
+      <div id="board3"></div>
+      <div style="flex:1;min-width:240px">
+        <div class="ctrl"><label>점 x</label><input type="range" id="px3" min="-3" max="3" step="1" value="2"><span class="val" id="px3v">2</span></div>
+        <div class="ctrl"><label>점 y</label><input type="range" id="py3" min="-3" max="3" step="1" value="1"><span class="val" id="py3v">1</span></div>
+        <div id="basisCalc" class="callout good" style="margin-top:12px"></div>
+      </div>
+    </div>
+    <p class="note" style="margin-top:6px">→ 같은 점이라도 어떤 기저를 쓰느냐에 따라 <b>좌표(계수)</b>가 달라져요. 점 자체는 그대로, 표현하는 "자"가 바뀌는 거예요.</p>
+  </section>
+
+  <p class="foot">// 모든 점은 a·v + b·w 를 실제로 계산해 찍습니다. · <a href="index.html">목차</a></p>
+</div>
+
+<script src="shared/lib.js"></script>
+<script>
+VZ.mountTopnav('#topnav', '02 · Span');
+VZ.setupStepper();
+const LA = VZ.LA;
+const I = [[1,0],[0,1]];   // 격자는 변형하지 않음 (표준 평면 위에서 그림)
+
+// 점들을 직접 SVG로 찍는 헬퍼 (transformSVG는 격자/기저 전용이라 별도 구성)
+function dotsSVG(b, opts){
+  const { vecs=[], pts=[], segs=[], R=6 } = opts;
+  let s = `<svg width="${b.W}" height="${b.H}" viewBox="0 0 ${b.W} ${b.H}" style="max-width:100%;display:block">`;
+  s += LA.gridPaths(b, I, R);
+  // 보조 선분 (점선)
+  segs.forEach(([x1,y1,x2,y2,color])=>{
+    s += `<line x1="${b.X(x1).toFixed(1)}" y1="${b.Y(y1).toFixed(1)}" x2="${b.X(x2).toFixed(1)}" y2="${b.Y(y2).toFixed(1)}" stroke="${color}" stroke-width="2" stroke-dasharray="5 4" opacity="0.85"/>`;
+  });
+  // 흩뿌린 점들
+  pts.forEach(([x,y,color,r=3.2])=>{
+    s += `<circle cx="${b.X(x).toFixed(1)}" cy="${b.Y(y).toFixed(1)}" r="${r}" fill="${color}"/>`;
+  });
+  // 기준 벡터 화살표
+  vecs.forEach(([x,y,color,label])=>{ s += LA.arrow(b, x, y, color, label, {lw:3}); });
+  s += `</svg>`;
+  return s;
+}
+
+// ---------- STEP 0 ----------
+(function(){
+  const b = LA.board({W:360,H:360,unit:40});
+  const v = [2,1], w = [-1,1.5];      // 고정 두 벡터
+  function draw(){
+    const a = +document.getElementById('a0').value;
+    const bb = +document.getElementById('b0').value;
+    document.getElementById('a0v').textContent = VZ.fmt(a,1);
+    document.getElementById('b0v').textContent = VZ.fmt(bb,1);
+    const av = [a*v[0], a*v[1]];           // a·v
+    const bw = [bb*w[0], bb*w[1]];         // b·w
+    const tx = av[0]+bw[0], ty = av[1]+bw[1];
+    document.getElementById('board0').innerHTML = dotsSVG(b, {
+      vecs:[[v[0],v[1],'var(--q)','v'],[w[0],w[1],'var(--k)','w']],
+      segs:[
+        [0,0,av[0],av[1],'var(--q)'],          // a·v
+        [av[0],av[1],tx,ty,'var(--k)']         // +b·w (머리-꼬리)
+      ],
+      pts:[[tx,ty,'var(--good)',5]]
+    });
+    document.getElementById('combCalc').innerHTML =
+      `<div class="ttl">a·v + b·w 분해</div>
+       <p style="margin:0" class="mono">v = (2, 1), &nbsp; w = (-1, 1.5)</p>
+       <p style="margin:6px 0 0" class="mono">a·v = ${VZ.fmt(a,1)}·(2,1) = (${VZ.fmt(av[0],2)}, ${VZ.fmt(av[1],2)})</p>
+       <p style="margin:2px 0 0" class="mono">b·w = ${VZ.fmt(bb,1)}·(-1,1.5) = (${VZ.fmt(bw[0],2)}, ${VZ.fmt(bw[1],2)})</p>
+       <p style="margin:8px 0 0" class="mono">합 = (<b style="color:var(--good)">${VZ.fmt(tx,2)}</b>, <b style="color:var(--good)">${VZ.fmt(ty,2)}</b>)</p>`;
+  }
+  document.getElementById('a0').addEventListener('input',draw);
+  document.getElementById('b0').addEventListener('input',draw);
+  draw();
+})();
+
+// ---------- STEP 1 ----------
+(function(){
+  const b = LA.board({W:360,H:360,unit:34});
+  const v = [2,1], w = [-1,1.5];
+  function draw(){
+    const n = +document.getElementById('dens1').value;
+    document.getElementById('dens1v').textContent = n;
+    document.getElementById('dens1n').textContent = n;
+    document.getElementById('cnt1').textContent = n*n;
+    // a,b 를 -2..2 사이 n개 값으로 훑기
+    const vals = [];
+    for(let i=0;i<n;i++){ vals.push(-2 + 4*i/(n-1)); }
+    const pts = [];
+    vals.forEach(a=>vals.forEach(bb=>{
+      const x = a*v[0]+bb*w[0], y = a*v[1]+bb*w[1];
+      pts.push([x,y,'rgba(55,189,248,.55)',2.6]);
+    }));
+    document.getElementById('board1').innerHTML = dotsSVG(b, {
+      R:6, pts,
+      vecs:[[v[0],v[1],'var(--q)','v'],[w[0],w[1],'var(--k)','w']]
+    });
+  }
+  document.getElementById('dens1').addEventListener('input',draw);
+  draw();
+})();
+
+// ---------- STEP 2 ----------
+(function(){
+  const b = LA.board({W:360,H:360,unit:34});
+  const v = [2,1];
+  const w0 = [-1,1.5];                  // 독립 시작 w
+  const wPar = [v[0]*0.75, v[1]*0.75];  // v 와 평행한 목표 (= 0.75·v)
+  function draw(){
+    const t = +document.getElementById('t2').value;
+    document.getElementById('t2v').textContent = VZ.fmt(t,2);
+    // w 를 w0 → wPar 로 보간
+    const w = [w0[0]+(wPar[0]-w0[0])*t, w0[1]+(wPar[1]-w0[1])*t];
+    const n = 9, vals = [];
+    for(let i=0;i<n;i++){ vals.push(-2 + 4*i/(n-1)); }
+    const pts = [];
+    vals.forEach(a=>vals.forEach(bb=>{
+      const x = a*v[0]+bb*w[0], y = a*v[1]+bb*w[1];
+      pts.push([x,y,'rgba(251,113,133,.55)',2.6]);
+    }));
+    document.getElementById('board2').innerHTML = dotsSVG(b, {
+      R:6, pts,
+      vecs:[[v[0],v[1],'var(--q)','v'],[w[0],w[1],'var(--k)','w']]
+    });
+    // det([v w]) = v.x·w.y - v.y·w.x  → 0 이면 평행
+    const det = v[0]*w[1] - v[1]*w[0];
+    const par = Math.abs(det) < 0.05;
+    document.getElementById('collapseCalc').className = 'callout ' + (par ? '' : 'q');
+    document.getElementById('collapseCalc').innerHTML =
+      `<div class="ttl" style="color:${par?'var(--k)':'var(--q)'}">${par?'span이 무너졌어요 ⚠️':'아직 평면 전체'}</div>
+       <p style="margin:0" class="mono">w = (${VZ.fmt(w[0],2)}, ${VZ.fmt(w[1],2)})</p>
+       <p style="margin:6px 0 0" class="mono">det[v&nbsp;w] = ${VZ.fmt(det,2)}</p>
+       <p style="margin:6px 0 0">${par
+          ? '두 벡터가 <b style="color:var(--k)">평행</b> → 도달점이 <b>직선 하나</b>로 축소.'
+          : '두 벡터가 <b style="color:var(--q)">독립</b> → 도달점이 평면을 채움.'}</p>`;
+  }
+  document.getElementById('t2').addEventListener('input',draw);
+  draw();
+})();
+
+// ---------- STEP 3 ----------
+(function(){
+  const b = LA.board({W:360,H:360,unit:40});
+  const STD = { i:[1,0], j:[0,1] };
+  const ALT = { i:[1,1], j:[-1,1] };   // 다른 기저 u₁,u₂
+  let mode = 'std';
+  // 점 (x,y) 를 기저 {bi,bj} 좌표(c1,c2)로 풀기: [bi bj]·[c1;c2]=[x;y]
+  function coords(bi,bj,x,y){
+    const det = bi[0]*bj[1]-bi[1]*bj[0];
+    const c1 = (x*bj[1]-y*bj[0])/det;
+    const c2 = (bi[0]*y-bi[1]*x)/det;
+    return [c1,c2];
+  }
+  function draw(){
+    const x = +document.getElementById('px3').value;
+    const y = +document.getElementById('py3').value;
+    document.getElementById('px3v').textContent = x;
+    document.getElementById('py3v').textContent = y;
+    const base = mode==='std' ? STD : ALT;
+    const [c1,c2] = coords(base.i, base.j, x, y);
+    // 시각화: c1·bi (점선) → +c2·bj (점선) → 목표점
+    const p1 = [c1*base.i[0], c1*base.i[1]];
+    document.getElementById('board3').innerHTML = dotsSVG(b, {
+      R:6,
+      segs:[
+        [0,0,p1[0],p1[1],'var(--q)'],
+        [p1[0],p1[1],x,y,'var(--k)']
+      ],
+      vecs:[
+        [base.i[0],base.i[1],'var(--q)', mode==='std'?'î':'u₁'],
+        [base.j[0],base.j[1],'var(--k)', mode==='std'?'ĵ':'u₂']
+      ],
+      pts:[[x,y,'var(--good)',5]]
+    });
+    const bi = base.i, bj = base.j;
+    const lab1 = mode==='std'?'î':'u₁', lab2 = mode==='std'?'ĵ':'u₂';
+    document.getElementById('basisCalc').innerHTML =
+      `<div class="ttl">점 (${x}, ${y}) 을 ${mode==='std'?'표준기저':'다른 기저'}로</div>
+       <p style="margin:0" class="mono">${lab1} = (${bi[0]}, ${bi[1]}), &nbsp; ${lab2} = (${bj[0]}, ${bj[1]})</p>
+       <p style="margin:8px 0 0" class="mono">(${x}, ${y}) = <b style="color:var(--good)">${VZ.fmt(c1,2)}</b>·${lab1} + <b style="color:var(--good)">${VZ.fmt(c2,2)}</b>·${lab2}</p>
+       <p style="margin:8px 0 0">이 기저에서의 좌표(계수) = (<b style="color:var(--good)">${VZ.fmt(c1,2)}, ${VZ.fmt(c2,2)}</b>)</p>`;
+  }
+  document.getElementById('basisToggle').addEventListener('click', e=>{
+    const btn = e.target.closest('button'); if(!btn) return;
+    document.querySelectorAll('#basisToggle button').forEach(x=>x.classList.toggle('on', x===btn));
+    mode = btn.dataset.v;
+    draw();
+  });
+  document.getElementById('px3').addEventListener('input',draw);
+  document.getElementById('py3').addEventListener('input',draw);
+  draw();
+})();
+</script>
+</body>
+</html>

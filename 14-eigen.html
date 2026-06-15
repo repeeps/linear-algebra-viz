@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>14 고유값·고유벡터 · 선형대수, 눈으로 보기</title>
+<link rel="stylesheet" href="shared/theme.css">
+</head>
+<body>
+<div class="wrap">
+  <div class="topnav" id="topnav"></div>
+
+  <header>
+    <div class="tag">PART 5 · EIGEN & DECOMPOSITION</div>
+    <h1>고유값 · 고유벡터 — 변환의 숨은 축</h1>
+    <p class="intro">행렬을 적용하면 대부분의 벡터는 방향이 휘어요. 그런데 어떤 <b>특별한 벡터</b>는 변환 후에도 같은 직선 위에 남아 길이만 <b>λ배</b>로 변합니다. 이런 벡터가 <b>고유벡터</b>, 그 배율이 <b>고유값</b>이에요. 변환이 진짜로 무엇을 하는지 알려주는 숨은 축입니다.</p>
+  </header>
+
+  <nav class="stepper" id="stepper">
+    <button data-s="0" class="active">00 · 방향 안 바뀌는 벡터</button>
+    <button data-s="1">01 · 정의 Av = λv</button>
+    <button data-s="2">02 · 고유값 계산</button>
+    <button data-s="3">03 · 고유벡터 방향</button>
+  </nav>
+
+  <!-- STEP 0 -->
+  <section class="panel show" data-panel="0">
+    <span class="kicker" style="color:var(--hot)">Step 00 — Vectors That Keep Their Direction</span>
+    <h2>변환해도 방향이 안 바뀌는 벡터</h2>
+    <p class="lead">같은 행렬 <code class="mono">M</code>을 여러 벡터에 적용해 봐요. 대부분은 <b>방향이 휘어요</b>. 하지만 어떤 벡터(<b style="color:var(--hot)">노란색</b>)는 변환 뒤에도 <b>같은 직선 위</b>에 머물러요 — 길이만 λ배로 바뀝니다.</p>
+    <div class="row" style="gap:24px;justify-content:center">
+      <div style="text-align:center"><div class="label">변환 전</div><div id="board0a"></div></div>
+      <div style="text-align:center"><div class="label" style="color:var(--hot)">변환 후 (M 적용)</div><div id="board0b"></div></div>
+    </div>
+    <p class="note" style="margin-top:14px">→ 회색 벡터들은 변환 후 <b>원래 직선(점선)에서 벗어나</b> 방향이 바뀌었어요. 노란 벡터만 점선 위에 그대로 — 이것이 <b>고유벡터</b>입니다. M = [[2, 1], [1, 2]], 노란 방향 (1, 1)은 길이만 <b>3배</b>(λ=3)로 늘어요.</p>
+  </section>
+
+  <!-- STEP 1 -->
+  <section class="panel" data-panel="1">
+    <span class="kicker" style="color:var(--q)">Step 01 — The Definition</span>
+    <h2>정의: Av = λv</h2>
+    <p class="lead">고유벡터 <code class="mono">v</code>는 행렬을 곱해도 <b>자기 자신의 스칼라배</b>가 되는 벡터예요. 즉 <code class="mono">M·v = λ·v</code>. 이때 스칼라 <b style="color:var(--hot)">λ</b>가 고유값이에요. 방향은 그대로, 길이만 λ배.</p>
+    <div class="callout q">
+      <div class="ttl">M v = λ v</div>
+      <p>변환 <code>M</code>을 고유벡터 <code>v</code>에 적용하면, 결과가 <code>v</code>와 <b>같은 직선</b> 위에 놓여요. 화살표 길이만 <code>λ</code>배로 달라집니다.</p>
+    </div>
+    <div class="row" style="gap:24px;align-items:flex-start;justify-content:center">
+      <div id="board1"></div>
+      <div style="flex:1;min-width:240px">
+        <div class="label">고유벡터 v 선택</div>
+        <div class="view-toggle" id="eigPick"></div>
+        <div id="eigCalc" class="callout v" style="margin-top:8px"></div>
+        <p class="note" style="margin-top:10px">→ 두 고유벡터 모두 M 적용 후 <b>점선(자기 직선)</b>을 벗어나지 않아요. 비교용 <b style="color:var(--slate)">일반 벡터</b>는 직선을 벗어나죠.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- STEP 2 -->
+  <section class="panel" data-panel="2">
+    <span class="kicker" style="color:var(--v)">Step 02 — Computing Eigenvalues</span>
+    <h2>2×2 고유값 계산</h2>
+    <p class="lead">고유값은 <b>특성방정식</b> <code class="mono">λ² − (tr)·λ + det = 0</code>의 해예요. 여기서 <code class="mono">tr = a+d</code>(대각합), <code class="mono">det = ad − bc</code>. 닫힌형으로 바로 풉니다: <code class="mono">λ = (tr ± √(tr²−4det)) / 2</code>.</p>
+    <div class="row" style="gap:24px;align-items:flex-start;justify-content:center">
+      <div id="board2"></div>
+      <div style="flex:1;min-width:240px">
+        <div class="label">행렬 M</div>
+        <div id="matDisp2" style="margin-bottom:12px"></div>
+        <div class="ctrl"><label style="color:var(--q)">a</label><input type="range" id="ea" min="-3" max="3" step="0.1" value="2"><span class="val" id="eav">2.0</span></div>
+        <div class="ctrl"><label style="color:var(--q)">b</label><input type="range" id="eb" min="-3" max="3" step="0.1" value="1"><span class="val" id="ebv">1.0</span></div>
+        <div class="ctrl"><label style="color:var(--k)">c</label><input type="range" id="ec" min="-3" max="3" step="0.1" value="1"><span class="val" id="ecv">1.0</span></div>
+        <div class="ctrl"><label style="color:var(--k)">d</label><input type="range" id="ed" min="-3" max="3" step="0.1" value="2"><span class="val" id="edv">2.0</span></div>
+        <div id="eigOut" class="callout good" style="margin-top:10px"></div>
+      </div>
+    </div>
+    <p class="note" style="margin-top:6px">→ <b>tr²−4det &lt; 0</b>이면 실수 고유값이 없어요(복소수). 이는 변환에 <b style="color:var(--k)">회전 성분</b>이 있어 어떤 실제 방향도 보존되지 않는다는 뜻이에요.</p>
+  </section>
+
+  <!-- STEP 3 -->
+  <section class="panel" data-panel="3">
+    <span class="kicker" style="color:var(--good)">Step 03 — Eigenvector Directions</span>
+    <h2>고유벡터 방향 구하기</h2>
+    <p class="lead">각 고유값 λ에 대해 <code class="mono">(M − λI)·v = 0</code>을 풀면 방향이 나와요. 그 방향이 변환의 <b>불변 축</b>입니다. 슬라이더로 행렬을 바꾸면 격자 위에 두 고유 방향이 실시간으로 그려져요.</p>
+    <div class="row" style="gap:24px;align-items:flex-start;justify-content:center">
+      <div id="board3"></div>
+      <div style="flex:1;min-width:240px">
+        <div class="ctrl"><label style="color:var(--q)">a</label><input type="range" id="fa" min="-3" max="3" step="0.1" value="2"><span class="val" id="fav">2.0</span></div>
+        <div class="ctrl"><label style="color:var(--q)">b</label><input type="range" id="fb" min="-3" max="3" step="0.1" value="0.5"><span class="val" id="fbv">0.5</span></div>
+        <div class="ctrl"><label style="color:var(--k)">c</label><input type="range" id="fc" min="-3" max="3" step="0.1" value="0"><span class="val" id="fcv">0.0</span></div>
+        <div class="ctrl"><label style="color:var(--k)">d</label><input type="range" id="fd" min="-3" max="3" step="0.1" value="1"><span class="val" id="fdv">1.0</span></div>
+        <div id="vecOut" class="callout v" style="margin-top:10px"></div>
+      </div>
+    </div>
+    <div class="callout good" style="margin-top:6px">
+      <div class="ttl">머신러닝에서 고유벡터</div>
+      <p><b>PCA</b> — 데이터 공분산 행렬의 고유벡터가 분산이 가장 큰 <b>주성분 방향</b>이에요(고유값 = 그 방향의 분산). 차원 축소의 핵심.</p>
+      <p><b>페이지랭크</b> — 웹 링크 전이행렬의 가장 큰 고유값(=1)에 대응하는 고유벡터가 페이지 중요도 점수예요.</p>
+      <p><b>안정성 분석</b> — 동역학 시스템의 고유값 크기가 1보다 크면 발산, 작으면 수렴. 학습 안정성·RNN 기울기 폭주를 가늠하죠.</p>
+    </div>
+  </section>
+
+  <p class="foot">// 모든 고유값·고유벡터는 행렬에서 실제로 계산해 그립니다. · <a href="index.html">목차</a></p>
+</div>
+
+<script src="shared/lib.js"></script>
+<script>
+VZ.mountTopnav('#topnav', '14 · Eigen');
+VZ.setupStepper();
+const LA = VZ.LA;
+const matHTML = (M) => VZ.mxMatrix(M, {acc:'var(--hot)', fmtCell:v=>VZ.fmt(v,1)});
+
+/* ============================================================
+   고유값/고유벡터 실계산 (2×2 전용)
+   M = [[a,b],[c,d]],  tr=a+d, det=ad-bc
+   λ = (tr ± √(tr²-4det))/2
+   고유벡터: (M-λI)v=0 → 한 행을 골라 직교 방향을 취함
+   ============================================================ */
+function eigen2(M){
+  const a=M[0][0], b=M[0][1], c=M[1][0], d=M[1][1];
+  const tr=a+d, det=a*d-b*c, disc=tr*tr-4*det;
+  if(disc < -1e-9){
+    return {real:false, tr, det, disc};
+  }
+  const s=Math.sqrt(Math.max(0,disc));
+  const l1=(tr+s)/2, l2=(tr-s)/2;
+  const vecFor=(l)=>{
+    // (a-l)x + b y = 0  and  c x + (d-l) y = 0
+    let vx, vy;
+    if(Math.abs(b) > 1e-9){ vx=b; vy=l-a; }
+    else if(Math.abs(c) > 1e-9){ vx=l-d; vy=c; }
+    else { // b=c=0 (대각행렬): 축 방향
+      vx = Math.abs(a-l) < 1e-9 ? 1 : 0;
+      vy = Math.abs(a-l) < 1e-9 ? 0 : 1;
+    }
+    const n=Math.hypot(vx,vy) || 1;
+    return [vx/n, vy/n];
+  };
+  return {real:true, tr, det, disc, l1, l2, v1:vecFor(l1), v2:vecFor(l2)};
+}
+
+// ---------- STEP 0 ----------
+(function(){
+  const ba = LA.board({W:300,H:300,unit:32}), bb = LA.board({W:300,H:300,unit:32});
+  const M = [[2,1],[1,2]];          // λ=3 (방향 1,1), λ=1 (방향 -1,1)
+  const I = [[1,0],[0,1]];
+  // 비교 벡터들: 일반(회색) + 고유(노랑 1,1)
+  const normals = [[2,0],[0,2],[2,-1],[-1.5,1.5]];
+  const eig = [1.4,1.4];            // (1,1) 방향
+  // 변환 전: 모든 벡터 + 고유벡터의 직선(점선)
+  function dashed(b, vx, vy){
+    const [x1,y1]=[b.X(-vx*4), b.Y(-vy*4)], [x2,y2]=[b.X(vx*4), b.Y(vy*4)];
+    return `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="var(--hot)" stroke-width="1.2" stroke-dasharray="5 5" opacity="0.55"/>`;
+  }
+  function frame(b, mat){
+    let s = `<svg width="${b.W}" height="${b.H}" viewBox="0 0 ${b.W} ${b.H}" style="max-width:100%;display:block">`;
+    s += LA.gridPaths(b, I, 5);
+    s += dashed(b, eig[0], eig[1]);
+    normals.forEach((v,i)=>{
+      const [px,py]=LA.apply(mat, v[0], v[1]);
+      s += LA.arrow(b, px, py, 'var(--slate)', i===0?'v':'', {dot:true, lw:2});
+    });
+    const [ex,ey]=LA.apply(mat, eig[0], eig[1]);
+    s += LA.arrow(b, ex, ey, 'var(--hot)', '고유', {dot:true, lw:3});
+    return s + `</svg>`;
+  }
+  document.getElementById('board0a').innerHTML = frame(ba, I);
+  document.getElementById('board0b').innerHTML = frame(bb, M);
+})();
+
+// ---------- STEP 1 ----------
+(function(){
+  const b = LA.board({W:360,H:360,unit:42});
+  const M = [[2,1],[1,2]];
+  const E = eigen2(M);
+  // 선택지: 고유벡터1, 고유벡터2, 일반 벡터
+  const scale = 1.6;
+  const OPTS = [
+    ['고유벡터 v₁ (λ='+VZ.fmt(E.l1,0)+')', [E.v1[0]*scale, E.v1[1]*scale], E.l1, true],
+    ['고유벡터 v₂ (λ='+VZ.fmt(E.l2,0)+')', [E.v2[0]*scale, E.v2[1]*scale], E.l2, true],
+    ['일반 벡터 (2, 0.4)', [2, 0.4], null, false],
+  ];
+  const pick = document.getElementById('eigPick');
+  pick.innerHTML = OPTS.map((o,i)=>`<button data-i="${i}" class="${i===0?'on':''}">${i<2?'v'+(i+1):'일반'}</button>`).join('');
+  function dashedLine(vx, vy){
+    const [x1,y1]=[b.X(-vx*4), b.Y(-vy*4)], [x2,y2]=[b.X(vx*4), b.Y(vy*4)];
+    return `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="var(--hot)" stroke-width="1.2" stroke-dasharray="5 5" opacity="0.5"/>`;
+  }
+  function show(i){
+    const [name, v, lam, isEig] = OPTS[i];
+    let s = `<svg width="${b.W}" height="${b.H}" viewBox="0 0 ${b.W} ${b.H}" style="max-width:100%;display:block">`;
+    s += LA.gridPaths(b, [[1,0],[0,1]], 6);
+    s += dashedLine(v[0], v[1]);                          // v의 직선
+    s += LA.arrow(b, v[0], v[1], 'var(--q)', 'v', {dot:true, lw:2.5});   // 원래 v
+    const [mx,my]=LA.apply(M, v[0], v[1]);
+    s += LA.arrow(b, mx, my, isEig?'var(--good)':'var(--k)', 'Mv', {dot:true, lw:3});
+    s += `</svg>`;
+    document.getElementById('board1').innerHTML = s;
+    const verdict = isEig
+      ? `<p class="mono" style="margin:6px 0 0">M·v = <b style="color:var(--good)">${VZ.fmt(lam,2)}</b> · v &nbsp;→&nbsp; <b style="color:var(--good)">같은 직선!</b> λ=${VZ.fmt(lam,2)}</p>`
+      : `<p class="mono" style="margin:6px 0 0">M·v 가 v의 직선(점선)을 <b style="color:var(--k)">벗어남</b> → 고유벡터 아님</p>`;
+    document.getElementById('eigCalc').innerHTML =
+      `<div class="ttl">${name}</div>
+       <p class="mono" style="margin:0">v = (${VZ.fmt(v[0],2)}, ${VZ.fmt(v[1],2)})</p>
+       <p class="mono" style="margin:4px 0 0">M·v = (${VZ.fmt(mx,2)}, ${VZ.fmt(my,2)})</p>
+       ${verdict}`;
+  }
+  pick.addEventListener('click', e=>{
+    const x=e.target.closest('button'); if(!x) return;
+    pick.querySelectorAll('button').forEach(z=>z.classList.toggle('on',z===x));
+    show(+x.dataset.i);
+  });
+  show(0);
+})();
+
+// ---------- STEP 2 ----------
+(function(){
+  const b = LA.board({W:340,H:340,unit:38});
+  const ids = ['ea','eb','ec','ed'];
+  function read(){ return ids.map(i=>+document.getElementById(i).value); }
+  function draw(){
+    const [a,bb,c,d] = read();
+    ids.forEach(i=>document.getElementById(i+'v').textContent = VZ.fmt(+document.getElementById(i).value,1));
+    const M = [[a,c],[bb,d]];   // 열우선(lib 규약): 1열 î=(a,b), 2열 ĵ=(c,d)
+    document.getElementById('matDisp2').innerHTML = matHTML(M);
+    const E = eigen2(M);
+    // 보드: 변환된 격자 + 실수 고유벡터 방향(있으면)
+    let s = `<svg width="${b.W}" height="${b.H}" viewBox="0 0 ${b.W} ${b.H}" style="max-width:100%;display:block">`;
+    s += LA.gridPaths(b, M, 6);
+    if(E.real){
+      s += LA.arrow(b, E.v1[0]*2.5, E.v1[1]*2.5, 'var(--hot)', 'v₁', {lw:3});
+      if(Math.abs(E.l1-E.l2)>1e-6)
+        s += LA.arrow(b, E.v2[0]*2.5, E.v2[1]*2.5, 'var(--good)', 'v₂', {lw:3});
+    }
+    s += `</svg>`;
+    document.getElementById('board2').innerHTML = s;
+    const trv=VZ.fmt(E.tr,2), detv=VZ.fmt(E.det,2), discv=VZ.fmt(E.disc,2);
+    if(E.real){
+      document.getElementById('eigOut').innerHTML =
+        `<div class="ttl">고유값 (실수해)</div>
+         <p class="mono" style="margin:0">tr = a+d = ${trv} &nbsp;·&nbsp; det = ad−bc = ${detv}</p>
+         <p class="mono" style="margin:4px 0 0">tr²−4det = ${discv} ≥ 0 ✓</p>
+         <p class="mono" style="margin:6px 0 0">λ₁ = <b style="color:var(--hot)">${VZ.fmt(E.l1,3)}</b> &nbsp;&nbsp; λ₂ = <b style="color:var(--good)">${VZ.fmt(E.l2,3)}</b></p>`;
+    } else {
+      document.getElementById('eigOut').innerHTML =
+        `<div class="ttl" style="color:var(--k)">실수 고유값 없음 (복소)</div>
+         <p class="mono" style="margin:0">tr = ${trv} &nbsp;·&nbsp; det = ${detv}</p>
+         <p class="mono" style="margin:4px 0 0">tr²−4det = ${discv} <b style="color:var(--k)">&lt; 0</b></p>
+         <p style="margin:6px 0 0">→ 변환에 <b style="color:var(--k)">회전 성분</b>이 있어 어떤 실제 방향도 보존되지 않아요.</p>`;
+    }
+  }
+  ids.forEach(i=>document.getElementById(i).addEventListener('input',draw));
+  draw();
+})();
+
+// ---------- STEP 3 ----------
+(function(){
+  const b = LA.board({W:360,H:360,unit:42});
+  const ids = ['fa','fb','fc','fd'];
+  function read(){ return ids.map(i=>+document.getElementById(i).value); }
+  function dashedLine(vx, vy, color){
+    const [x1,y1]=[b.X(-vx*5), b.Y(-vy*5)], [x2,y2]=[b.X(vx*5), b.Y(vy*5)];
+    return `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${color}" stroke-width="1.1" stroke-dasharray="5 5" opacity="0.45"/>`;
+  }
+  function draw(){
+    const [a,bb,c,d] = read();
+    ids.forEach(i=>document.getElementById(i+'v').textContent = VZ.fmt(+document.getElementById(i).value,1));
+    const M = [[a,c],[bb,d]];   // 열우선(lib 규약): 1열 î=(a,b), 2열 ĵ=(c,d)
+    const E = eigen2(M);
+    let s = `<svg width="${b.W}" height="${b.H}" viewBox="0 0 ${b.W} ${b.H}" style="max-width:100%;display:block">`;
+    s += LA.gridPaths(b, [[1,0],[0,1]], 6);
+    if(E.real){
+      s += dashedLine(E.v1[0], E.v1[1], 'var(--hot)');
+      s += LA.arrow(b, E.v1[0]*2.4, E.v1[1]*2.4, 'var(--hot)', 'v₁', {lw:3, dot:true});
+      if(Math.abs(E.l1-E.l2)>1e-6){
+        s += dashedLine(E.v2[0], E.v2[1], 'var(--good)');
+        s += LA.arrow(b, E.v2[0]*2.4, E.v2[1]*2.4, 'var(--good)', 'v₂', {lw:3, dot:true});
+      }
+    }
+    s += `</svg>`;
+    document.getElementById('board3').innerHTML = s;
+    if(E.real){
+      const line=(lab,l,v,color)=>
+        `<p class="mono" style="margin:4px 0 0">${lab}: λ=<b style="color:${color}">${VZ.fmt(l,2)}</b>, 방향 (${VZ.fmt(v[0],2)}, ${VZ.fmt(v[1],2)})</p>`;
+      let body = line('v₁', E.l1, E.v1, 'var(--hot)');
+      if(Math.abs(E.l1-E.l2)>1e-6) body += line('v₂', E.l2, E.v2, 'var(--good)');
+      else body += `<p style="margin:4px 0 0">λ₁=λ₂ (중근) — 한 방향으로 표시</p>`;
+      const hasNeg = (E.l1 < 0 || E.l2 < 0);
+      const negNote = hasNeg
+        ? `<p style="margin:8px 0 0;font-size:13px;color:var(--muted)">λ가 <b style="color:var(--k)">음수</b>인 방향은 같은 직선 위에 머물지만 <b>반대로 뒤집혀</b> |λ|배가 돼요(거울 반사 성분).</p>`
+        : '';
+      document.getElementById('vecOut').innerHTML =
+        `<div class="ttl">(M − λI)v = 0 풀이</div>${body}${negNote}`;
+    } else {
+      document.getElementById('vecOut').innerHTML =
+        `<div class="ttl" style="color:var(--k)">실수 고유벡터 없음</div>
+         <p style="margin:0">tr²−4det &lt; 0 → 회전 성분. 격자에 그릴 불변 방향이 없어요.</p>`;
+    }
+  }
+  ids.forEach(i=>document.getElementById(i).addEventListener('input',draw));
+  draw();
+})();
+</script>
+</body>
+</html>

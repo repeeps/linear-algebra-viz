@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>13 직교기저 · Gram-Schmidt · 선형대수, 눈으로 보기</title>
+<link rel="stylesheet" href="shared/theme.css">
+</head>
+<body>
+<div class="wrap">
+  <div class="topnav" id="topnav"></div>
+
+  <header>
+    <div class="tag">PART 4 · DOT & ORTHOGONALITY</div>
+    <h1>직교기저 — 비스듬한 축을 직각으로 정돈하기</h1>
+    <p class="intro">기저가 <b>직교(서로 수직)</b>하면 좌표 계산이 마법처럼 간단해져요. 어떤 벡터든 각 축에 <b>내적</b> 한 번이면 그 축의 좌표가 나오거든요. <b>Gram-Schmidt</b>는 아무렇게나 비스듬한 기저를 받아 <b>정사영을 빼면서</b> 차근차근 직각으로 펴주는 절차예요. 슬라이더로 직접 펴 보세요.</p>
+  </header>
+
+  <nav class="stepper" id="stepper">
+    <button data-s="0" class="active">00 · 왜 직교가 좋은가</button>
+    <button data-s="1">01 · 정사영 빼기 = 직교화</button>
+    <button data-s="2">02 · Gram-Schmidt 2단계</button>
+    <button data-s="3">03 · 결과 = 직각 격자</button>
+  </nav>
+
+  <!-- STEP 0 -->
+  <section class="panel show" data-panel="0">
+    <span class="kicker" style="color:var(--hot)">Step 00 — Why Orthogonal?</span>
+    <h2>직교하면 좌표가 "내적 한 번"으로 끝난다</h2>
+    <p class="lead">비스듬한 기저에서는 좌표를 구하려면 연립방정식을 풀어야 해요. 하지만 두 축이 <b>직각</b>이면, 한 축으로의 좌표는 그냥 <b>그 축과의 내적 ÷ 길이²</b>로 즉시 나와요. 두 벡터의 사잇각을 바꿔 보세요.</p>
+    <div class="row" style="gap:24px;align-items:flex-start;justify-content:center">
+      <div id="board0"></div>
+      <div style="flex:1;min-width:240px">
+        <div class="ctrl"><label>두 벡터 사잇각</label><input type="range" id="ang" min="20" max="160" step="1" value="55"><span class="val" id="angv">55°</span></div>
+        <div id="ang0calc" class="callout q" style="margin-top:12px"></div>
+        <p class="note" style="margin-top:10px">→ 사잇각을 <b>90°</b>로 맞추면 내적이 <b>0</b>이 돼요. 그게 바로 <b>직교</b>의 정의예요. 직교일 때 두 축은 서로의 좌표에 전혀 간섭하지 않아요.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- STEP 1 -->
+  <section class="panel" data-panel="1">
+    <span class="kicker" style="color:var(--q)">Step 01 — Subtract the Projection</span>
+    <h2>정사영을 빼면 수직 성분만 남는다</h2>
+    <p class="lead">v₂에는 v₁ 방향으로 향하는 <b>그림자(정사영)</b>가 섞여 있어요. 그 그림자를 v₂에서 <b>빼버리면</b>, v₁에 완벽히 수직인 <b>u₂</b>만 남아요. 슬라이더로 v₂를 움직이며 빼는 과정을 보세요.</p>
+    <div class="row" style="gap:24px;align-items:flex-start;justify-content:center">
+      <div id="board1"></div>
+      <div style="flex:1;min-width:240px">
+        <div class="formula" style="margin-bottom:14px">u₂ = v₂ − ( v₂·u₁ ⁄ u₁·u₁ ) u₁</div>
+        <div class="ctrl"><label>v₂.x</label><input type="range" id="v2x" min="-3" max="3" step="0.1" value="-1"><span class="val" id="v2xv">-1.0</span></div>
+        <div class="ctrl"><label>v₂.y</label><input type="range" id="v2y" min="-3" max="3" step="0.1" value="2.2"><span class="val" id="v2yv">2.2</span></div>
+        <div id="proj1calc" class="callout v" style="margin-top:12px"></div>
+      </div>
+    </div>
+    <p class="note" style="margin-top:6px">→ <b style="color:var(--v)">보라 점선</b>이 정사영(v₁ 위의 그림자), <b style="color:var(--good)">초록</b>이 빼고 남은 직교 성분 u₂예요. u₂는 항상 <b>v₁(=u₁)에 수직</b>이에요.</p>
+  </section>
+
+  <!-- STEP 2 -->
+  <section class="panel" data-panel="2">
+    <span class="kicker" style="color:var(--v)">Step 02 — Gram-Schmidt, Two Steps</span>
+    <h2>v₁,v₂ → 직교 u₁,u₂ → 정규직교 q₁,q₂</h2>
+    <p class="lead">Gram-Schmidt 전체 과정을 단계별로 따라가요. ① u₁은 v₁ 그대로. ② u₂는 v₂에서 정사영을 뺀 것. ③ 둘을 각자 길이로 나눠 <b>길이 1</b>로 만들면 <b>정규직교기저 q₁,q₂</b> 완성이에요.</p>
+    <div class="row" style="gap:24px;align-items:flex-start;justify-content:center">
+      <div id="board2"></div>
+      <div style="flex:1;min-width:240px">
+        <div id="gs2calc"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- STEP 3 -->
+  <section class="panel" data-panel="3">
+    <span class="kicker" style="color:var(--good)">Step 03 — A Perfect Right-Angle Grid</span>
+    <h2>q₁·q₂ ≈ 0 — 직각이 검증된다</h2>
+    <p class="lead">만들어진 q₁,q₂는 길이가 1이고 서로 수직이에요. 컴퓨터로 직접 내적을 재면 <b>거의 정확히 0</b>이 나와요. 이 정규직교성이 <b>QR 분해</b>와 수치 안정성의 핵심이에요.</p>
+    <div class="row" style="gap:24px;align-items:flex-start;justify-content:center">
+      <div id="board3"></div>
+      <div style="flex:1;min-width:240px">
+        <div id="verify3" class="callout good"></div>
+        <div class="callout q" style="margin-top:14px">
+          <div class="ttl">ML·응용 연결</div>
+          <p><b>QR 분해</b>: A = QR 에서 Q의 열들이 바로 이 정규직교 벡터예요. 직교라서 역행렬·최소제곱을 <b>수치적으로 안정</b>하게 풀 수 있어요.</p>
+          <p>PCA의 주성분, 어텐션의 직교 헤드, 신경망 가중치 직교 초기화 — 모두 "축을 직각으로 정돈"하는 같은 아이디어예요.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <p class="foot">// 모든 수치는 실제 내적·정사영으로 계산합니다. · <a href="index.html">목차</a></p>
+</div>
+
+<script src="shared/lib.js"></script>
+<script>
+VZ.mountTopnav('#topnav', '13 · Gram-Schmidt');
+VZ.setupStepper();
+const LA = VZ.LA;
+
+// ---- 벡터 헬퍼 (2D, 불변) ----
+const dot2 = (a, b) => a[0]*b[0] + a[1]*b[1];
+const norm2 = a => Math.sqrt(dot2(a, a));
+const scale2 = (a, s) => [a[0]*s, a[1]*s];
+const sub2 = (a, b) => [a[0]-b[0], a[1]-b[1]];
+// v 의 u 방향 정사영 벡터
+const proj = (v, u) => scale2(u, dot2(v, u) / dot2(u, u));
+// 점선 보조선 SVG (두 수학좌표 사이)
+const dashLine = (b, p, q, color) =>
+  `<line x1="${b.X(p[0]).toFixed(1)}" y1="${b.Y(p[1]).toFixed(1)}" x2="${b.X(q[0]).toFixed(1)}" y2="${b.Y(q[1]).toFixed(1)}" stroke="${color}" stroke-width="1.6" stroke-dasharray="5 4"/>`;
+// 직각 표시 (작은 사각형)
+function rightAngleMark(b, origin, d1, d2, color) {
+  const n1 = norm2(d1) || 1, n2 = norm2(d2) || 1;
+  const s = 0.32;
+  const e1 = scale2(d1, s / n1), e2 = scale2(d2, s / n2);
+  const p0 = origin, p1 = [origin[0]+e1[0], origin[1]+e1[1]];
+  const p2 = [origin[0]+e1[0]+e2[0], origin[1]+e1[1]+e2[1]];
+  const p3 = [origin[0]+e2[0], origin[1]+e2[1]];
+  const pts = [p0, p1, p2, p3].map(p => `${b.X(p[0]).toFixed(1)},${b.Y(p[1]).toFixed(1)}`).join(' ');
+  return `<polygon points="${pts}" fill="none" stroke="${color}" stroke-width="1.4"/>`;
+}
+const I = [[1,0],[0,1]];
+
+// ---------- STEP 0 : 왜 직교가 좋은가 ----------
+(function(){
+  const b = LA.board({W:340,H:340,unit:48});
+  function draw(){
+    const deg = +document.getElementById('ang').value;
+    document.getElementById('angv').textContent = deg + '°';
+    const rad = deg * Math.PI / 180;
+    const v1 = [2.2, 0];                                   // 기준 축 (가로)
+    const v2 = [2.0*Math.cos(rad), 2.0*Math.sin(rad)];    // 사잇각만큼 기울인 축
+    let svg = LA.transformSVG(b, I, {R:5, showBasis:false, shape:null});
+    svg = svg.replace('</svg>',
+      LA.arrow(b, v1[0], v1[1], 'var(--q)', 'v₁') +
+      LA.arrow(b, v2[0], v2[1], 'var(--k)', 'v₂') +
+      rightAngleMark(b, [0,0], v1, v2, deg===90 ? 'var(--good)' : 'transparent') +
+      '</svg>');
+    document.getElementById('board0').innerHTML = svg;
+    const d = dot2(v1, v2);
+    const ortho = Math.abs(d) < 0.02;
+    document.getElementById('ang0calc').innerHTML =
+      `<div class="ttl">내적으로 직교 판정</div>
+       <p style="margin:0" class="mono">v₁·v₂ = ${VZ.fmt(v1[0],2)}·${VZ.fmt(v2[0],2)} + ${VZ.fmt(v1[1],2)}·${VZ.fmt(v2[1],2)}</p>
+       <p style="margin:4px 0 0" class="mono">       = <b style="color:${ortho?'var(--good)':'var(--hot)'}">${VZ.fmt(d,3)}</b></p>
+       <p style="margin:8px 0 0">${ortho
+          ? '<b style="color:var(--good)">≈ 0 → 직교!</b> 두 축이 서로 간섭하지 않아요.'
+          : '0이 아니에요 → 비스듬함. 좌표 계산에 서로 섞여 들어가요.'}</p>`;
+  }
+  document.getElementById('ang').addEventListener('input', draw);
+  draw();
+})();
+
+// ---------- STEP 1 : 정사영 빼기 ----------
+(function(){
+  const b = LA.board({W:360,H:360,unit:48});
+  const v1 = [2.4, 0.6];   // = u₁ (고정 기준)
+  function draw(){
+    const v2 = [+document.getElementById('v2x').value, +document.getElementById('v2y').value];
+    document.getElementById('v2xv').textContent = VZ.fmt(v2[0],1);
+    document.getElementById('v2yv').textContent = VZ.fmt(v2[1],1);
+    const u1 = v1;
+    const p = proj(v2, u1);          // v₂의 정사영
+    const u2 = sub2(v2, p);          // 직교 성분
+    let svg = LA.transformSVG(b, I, {R:5, showBasis:false, shape:null});
+    let extra = '';
+    extra += LA.arrow(b, u1[0], u1[1], 'var(--q)', 'v₁=u₁');
+    extra += LA.arrow(b, v2[0], v2[1], 'var(--k)', 'v₂');
+    extra += LA.arrow(b, p[0], p[1], 'var(--v)', 'proj');           // 정사영 벡터
+    extra += dashLine(b, v2, p, 'var(--v)');                         // v₂ → 그림자
+    extra += LA.arrow(b, u2[0], u2[1], 'var(--good)', 'u₂');         // 직교 성분
+    extra += rightAngleMark(b, [0,0], u1, u2, 'var(--good)');        // u₁⊥u₂ 직각
+    svg = svg.replace('</svg>', extra + '</svg>');
+    document.getElementById('board1').innerHTML = svg;
+    const c = dot2(v2, u1) / dot2(u1, u1);
+    const check = dot2(u1, u2);
+    document.getElementById('proj1calc').innerHTML =
+      `<div class="ttl">정사영 계수와 검산</div>
+       <p style="margin:0" class="mono">c = v₂·u₁ ⁄ u₁·u₁ = ${VZ.fmt(dot2(v2,u1),2)} ⁄ ${VZ.fmt(dot2(u1,u1),2)} = ${VZ.fmt(c,3)}</p>
+       <p style="margin:6px 0 0" class="mono">u₂ = v₂ − c·u₁ = (${VZ.fmt(u2[0],2)}, ${VZ.fmt(u2[1],2)})</p>
+       <p style="margin:6px 0 0" class="mono">검산 u₁·u₂ = <b style="color:var(--good)">${VZ.fmt(check,4)}</b> ≈ 0 ✓</p>`;
+  }
+  document.getElementById('v2x').addEventListener('input', draw);
+  document.getElementById('v2y').addEventListener('input', draw);
+  draw();
+})();
+
+// ---------- STEP 2 : Gram-Schmidt 2단계 ----------
+(function(){
+  const b = LA.board({W:360,H:360,unit:46});
+  const v1 = [2.2, 0.8];
+  const v2 = [0.6, 2.0];
+  const u1 = v1;
+  const u2 = sub2(v2, proj(v2, u1));
+  const q1 = scale2(u1, 1 / norm2(u1));
+  const q2 = scale2(u2, 1 / norm2(u2));
+  let svg = LA.transformSVG(b, I, {R:5, showBasis:false, shape:null});
+  svg = svg.replace('</svg>',
+    LA.arrow(b, v1[0], v1[1], 'rgba(55,189,248,.45)', 'v₁') +
+    LA.arrow(b, v2[0], v2[1], 'rgba(251,113,133,.45)', 'v₂') +
+    LA.arrow(b, q1[0], q1[1], 'var(--q)', 'q₁') +
+    LA.arrow(b, q2[0], q2[1], 'var(--good)', 'q₂') +
+    rightAngleMark(b, [0,0], q1, q2, 'var(--good)') +
+    '</svg>');
+  document.getElementById('board2').innerHTML = svg;
+  const mono = (s) => `<p style="margin:4px 0 0;font-size:12px" class="mono">${s}</p>`;
+  document.getElementById('gs2calc').innerHTML =
+    `<div class="callout q">
+       <div class="ttl">① 직교화</div>
+       ${mono(`u₁ = v₁ = (${VZ.fmt(u1[0],2)}, ${VZ.fmt(u1[1],2)})`)}
+       ${mono(`u₂ = v₂ − (v₂·u₁ ⁄ u₁·u₁)u₁ = (${VZ.fmt(u2[0],2)}, ${VZ.fmt(u2[1],2)})`)}
+     </div>
+     <div class="callout good" style="margin-top:12px">
+       <div class="ttl">② 정규화 (길이 1)</div>
+       ${mono(`q₁ = u₁ ⁄ |u₁| = u₁ ⁄ ${VZ.fmt(norm2(u1),3)} = (${VZ.fmt(q1[0],2)}, ${VZ.fmt(q1[1],2)})`)}
+       ${mono(`q₂ = u₂ ⁄ |u₂| = u₂ ⁄ ${VZ.fmt(norm2(u2),3)} = (${VZ.fmt(q2[0],2)}, ${VZ.fmt(q2[1],2)})`)}
+       ${mono(`|q₁| = ${VZ.fmt(norm2(q1),3)},  |q₂| = ${VZ.fmt(norm2(q2),3)}`)}
+     </div>`;
+})();
+
+// ---------- STEP 3 : 직각 검증 ----------
+(function(){
+  const b = LA.board({W:360,H:360,unit:70});
+  const v1 = [2.0, 1.1];
+  const v2 = [-0.7, 1.6];
+  const u1 = v1;
+  const u2 = sub2(v2, proj(v2, u1));
+  const q1 = scale2(u1, 1 / norm2(u1));
+  const q2 = scale2(u2, 1 / norm2(u2));
+  // q1,q2 를 열로 갖는 직교행렬로 격자를 그려 "직각 격자" 강조
+  const Q = [[q1[0], q2[0]], [q1[1], q2[1]]];
+  let svg = LA.transformSVG(b, Q, {R:4, showBasis:false, shape:null,
+    gridColor:'rgba(52,211,153,.16)'});
+  svg = svg.replace('</svg>',
+    LA.arrow(b, q1[0], q1[1], 'var(--q)', 'q₁') +
+    LA.arrow(b, q2[0], q2[1], 'var(--good)', 'q₂') +
+    rightAngleMark(b, [0,0], q1, q2, 'var(--good)') +
+    '</svg>');
+  document.getElementById('board3').innerHTML = svg;
+  const d = dot2(q1, q2);
+  document.getElementById('verify3').innerHTML =
+    `<div class="ttl">직교성 검증</div>
+     <p style="margin:0" class="mono">q₁·q₂ = ${VZ.fmt(q1[0],3)}·${VZ.fmt(q2[0],3)} + ${VZ.fmt(q1[1],3)}·${VZ.fmt(q2[1],3)}</p>
+     <p style="margin:4px 0 0" class="mono">      = <b style="color:var(--good)">${VZ.fmt(d,4)}</b> ≈ 0 ✓</p>
+     <p style="margin:8px 0 0" class="mono">|q₁| = ${VZ.fmt(norm2(q1),3)},  |q₂| = ${VZ.fmt(norm2(q2),3)}</p>
+     <p style="margin:8px 0 0">→ 길이 1 + 내적 0 = <b style="color:var(--good)">정규직교기저</b>. 격자가 완벽한 직각 정사각형이에요.</p>`;
+})();
+</script>
+</body>
+</html>

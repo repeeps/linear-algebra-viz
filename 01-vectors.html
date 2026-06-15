@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>01 벡터 · 선형대수, 눈으로 보기</title>
+<link rel="stylesheet" href="shared/theme.css">
+</head>
+<body>
+<div class="wrap">
+  <div class="topnav" id="topnav"></div>
+
+  <header>
+    <div class="tag">PART 1 · VECTORS & SPACE</div>
+    <h1>벡터 — 화살표이자 숫자 목록</h1>
+    <p class="intro">벡터는 두 얼굴을 가져요. 하나는 <b>원점에서 뻗은 화살표</b>, 다른 하나는 <b>숫자 목록 [x, y]</b>. 둘은 같은 것의 다른 표현일 뿐이에요. 슬라이더로 직접 움직이며 덧셈·스칼라배·기저까지, 벡터가 무엇인지 눈으로 익혀 보세요.</p>
+  </header>
+
+  <nav class="stepper" id="stepper">
+    <button data-s="0" class="active">00 · 화살표 = 숫자</button>
+    <button data-s="1">01 · 벡터 덧셈</button>
+    <button data-s="2">02 · 스칼라배</button>
+    <button data-s="3">03 · 좌표 = 기저</button>
+  </nav>
+
+  <!-- STEP 0 -->
+  <section class="panel show" data-panel="0">
+    <span class="kicker" style="color:var(--hot)">Step 00 — Arrow = List of Numbers</span>
+    <h2>벡터 = 화살표이자 숫자 목록</h2>
+    <p class="lead">벡터 하나는 <b>원점에서 한 점으로 향하는 화살표</b>예요. 동시에 그 점의 좌표 <b>[x, y]</b>라는 숫자 목록이기도 하죠. 슬라이더를 움직이면 화살표와 숫자가 <b>똑같이</b> 변해요 — 같은 것의 두 얼굴이니까요.</p>
+    <div class="row" style="gap:24px;align-items:flex-start;justify-content:center">
+      <div id="board0"></div>
+      <div style="flex:1;min-width:240px">
+        <div class="ctrl"><label style="color:var(--q)">x</label><input type="range" id="v0x" min="-5" max="5" step="0.5" value="3"><span class="val" id="v0xv">3.0</span></div>
+        <div class="ctrl"><label style="color:var(--q)">y</label><input type="range" id="v0y" min="-5" max="5" step="0.5" value="2"><span class="val" id="v0yv">2.0</span></div>
+        <div class="callout q" style="margin-top:12px">
+          <div class="ttl">같은 벡터, 두 표현</div>
+          <p style="margin:0">화살표 → <span id="v0arrow" class="mono" style="color:var(--q)"></span></p>
+          <p style="margin:8px 0 0">숫자 목록 → <span id="v0list"></span></p>
+        </div>
+      </div>
+    </div>
+    <p class="note" style="margin-top:6px">→ "벡터 = (3, 2)"라고 쓰면, 그건 <b>오른쪽 3칸·위로 2칸 떨어진 점을 가리키는 화살표</b>와 정확히 같은 뜻이에요.</p>
+  </section>
+
+  <!-- STEP 1 -->
+  <section class="panel" data-panel="1">
+    <span class="kicker" style="color:var(--q)">Step 01 — Vector Addition</span>
+    <h2>벡터 덧셈 = 꼬리물기 (tip-to-tail)</h2>
+    <p class="lead">두 벡터를 더하려면 <b>v를 그리고, 그 끝(tip)에서 w를 이어 그려요</b>. w의 끝이 도착하는 곳이 바로 <b>v + w</b>예요. 좌표로는 그냥 <b>성분별 합</b>이고요. 평행사변형도 함께 보여 드려요.</p>
+    <div class="row" style="gap:24px;align-items:flex-start;justify-content:center">
+      <div id="board1"></div>
+      <div style="flex:1;min-width:240px">
+        <div class="ctrl"><label style="color:var(--q)">v.x</label><input type="range" id="vx" min="-5" max="5" step="0.5" value="3"><span class="val" id="vxv">3.0</span></div>
+        <div class="ctrl"><label style="color:var(--q)">v.y</label><input type="range" id="vy" min="-5" max="5" step="0.5" value="1"><span class="val" id="vyv">1.0</span></div>
+        <div class="ctrl"><label style="color:var(--k)">w.x</label><input type="range" id="wx" min="-5" max="5" step="0.5" value="1"><span class="val" id="wxv">1.0</span></div>
+        <div class="ctrl"><label style="color:var(--k)">w.y</label><input type="range" id="wy" min="-5" max="5" step="0.5" value="2.5"><span class="val" id="wyv">2.5</span></div>
+        <div id="addCalc" class="callout good" style="margin-top:12px"></div>
+      </div>
+    </div>
+    <p class="note" style="margin-top:6px">→ <b style="color:var(--q)">v</b>(시안)에 이어 그린 <b style="color:var(--k)">w</b>(코랄)의 점선 끝이 <b style="color:var(--good)">v + w</b>(그린)예요. 순서를 바꿔 더해도(w 먼저) 같은 점에 도착해요 — 그래서 평행사변형이 생기죠.</p>
+  </section>
+
+  <!-- STEP 2 -->
+  <section class="panel" data-panel="2">
+    <span class="kicker" style="color:var(--v)">Step 02 — Scalar Multiplication</span>
+    <h2>스칼라배 = 늘이고 뒤집기</h2>
+    <p class="lead">벡터에 숫자(스칼라) <code class="mono">c</code>를 곱하면 <b>방향은 같은 직선 위에 머물면서 길이만 바뀌어요</b>. <b>|c| &gt; 1</b>이면 늘어나고, <b>0 &lt; |c| &lt; 1</b>이면 줄어들고, <b>c &lt; 0</b>이면 정반대 방향으로 뒤집혀요.</p>
+    <div class="row" style="gap:24px;align-items:flex-start;justify-content:center">
+      <div id="board2"></div>
+      <div style="flex:1;min-width:240px">
+        <div class="ctrl"><label style="color:var(--v)">v.x</label><input type="range" id="svx" min="-4" max="4" step="0.5" value="2"><span class="val" id="svxv">2.0</span></div>
+        <div class="ctrl"><label style="color:var(--v)">v.y</label><input type="range" id="svy" min="-4" max="4" step="0.5" value="1.5"><span class="val" id="svyv">1.5</span></div>
+        <div class="ctrl"><label style="color:var(--hot)">스칼라 c</label><input type="range" id="sc" min="-2" max="2" step="0.1" value="1.5"><span class="val" id="scv">1.5</span></div>
+        <div id="scaleCalc" class="callout v" style="margin-top:12px"></div>
+      </div>
+    </div>
+    <p class="note" style="margin-top:6px">→ 원래 <b style="color:var(--v)">v</b>는 옅게, 늘어난 <b style="color:var(--hot)">c·v</b>는 진하게 그려요. 슬라이더로 c를 음수로 내려 보면 화살표가 원점을 지나 반대편으로 넘어가요.</p>
+  </section>
+
+  <!-- STEP 3 -->
+  <section class="panel" data-panel="3">
+    <span class="kicker" style="color:var(--good)">Step 03 — Coordinates = Combination of Basis</span>
+    <h2>좌표 = 기저벡터의 조합</h2>
+    <p class="lead">좌표 <code class="mono">(x, y)</code>가 뜻하는 건 사실 <b>x·î + y·ĵ</b>예요. <b style="color:var(--q)">î = (1, 0)</b>을 x배, <b style="color:var(--k)">ĵ = (0, 1)</b>을 y배 한 뒤 꼬리물기로 더하면 정확히 그 점에 닿죠. 즉 모든 좌표는 <b>기저벡터의 선형결합</b>이에요.</p>
+    <div class="row" style="gap:24px;align-items:flex-start;justify-content:center">
+      <div id="board3"></div>
+      <div style="flex:1;min-width:240px">
+        <div class="ctrl"><label>x</label><input type="range" id="bx" min="-5" max="5" step="1" value="3"><span class="val" id="bxv">3</span></div>
+        <div class="ctrl"><label>y</label><input type="range" id="by" min="-5" max="5" step="1" value="2"><span class="val" id="byv">2</span></div>
+        <div id="basisCalc" class="callout good" style="margin-top:12px"></div>
+      </div>
+    </div>
+    <p class="note" style="margin-top:6px">→ <b style="color:var(--q)">파랑 î</b>를 x번, <b style="color:var(--k)">빨강 ĵ</b>를 y번 이어 붙이면 도착하는 점이 (x, y)예요. "기저를 어떻게 조합하면 이 점이 나오나?"의 답이 곧 좌표죠. 그럼 <b>기저를 통째로 바꾸면?</b> — 그 이야기가 다음 장 <b>span(생성)</b>으로 이어져요.</p>
+  </section>
+
+  <p class="foot">// 모든 화살표는 좌표를 실제로 계산해 그립니다. · <a href="index.html">목차</a></p>
+</div>
+
+<script src="shared/lib.js"></script>
+<script>
+VZ.mountTopnav('#topnav', '01 · Vectors');
+VZ.setupStepper();
+const LA = VZ.LA;
+const I = [[1,0],[0,1]];
+
+// 화살표를 board 위에 합성하기 위한 작은 헬퍼: 격자 SVG + 추가 내부 마크업
+function boardSVG(b, inner, R){
+  let s = `<svg width="${b.W}" height="${b.H}" viewBox="0 0 ${b.W} ${b.H}" style="max-width:100%;display:block">`;
+  s += LA.gridPaths(b, I, R);
+  s += inner;
+  s += `</svg>`;
+  return s;
+}
+
+// ---------- STEP 0 ----------
+(function(){
+  const b = LA.board({W:340,H:340,unit:30});
+  function draw(){
+    const x = +document.getElementById('v0x').value, y = +document.getElementById('v0y').value;
+    document.getElementById('v0xv').textContent = VZ.fmt(x,1);
+    document.getElementById('v0yv').textContent = VZ.fmt(y,1);
+    const inner = LA.arrow(b, x, y, 'var(--q)', 'v', {dot:true, lw:3});
+    document.getElementById('board0').innerHTML = boardSVG(b, inner, 5);
+    document.getElementById('v0arrow').textContent = `원점 → (${VZ.fmt(x,1)}, ${VZ.fmt(y,1)})`;
+    document.getElementById('v0list').innerHTML =
+      `<span class="vec q"><span class="n">${VZ.fmt(x,1)}</span><span class="n">${VZ.fmt(y,1)}</span></span>`;
+  }
+  document.getElementById('v0x').addEventListener('input', draw);
+  document.getElementById('v0y').addEventListener('input', draw);
+  draw();
+})();
+
+// ---------- STEP 1 ----------
+(function(){
+  const b = LA.board({W:360,H:360,unit:28});
+  function read(id){ return +document.getElementById(id).value; }
+  // 시작점이 옮겨진 화살표 (꼬리물기용)
+  function arrowFrom(b, x0, y0, x1, y1, color, label, dashed){
+    const X0=b.X(x0), Y0=b.Y(y0), X1=b.X(x1), Y1=b.Y(y1);
+    const id = 'tt'+Math.round(Math.abs(x1*53+y1*89))+color.replace(/[^a-z0-9]/gi,'');
+    let s = `<defs><marker id="${id}" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto"><path d="M0,0 L9,4.5 L0,9 Z" fill="${color}"/></marker></defs>`;
+    s += `<line x1="${X0}" y1="${Y0}" x2="${X1}" y2="${Y1}" stroke="${color}" stroke-width="2.5" ${dashed?'stroke-dasharray="5 4"':''} marker-end="url(#${id})"/>`;
+    return s;
+  }
+  function draw(){
+    const vx=read('vx'), vy=read('vy'), wx=read('wx'), wy=read('wy');
+    ['vx','vy','wx','wy'].forEach(i=>document.getElementById(i+'v').textContent=VZ.fmt(read(i),1));
+    const sx=vx+wx, sy=vy+wy;
+    let inner = '';
+    // 평행사변형 (옅게)
+    const P = [[0,0],[vx,vy],[sx,sy],[wx,wy]].map(([x,y])=>`${b.X(x).toFixed(1)},${b.Y(y).toFixed(1)}`).join(' ');
+    inner += `<polygon points="${P}" fill="rgba(52,211,153,.08)" stroke="rgba(52,211,153,.3)" stroke-width="1" stroke-dasharray="4 4"/>`;
+    // v (원점→v)
+    inner += LA.arrow(b, vx, vy, 'var(--q)', 'v', {lw:3});
+    // w를 v의 끝에서 이어 그림 (꼬리물기)
+    inner += arrowFrom(b, vx, vy, sx, sy, 'var(--k)', 'w', true);
+    // v+w (원점→합, 진하게)
+    inner += LA.arrow(b, sx, sy, 'var(--good)', 'v+w', {dot:true, lw:3.5});
+    document.getElementById('board1').innerHTML = boardSVG(b, inner, 6);
+    document.getElementById('addCalc').innerHTML =
+      `<div class="ttl">v + w = 성분별 합</div>
+       <p style="margin:0" class="mono">v = (${VZ.fmt(vx,1)}, ${VZ.fmt(vy,1)})</p>
+       <p style="margin:4px 0 0" class="mono">w = (${VZ.fmt(wx,1)}, ${VZ.fmt(wy,1)})</p>
+       <p style="margin:8px 0 0" class="mono">x: ${VZ.fmt(vx,1)} + ${VZ.fmt(wx,1)} = <b style="color:var(--good)">${VZ.fmt(sx,1)}</b></p>
+       <p style="margin:2px 0 0" class="mono">y: ${VZ.fmt(vy,1)} + ${VZ.fmt(wy,1)} = <b style="color:var(--good)">${VZ.fmt(sy,1)}</b></p>
+       <p style="margin:8px 0 0" class="mono">v + w = (<b style="color:var(--good)">${VZ.fmt(sx,1)}, ${VZ.fmt(sy,1)}</b>)</p>`;
+  }
+  ['vx','vy','wx','wy'].forEach(i=>document.getElementById(i).addEventListener('input',draw));
+  draw();
+})();
+
+// ---------- STEP 2 ----------
+(function(){
+  const b = LA.board({W:360,H:360,unit:34});
+  function read(id){ return +document.getElementById(id).value; }
+  function draw(){
+    const vx=read('svx'), vy=read('svy'), c=read('sc');
+    document.getElementById('svxv').textContent=VZ.fmt(vx,1);
+    document.getElementById('svyv').textContent=VZ.fmt(vy,1);
+    document.getElementById('scv').textContent=VZ.fmt(c,1);
+    const cx=c*vx, cy=c*vy;
+    let inner = '';
+    // 원래 v (옅게)
+    inner += LA.arrow(b, vx, vy, 'rgba(192,132,252,.45)', null, {lw:2});
+    // c·v (진하게)
+    inner += LA.arrow(b, cx, cy, 'var(--hot)', 'c·v', {dot:true, lw:3.2});
+    document.getElementById('board2').innerHTML = boardSVG(b, inner, 6);
+    let effect;
+    if (Math.abs(c) < 0.001) effect = '<b style="color:var(--k)">0 벡터로 붕괴</b> (점이 됨)';
+    else if (c < 0) effect = `<b style="color:var(--k)">반대 방향</b>으로 뒤집힘` + (Math.abs(c)>1?', 그리고 늘어남':(Math.abs(c)<1?', 그리고 줄어듦':''));
+    else if (Math.abs(c) > 1) effect = '<b style="color:var(--good)">늘어남</b> (같은 방향)';
+    else if (Math.abs(c) < 1) effect = '<b style="color:var(--good)">줄어듦</b> (같은 방향)';
+    else effect = '그대로 (c = 1)';
+    document.getElementById('scaleCalc').innerHTML =
+      `<div class="ttl">c · v 계산</div>
+       <p style="margin:0" class="mono">v = (${VZ.fmt(vx,1)}, ${VZ.fmt(vy,1)}),  c = ${VZ.fmt(c,1)}</p>
+       <p style="margin:8px 0 0" class="mono">c·v = (${VZ.fmt(c,1)}·${VZ.fmt(vx,1)}, ${VZ.fmt(c,1)}·${VZ.fmt(vy,1)})</p>
+       <p style="margin:2px 0 0" class="mono">    = (<b style="color:var(--hot)">${VZ.fmt(cx,2)}, ${VZ.fmt(cy,2)}</b>)</p>
+       <p style="margin:8px 0 0">효과 → ${effect}</p>`;
+  }
+  ['svx','svy','sc'].forEach(i=>document.getElementById(i).addEventListener('input',draw));
+  draw();
+})();
+
+// ---------- STEP 3 ----------
+(function(){
+  const b = LA.board({W:360,H:360,unit:30});
+  function read(id){ return +document.getElementById(id).value; }
+  function arrowFrom(b, x0, y0, x1, y1, color, label, dashed){
+    const X0=b.X(x0), Y0=b.Y(y0), X1=b.X(x1), Y1=b.Y(y1);
+    const id = 'bs'+Math.round(Math.abs(x1*41+y1*73))+color.replace(/[^a-z0-9]/gi,'');
+    let s = `<defs><marker id="${id}" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto"><path d="M0,0 L9,4.5 L0,9 Z" fill="${color}"/></marker></defs>`;
+    s += `<line x1="${X0}" y1="${Y0}" x2="${X1}" y2="${Y1}" stroke="${color}" stroke-width="2.5" ${dashed?'stroke-dasharray="5 4"':''} marker-end="url(#${id})"/>`;
+    return s;
+  }
+  function draw(){
+    const x=read('bx'), y=read('by');
+    document.getElementById('bxv').textContent=VZ.fmt(x,0);
+    document.getElementById('byv').textContent=VZ.fmt(y,0);
+    let inner = '';
+    // x·î : 원점에서 (x,0) 까지 (파랑/시안 — 엔진 기저색과 통일)
+    if (x !== 0) inner += LA.arrow(b, x, 0, 'var(--q)', 'x·î', {lw:3});
+    // y·ĵ : (x,0)에서 (x,y) 까지 꼬리물기 (빨강/코랄)
+    if (y !== 0) inner += arrowFrom(b, x, 0, x, y, 'var(--k)', 'y·ĵ', true);
+    // 결과 점 (x,y)
+    inner += LA.arrow(b, x, y, 'var(--good)', `(${x}, ${y})`, {dot:true, lw:3.2});
+    document.getElementById('board3').innerHTML = boardSVG(b, inner, 6);
+    document.getElementById('basisCalc').innerHTML =
+      `<div class="ttl">(x, y) = x·î + y·ĵ</div>
+       <p style="margin:0" class="mono"><span style="color:var(--q)">î = (1, 0)</span>,  <span style="color:var(--k)">ĵ = (0, 1)</span></p>
+       <p style="margin:8px 0 0" class="mono"><span style="color:var(--q)">${VZ.fmt(x,0)}·î</span> + <span style="color:var(--k)">${VZ.fmt(y,0)}·ĵ</span></p>
+       <p style="margin:2px 0 0" class="mono">= (${VZ.fmt(x,0)}, 0) + (0, ${VZ.fmt(y,0)})</p>
+       <p style="margin:2px 0 0" class="mono">= (<b style="color:var(--good)">${VZ.fmt(x,0)}, ${VZ.fmt(y,0)}</b>)</p>
+       <p style="margin:8px 0 0">좌표는 곧 <b>기저벡터의 선형결합</b>이에요.</p>`;
+  }
+  document.getElementById('bx').addEventListener('input',draw);
+  document.getElementById('by').addEventListener('input',draw);
+  draw();
+})();
+</script>
+</body>
+</html>

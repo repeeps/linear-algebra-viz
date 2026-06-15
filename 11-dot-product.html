@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>11 내적 · 선형대수, 눈으로 보기</title>
+<link rel="stylesheet" href="shared/theme.css">
+</head>
+<body>
+<div class="wrap">
+  <div class="topnav" id="topnav"></div>
+
+  <header>
+    <div class="tag">PART 4 · DOT &amp; ORTHOGONALITY</div>
+    <h1>내적 — 두 벡터의 닮음을 재는 자</h1>
+    <p class="intro">내적(dot product)은 두 벡터를 받아 <b>숫자 하나</b>를 내놓아요. 그 숫자는 곧 <b>한 벡터를 다른 벡터 위에 정사영한 그림자의 길이</b>이자, <b>두 방향이 얼마나 닮았는지</b>를 재는 값입니다. 직교(수직)면 0, 같은 편이면 양수, 반대편이면 음수예요.</p>
+  </header>
+
+  <nav class="stepper" id="stepper">
+    <button data-s="0" class="active">00 · 두 정의</button>
+    <button data-s="1">01 · 내적 = 투영</button>
+    <button data-s="2">02 · 부호의 의미</button>
+    <button data-s="3">03 · 코사인 유사도</button>
+  </nav>
+
+  <!-- STEP 0 -->
+  <section class="panel show" data-panel="0">
+    <span class="kicker" style="color:var(--hot)">Step 00 — Two Definitions, One Number</span>
+    <h2>내적의 두 정의는 항상 같은 값</h2>
+    <p class="lead">대수적으로는 <b>성분끼리 곱해 더하고</b>, 기하적으로는 <b>두 크기에 사이각의 코사인을 곱해요</b>. 슬라이더로 두 벡터를 움직이면, 두 방식이 늘 같은 숫자를 내놓는 걸 확인할 수 있어요.</p>
+    <div class="formula" style="margin-bottom:18px">a · b = aₓbₓ + aᵧbᵧ &nbsp;=&nbsp; |a| |b| cos θ</div>
+    <div class="row" style="gap:24px;align-items:flex-start;justify-content:center">
+      <div id="board0"></div>
+      <div style="flex:1;min-width:240px">
+        <div class="label" style="color:var(--q)">벡터 a (파랑)</div>
+        <div class="ctrl"><label style="color:var(--q)">aₓ</label><input type="range" id="ax" min="-4" max="4" step="0.1" value="3"><span class="val" id="axv">3.0</span></div>
+        <div class="ctrl"><label style="color:var(--q)">aᵧ</label><input type="range" id="ay" min="-4" max="4" step="0.1" value="1"><span class="val" id="ayv">1.0</span></div>
+        <div class="label" style="color:var(--k);margin-top:10px">벡터 b (빨강)</div>
+        <div class="ctrl"><label style="color:var(--k)">bₓ</label><input type="range" id="bx" min="-4" max="4" step="0.1" value="1"><span class="val" id="bxv">1.0</span></div>
+        <div class="ctrl"><label style="color:var(--k)">bᵧ</label><input type="range" id="by" min="-4" max="4" step="0.1" value="2.5"><span class="val" id="byv">2.5</span></div>
+        <div id="dotCalc" class="callout good" style="margin-top:14px"></div>
+      </div>
+    </div>
+    <p class="note" style="margin-top:6px">→ 두 줄의 결과가 늘 일치해요. 대수 정의는 <b>계산하기 편하고</b>, 기하 정의는 <b>의미를 알려줘요</b>. 같은 숫자를 두 얼굴로 보는 셈이에요.</p>
+  </section>
+
+  <!-- STEP 1 -->
+  <section class="panel" data-panel="1">
+    <span class="kicker" style="color:var(--q)">Step 01 — Dot = Projection Length</span>
+    <h2>내적은 "그림자의 길이"</h2>
+    <p class="lead">b를 a 방향으로 <b>정사영</b>하면 a 위에 그림자가 생겨요. 그 그림자의 길이는 <code class="mono">a·b / |a|</code>. 햇빛이 a에 수직으로 내리쬔다고 상상하면, b가 a 위에 드리우는 그림자가 바로 이거예요.</p>
+    <div class="row" style="gap:24px;align-items:flex-start;justify-content:center">
+      <div id="board1"></div>
+      <div style="flex:1;min-width:240px">
+        <div class="label" style="color:var(--q)">벡터 a (투영 받는 방향)</div>
+        <div class="ctrl"><label style="color:var(--q)">aₓ</label><input type="range" id="ax1" min="-4" max="4" step="0.1" value="3"><span class="val" id="ax1v">3.0</span></div>
+        <div class="ctrl"><label style="color:var(--q)">aᵧ</label><input type="range" id="ay1" min="-4" max="4" step="0.1" value="0.5"><span class="val" id="ay1v">0.5</span></div>
+        <div class="label" style="color:var(--k);margin-top:10px">벡터 b (그림자 던지는 벡터)</div>
+        <div class="ctrl"><label style="color:var(--k)">bₓ</label><input type="range" id="bx1" min="-4" max="4" step="0.1" value="1.5"><span class="val" id="bx1v">1.5</span></div>
+        <div class="ctrl"><label style="color:var(--k)">bᵧ</label><input type="range" id="by1" min="-4" max="4" step="0.1" value="3"><span class="val" id="by1v">3.0</span></div>
+        <div id="projCalc" class="callout q" style="margin-top:14px"></div>
+      </div>
+    </div>
+    <p class="note" style="margin-top:6px">→ 초록 선분이 <b>그림자(투영)</b>, 점선이 b에서 a로 내린 <b>수직선</b>이에요. 그림자 길이 × |a| = 내적입니다.</p>
+  </section>
+
+  <!-- STEP 2 -->
+  <section class="panel" data-panel="2">
+    <span class="kicker" style="color:var(--v)">Step 02 — The Sign Tells Direction</span>
+    <h2>부호 하나로 방향 관계를 안다</h2>
+    <p class="lead">내적의 <b>부호</b>는 두 벡터가 어느 편에 있는지를 말해줘요. <b>θ&lt;90° → 양수</b>(같은 편), <b>θ=90° → 0</b>(직교!), <b>θ&gt;90° → 음수</b>(반대편). a를 고정하고 b를 한 바퀴 돌리며 부호가 어떻게 바뀌는지 보세요.</p>
+    <div class="row" style="gap:24px;align-items:flex-start;justify-content:center">
+      <div id="board2"></div>
+      <div style="flex:1;min-width:240px">
+        <div class="label" style="color:var(--k)">b의 각도 θ_b (a는 0°에 고정)</div>
+        <div class="ctrl"><label style="color:var(--k)">θ_b</label><input type="range" id="ang" min="0" max="360" step="1" value="55"><span class="val" id="angv">55°</span></div>
+        <div id="signCalc" class="callout v" style="margin-top:14px"></div>
+        <div id="signNote" class="note" style="margin-top:12px"></div>
+      </div>
+    </div>
+    <p class="note" style="margin-top:6px">→ <b>직교(θ=90°·270°)에서 내적이 정확히 0</b>이 돼요. "수직 = 내적 0"은 선형대수 전체에서 가장 많이 쓰는 사실이에요.</p>
+  </section>
+
+  <!-- STEP 3 -->
+  <section class="panel" data-panel="3">
+    <span class="kicker" style="color:var(--good)">Step 03 — Cosine Similarity</span>
+    <h2>크기를 지우고 "방향만" 비교하기</h2>
+    <p class="lead">내적을 두 크기로 나누면 <code class="mono">cos θ</code>만 남아요: <code class="mono">cos θ = a·b / (|a||b|)</code>. 이게 <b>코사인 유사도</b>예요. 값은 −1~+1, 크기와 무관하게 <b>방향이 얼마나 닮았는지</b>만 재요.</p>
+    <div class="row" style="gap:24px;align-items:flex-start;justify-content:center">
+      <div id="board3"></div>
+      <div style="flex:1;min-width:240px">
+        <div class="label" style="color:var(--q)">벡터 a</div>
+        <div class="ctrl"><label style="color:var(--q)">aₓ</label><input type="range" id="ax3" min="-4" max="4" step="0.1" value="3"><span class="val" id="ax3v">3.0</span></div>
+        <div class="ctrl"><label style="color:var(--q)">aᵧ</label><input type="range" id="ay3" min="-4" max="4" step="0.1" value="2"><span class="val" id="ay3v">2.0</span></div>
+        <div class="label" style="color:var(--k);margin-top:10px">벡터 b</div>
+        <div class="ctrl"><label style="color:var(--k)">bₓ</label><input type="range" id="bx3" min="-4" max="4" step="0.1" value="2"><span class="val" id="bx3v">2.0</span></div>
+        <div class="ctrl"><label style="color:var(--k)">bᵧ</label><input type="range" id="by3" min="-4" max="4" step="0.1" value="2.8"><span class="val" id="by3v">2.8</span></div>
+        <div id="cosBar" style="margin-top:14px"></div>
+        <div id="cosCalc" class="callout good" style="margin-top:8px"></div>
+      </div>
+    </div>
+    <div class="callout v" style="margin-top:14px">
+      <div class="ttl">ML 연결 — 어디서 만날까?</div>
+      <p>• <b>문서·임베딩 유사도</b>: 텍스트를 벡터로 바꾼 뒤, 두 임베딩의 코사인 유사도로 "비슷한 문서"를 찾아요. 길이(문서 분량)는 무시하고 의미 방향만 봐요.</p>
+      <p>• <b>어텐션의 Q·K</b>: 트랜스포머 어텐션 점수 <code>Q·Kᵀ</code>가 바로 내적이에요. 쿼리와 키가 닮을수록 큰 점수 → softmax로 "어디에 주목할지"를 정해요.</p>
+      <p style="margin-bottom:0">즉 <b>내적 한 줄</b>이 추천·검색·언어모델 어텐션의 심장에 들어 있어요.</p>
+    </div>
+  </section>
+
+  <p class="foot">// 모든 값은 두 정의로 실제 계산해 비교합니다. · <a href="index.html">목차</a></p>
+</div>
+
+<script src="shared/lib.js"></script>
+<script>
+VZ.mountTopnav('#topnav', '11 · Dot Product');
+VZ.setupStepper();
+const LA = VZ.LA;
+const I = [[1,0],[0,1]];   // 항등(보드는 변형 없이 표준 격자만)
+const mag = (x,y) => Math.hypot(x,y);
+const dot2 = (ax,ay,bx,by) => ax*bx + ay*by;
+const angOf = (x,y) => Math.atan2(y,x);                       // rad
+const degBetween = (ax,ay,bx,by) => {
+  const c = dot2(ax,ay,bx,by) / ((mag(ax,ay)*mag(bx,by)) || 1);
+  return Math.acos(Math.max(-1, Math.min(1, c))) * 180/Math.PI;
+};
+
+// ---------- STEP 0 ----------
+(function(){
+  const b = LA.board({W:340,H:340,unit:36});
+  const ids = ['ax','ay','bx','by'];
+  function read(){ return ids.map(i=>+document.getElementById(i).value); }
+  function draw(){
+    const [ax,ay,bx,by] = read();
+    ids.forEach(i=>document.getElementById(i+'v').textContent = VZ.fmt(+document.getElementById(i).value,1));
+    let svg = `<svg width="${b.W}" height="${b.H}" viewBox="0 0 ${b.W} ${b.H}" style="max-width:100%;display:block">`;
+    svg += LA.gridPaths(b, I, 5);
+    svg += LA.arrow(b, ax, ay, 'var(--q)', 'a');
+    svg += LA.arrow(b, bx, by, 'var(--k)', 'b');
+    svg += `</svg>`;
+    document.getElementById('board0').innerHTML = svg;
+
+    const algeb = dot2(ax,ay,bx,by);
+    const ma = mag(ax,ay), mb = mag(bx,by);
+    const theta = degBetween(ax,ay,bx,by);
+    const geo = ma*mb*Math.cos(theta*Math.PI/180);
+    document.getElementById('dotCalc').innerHTML =
+      `<div class="ttl">a · b = ${VZ.fmt(algeb,2)}</div>
+       <p class="mono" style="margin:0">대수: ${VZ.fmt(ax,1)}·${VZ.fmt(bx,1)} + ${VZ.fmt(ay,1)}·${VZ.fmt(by,1)} = <b style="color:var(--good)">${VZ.fmt(algeb,2)}</b></p>
+       <p class="mono" style="margin:6px 0 0">기하: ${VZ.fmt(ma,2)} · ${VZ.fmt(mb,2)} · cos(${VZ.fmt(theta,1)}°) = <b style="color:var(--good)">${VZ.fmt(geo,2)}</b></p>
+       <p class="mono" style="margin:6px 0 0">사이각 θ = <b style="color:var(--hot)">${VZ.fmt(theta,1)}°</b> &nbsp;·&nbsp; 두 정의 차이 = ${VZ.fmt(Math.abs(algeb-geo),3)}</p>`;
+  }
+  ids.forEach(i=>document.getElementById(i).addEventListener('input',draw));
+  draw();
+})();
+
+// ---------- STEP 1 ----------
+(function(){
+  const b = LA.board({W:360,H:360,unit:38});
+  const ids = ['ax1','ay1','bx1','by1'];
+  function read(){ return ids.map(i=>+document.getElementById(i).value); }
+  function draw(){
+    const [ax,ay,bx,by] = read();
+    ids.forEach(i=>document.getElementById(i+'v').textContent = VZ.fmt(+document.getElementById(i).value,1));
+    const ma = mag(ax,ay) || 1e-9;
+    const d = dot2(ax,ay,bx,by);
+    const projLen = d / ma;             // a 방향 그림자 길이(부호 포함)
+    const ux = ax/ma, uy = ay/ma;       // â (단위벡터)
+    const fx = ux*projLen, fy = uy*projLen;   // 그림자 끝점(=투영 벡터)
+
+    let svg = `<svg width="${b.W}" height="${b.H}" viewBox="0 0 ${b.W} ${b.H}" style="max-width:100%;display:block">`;
+    svg += LA.gridPaths(b, I, 5);
+    // 수직선(b 끝 → 그림자 끝)
+    svg += `<line x1="${b.X(bx).toFixed(1)}" y1="${b.Y(by).toFixed(1)}" x2="${b.X(fx).toFixed(1)}" y2="${b.Y(fy).toFixed(1)}" stroke="var(--muted)" stroke-width="1.5" stroke-dasharray="4 4"/>`;
+    // 그림자(투영) 선분 - 초록 굵게
+    svg += `<line x1="${b.cx}" y1="${b.cy}" x2="${b.X(fx).toFixed(1)}" y2="${b.Y(fy).toFixed(1)}" stroke="var(--good)" stroke-width="6" stroke-linecap="round" opacity="0.85"/>`;
+    svg += LA.arrow(b, ax, ay, 'var(--q)', 'a');
+    svg += LA.arrow(b, bx, by, 'var(--k)', 'b');
+    svg += `</svg>`;
+    document.getElementById('board1').innerHTML = svg;
+
+    document.getElementById('projCalc').innerHTML =
+      `<div class="ttl">a 방향 그림자 길이 = ${VZ.fmt(projLen,2)}</div>
+       <p class="mono" style="margin:0">a·b = ${VZ.fmt(d,2)}</p>
+       <p class="mono" style="margin:6px 0 0">|a| = ${VZ.fmt(ma,2)}</p>
+       <p class="mono" style="margin:6px 0 0">그림자 = a·b / |a| = ${VZ.fmt(d,2)} / ${VZ.fmt(ma,2)} = <b style="color:var(--good)">${VZ.fmt(projLen,2)}</b></p>
+       <p class="note" style="margin:8px 0 0">${projLen<0?'그림자가 a의 <b>반대 방향</b> → 음수예요.':'그림자가 a와 <b>같은 방향</b> → 양수예요.'}</p>`;
+  }
+  ids.forEach(i=>document.getElementById(i).addEventListener('input',draw));
+  draw();
+})();
+
+// ---------- STEP 2 ----------
+(function(){
+  const b = LA.board({W:360,H:360,unit:40});
+  const aLen = 3.2, bLen = 2.6;
+  function draw(){
+    const deg = +document.getElementById('ang').value;
+    document.getElementById('angv').textContent = deg + '°';
+    const rad = deg*Math.PI/180;
+    const ax = aLen, ay = 0;                       // a 고정 (0°)
+    const bx = bLen*Math.cos(rad), by = bLen*Math.sin(rad);
+    const d = dot2(ax,ay,bx,by);
+    const near0 = Math.abs(d) < 0.06;
+
+    let svg = `<svg width="${b.W}" height="${b.H}" viewBox="0 0 ${b.W} ${b.H}" style="max-width:100%;display:block">`;
+    svg += LA.gridPaths(b, I, 5);
+    // 직교 영역 표시: a에 수직인 점선
+    svg += `<line x1="${b.X(0).toFixed(1)}" y1="${b.Y(-5).toFixed(1)}" x2="${b.X(0).toFixed(1)}" y2="${b.Y(5).toFixed(1)}" stroke="rgba(192,132,252,.35)" stroke-width="1.5" stroke-dasharray="5 5"/>`;
+    svg += LA.arrow(b, ax, ay, 'var(--q)', 'a');
+    svg += LA.arrow(b, bx, by, near0?'var(--v)':(d>0?'var(--good)':'var(--k)'), 'b');
+    svg += `</svg>`;
+    document.getElementById('board2').innerHTML = svg;
+
+    const sign = near0 ? '0 (직교!)' : (d>0 ? '양수 (+)' : '음수 (−)');
+    const col  = near0 ? 'var(--v)'  : (d>0 ? 'var(--good)' : 'var(--k)');
+    document.getElementById('signCalc').innerHTML =
+      `<div class="ttl" style="color:${col}">a · b = ${VZ.fmt(d,2)} → ${sign}</div>
+       <p class="mono" style="margin:0">θ ≈ ${VZ.fmt(deg>180?360-deg:deg,0)}° (a와 b 사이)</p>
+       <p class="mono" style="margin:6px 0 0">a·b = ${VZ.fmt(ax,1)}·${VZ.fmt(bx,2)} + ${VZ.fmt(ay,1)}·${VZ.fmt(by,2)} = <b style="color:${col}">${VZ.fmt(d,2)}</b></p>`;
+    const between = deg>180 ? 360-deg : deg;
+    document.getElementById('signNote').innerHTML =
+      between<89.4 ? '<b>같은 편</b>이에요 — 두 벡터가 예각을 이뤄요 (내적 양수).' :
+      between>90.6 ? '<b>반대 편</b>이에요 — 두 벡터가 둔각을 이뤄요 (내적 음수).' :
+      '<b style="color:var(--v)">거의 직교!</b> 사이각이 90°에 가까워 내적이 0에 붙어요.';
+  }
+  document.getElementById('ang').addEventListener('input',draw);
+  draw();
+})();
+
+// ---------- STEP 3 ----------
+(function(){
+  const b = LA.board({W:360,H:360,unit:38});
+  const ids = ['ax3','ay3','bx3','by3'];
+  function read(){ return ids.map(i=>+document.getElementById(i).value); }
+  function draw(){
+    const [ax,ay,bx,by] = read();
+    ids.forEach(i=>document.getElementById(i+'v').textContent = VZ.fmt(+document.getElementById(i).value,1));
+    const ma = mag(ax,ay), mb = mag(bx,by);
+    const d = dot2(ax,ay,bx,by);
+    const cos = d / ((ma*mb) || 1);
+    const theta = Math.acos(Math.max(-1,Math.min(1,cos)))*180/Math.PI;
+
+    let svg = `<svg width="${b.W}" height="${b.H}" viewBox="0 0 ${b.W} ${b.H}" style="max-width:100%;display:block">`;
+    svg += LA.gridPaths(b, I, 5);
+    svg += LA.arrow(b, ax, ay, 'var(--q)', 'a');
+    svg += LA.arrow(b, bx, by, 'var(--k)', 'b');
+    svg += `</svg>`;
+    document.getElementById('board3').innerHTML = svg;
+
+    // cos 막대: -1..+1 → 0..100%
+    const frac = (cos+1)/2;
+    const barCol = cos>0.05 ? 'var(--good)' : cos<-0.05 ? 'var(--k)' : 'var(--v)';
+    document.getElementById('cosBar').innerHTML =
+      `<div class="label">cos θ = ${VZ.fmt(cos,3)} &nbsp;(−1 ↔ +1)</div>
+       <div class="barrow"><div class="bw" style="font-size:13px">유사도</div>
+         <div class="track" style="position:relative">
+           <div style="position:absolute;left:50%;top:0;bottom:0;width:1px;background:var(--faint)"></div>
+           <div class="fill" style="width:${(frac*100).toFixed(1)}%;background:${barCol}"></div>
+         </div>
+         <div class="pct">${VZ.fmt(cos,2)}</div></div>`;
+    const verdict = cos>0.9 ? '거의 같은 방향 — 매우 유사' :
+                    cos>0.3 ? '비슷한 방향 — 유사' :
+                    cos>-0.3? '거의 직교 — 관련 약함' :
+                    cos>-0.9? '반대 기운 — 비유사' : '정반대 방향';
+    document.getElementById('cosCalc').innerHTML =
+      `<div class="ttl">cos θ = ${VZ.fmt(cos,3)} &nbsp;(θ ≈ ${VZ.fmt(theta,1)}°)</div>
+       <p class="mono" style="margin:0">a·b = ${VZ.fmt(d,2)} &nbsp;/&nbsp; (|a|·|b| = ${VZ.fmt(ma,2)}·${VZ.fmt(mb,2)} = ${VZ.fmt(ma*mb,2)})</p>
+       <p class="mono" style="margin:6px 0 0">= <b style="color:var(--good)">${VZ.fmt(cos,3)}</b> &nbsp;→&nbsp; ${verdict}</p>
+       <p class="note" style="margin:8px 0 0">크기를 바꿔도(같은 방향으로 길게/짧게) cos θ는 안 변해요 — <b>방향만</b> 봐요.</p>`;
+  }
+  ids.forEach(i=>document.getElementById(i).addEventListener('input',draw));
+  draw();
+})();
+</script>
+</body>
+</html>

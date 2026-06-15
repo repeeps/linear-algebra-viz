@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>03 선형독립 · 선형대수, 눈으로 보기</title>
+<link rel="stylesheet" href="shared/theme.css">
+</head>
+<body>
+<div class="wrap">
+  <div class="topnav" id="topnav"></div>
+
+  <header>
+    <div class="tag">PART 1 · VECTORS &amp; SPACE</div>
+    <h1>선형독립과 차원 — 진짜 새로운 방향은 몇 개?</h1>
+    <p class="intro">벡터 여러 개가 있어도 그중 일부는 <b>다른 것의 조합으로 만들 수 있는 군더더기</b>일 수 있어요. 서로를 만들어낼 수 없는 <b>독립</b> 벡터의 개수가 곧 그 공간의 <b>차원</b>입니다. 슬라이더로 직접 평행·종속을 만들어 보며 느껴 보세요.</p>
+  </header>
+
+  <nav class="stepper" id="stepper">
+    <button data-s="0" class="active">00 · 독립 vs 종속</button>
+    <button data-s="1">01 · 종속이면 납작</button>
+    <button data-s="2">02 · 차원 = 독립 개수</button>
+    <button data-s="3">03 · 왜 중요한가</button>
+  </nav>
+
+  <!-- STEP 0 -->
+  <section class="panel show" data-panel="0">
+    <span class="kicker" style="color:var(--hot)">Step 00 — Independent vs Dependent</span>
+    <h2>한 벡터가 다른 것의 배수면 "종속"</h2>
+    <p class="lead">두 벡터 <code class="mono">v</code>, <code class="mono">w</code>가 <b>평행</b>하면(하나가 다른 것의 스칼라배면) 서로를 만들 수 있으니 <b>종속</b>이에요. 판정은 두 벡터를 열로 세운 행렬의 <b>행렬식 det≈0</b>으로 실제 계산합니다.</p>
+    <div class="row" style="gap:24px;align-items:flex-start;justify-content:center">
+      <div id="board0"></div>
+      <div style="flex:1;min-width:240px">
+        <div class="label">벡터 v (파랑)</div>
+        <div class="ctrl"><label style="color:var(--q)">v.x</label><input type="range" id="vx" min="-3" max="3" step="0.5" value="2"><span class="val" id="vxv">2.0</span></div>
+        <div class="ctrl"><label style="color:var(--q)">v.y</label><input type="range" id="vy" min="-3" max="3" step="0.5" value="1"><span class="val" id="vyv">1.0</span></div>
+        <div class="label" style="margin-top:10px">벡터 w (빨강)</div>
+        <div class="ctrl"><label style="color:var(--k)">w.x</label><input type="range" id="wx" min="-3" max="3" step="0.5" value="-1"><span class="val" id="wxv">-1.0</span></div>
+        <div class="ctrl"><label style="color:var(--k)">w.y</label><input type="range" id="wy" min="-3" max="3" step="0.5" value="1.5"><span class="val" id="wyv">1.5</span></div>
+        <div id="indepNote" class="callout" style="margin-top:12px"></div>
+      </div>
+    </div>
+    <p class="note" style="margin-top:6px">→ w를 v와 같은 방향(또는 정반대)으로 맞춰 보세요. det이 0으로 떨어지며 <b style="color:var(--k)">종속</b>으로 판정됩니다.</p>
+  </section>
+
+  <!-- STEP 1 -->
+  <section class="panel" data-panel="1">
+    <span class="kicker" style="color:var(--q)">Step 01 — Dependent ⇒ Span Collapses</span>
+    <h2>종속이면 span(펼친 공간)이 납작해진다</h2>
+    <p class="lead">두 벡터로 만들 수 있는 모든 조합 <code class="mono">a·v + b·w</code>가 채우는 영역이 <b>span</b>이에요. 독립이면 <b>평면 전체</b>, 종속이면 둘이 같은 직선 위라 span도 <b>직선 하나</b>로 납작해집니다.</p>
+    <div class="view-toggle" id="span01"></div>
+    <div class="row" style="gap:24px;align-items:flex-start;justify-content:center;margin-top:8px">
+      <div id="board1"></div>
+      <div style="flex:1;min-width:220px">
+        <div id="spanMat"></div>
+        <p class="note" id="spanNote" style="margin-top:12px"></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- STEP 2 -->
+  <section class="panel" data-panel="2">
+    <span class="kicker" style="color:var(--v)">Step 02 — Dimension = # of Independent Vectors</span>
+    <h2>차원 = 독립 벡터의 개수</h2>
+    <p class="lead">2D 평면에서 독립 벡터는 <b>최대 2개</b>예요. 벡터가 3개라면 평면을 못 벗어나니 <b>하나는 반드시 나머지 둘의 조합</b>으로 표현돼요 — 즉 항상 종속입니다.</p>
+    <div class="row" style="gap:24px;align-items:flex-start;justify-content:center">
+      <div id="board2"></div>
+      <div style="flex:1;min-width:240px">
+        <div class="callout v">
+          <div class="ttl">2D의 세 벡터</div>
+          <p style="margin:0" class="mono">v₁ = (1, 0)</p>
+          <p style="margin:2px 0 0" class="mono">v₂ = (0, 1)</p>
+          <p style="margin:2px 0 0" class="mono">v₃ = (2, 3)</p>
+          <p style="margin:10px 0 0">v₃은 새 방향이 아니에요. 실제로 계산하면:</p>
+          <p style="margin:6px 0 0" class="mono"><b style="color:var(--good)">v₃ = 2·v₁ + 3·v₂</b></p>
+        </div>
+        <p class="note">→ v₃(초록)이 v₁·v₂가 만든 격자 위 점에 정확히 떨어지죠. 독립 벡터는 둘뿐, 그래서 <b>차원 = 2</b>.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- STEP 3 -->
+  <section class="panel" data-panel="3">
+    <span class="kicker" style="color:var(--good)">Step 03 — Why It Matters</span>
+    <h2>독립 기저라야 좌표가 유일하게 정해진다</h2>
+    <p class="lead">기저가 <b>독립</b>이면 어떤 점이든 <code class="mono">a·v + b·w</code>로 쓰는 방법이 <b>딱 하나</b>예요. 종속이면 같은 점을 <b>여러 (a, b)</b>로 쓸 수 있어 좌표가 애매해집니다.</p>
+    <div class="view-toggle" id="why03"></div>
+    <div class="row" style="gap:24px;align-items:flex-start;justify-content:center;margin-top:8px">
+      <div id="board3"></div>
+      <div style="flex:1;min-width:240px">
+        <div id="whyNote" class="callout good"></div>
+      </div>
+    </div>
+    <p class="note" style="margin-top:10px">→ 좌표의 유일성은 <b>역행렬</b>(→ 09)과 <b>rank</b>(→ 10)로 이어지는 핵심 개념이에요. 독립이면 가역, 종속이면 비가역입니다.</p>
+  </section>
+
+  <p class="foot">// 모든 판정은 det을 점마다 실제로 계산해 그립니다. · <a href="index.html">목차</a></p>
+</div>
+
+<script src="shared/lib.js"></script>
+<script>
+VZ.mountTopnav('#topnav', '03 · Independence');
+VZ.setupStepper();
+const LA = VZ.LA;
+const I = [[1,0],[0,1]];
+
+// ---------- STEP 0 : 독립 vs 종속 (det 실제 계산) ----------
+(function(){
+  const b = LA.board({W:360,H:360,unit:40});
+  const ids = ['vx','vy','wx','wy'];
+  function read(){ return ids.map(i=>+document.getElementById(i).value); }
+  function draw(){
+    const [vx,vy,wx,wy] = read();
+    ids.forEach(i=>document.getElementById(i+'v').textContent = VZ.fmt(+document.getElementById(i).value,1));
+    // 두 벡터를 열로 세운 행렬 [[vx,wx],[vy,wy]] 의 행렬식
+    const det = LA.det([[vx,wx],[vy,wy]]);
+    const dependent = Math.abs(det) < 0.05;
+
+    let s = `<svg width="${b.W}" height="${b.H}" viewBox="0 0 ${b.W} ${b.H}" style="max-width:100%;display:block">`;
+    s += LA.gridPaths(b, I, 7);
+    s += LA.arrow(b, vx, vy, 'var(--q)', 'v', {dot:true});
+    s += LA.arrow(b, wx, wy, 'var(--k)', 'w', {dot:true});
+    s += `</svg>`;
+    document.getElementById('board0').innerHTML = s;
+
+    const note = document.getElementById('indepNote');
+    note.className = 'callout ' + (dependent ? '' : 'good');
+    note.style.borderColor = dependent ? 'var(--k)' : '';
+    const par = n => n < 0 ? '(' + VZ.fmt(n,1) + ')' : VZ.fmt(n,1);   // 음수는 괄호로
+    note.innerHTML =
+      `<div class="ttl" style="color:${dependent?'var(--k)':'var(--good)'}">${dependent?'종속 (Dependent)':'독립 (Independent)'}</div>
+       <p style="margin:0" class="mono">det = vx·wy − vy·wx</p>
+       <p style="margin:4px 0 0" class="mono">= ${par(vx)}·${par(wy)} − ${par(vy)}·${par(wx)}
+          = <b style="color:${dependent?'var(--k)':'var(--good)'}">${VZ.fmt(det,2)}</b></p>
+       <p style="margin:8px 0 0">${dependent
+          ? '두 벡터가 <b style="color:var(--k)">평행</b>해요. 하나가 다른 것의 스칼라배 → 새 방향이 없어요.'
+          : 'det ≠ 0 → 두 벡터가 서로 다른 방향을 가리켜요. 둘로 평면 전체를 채울 수 있어요.'}</p>`;
+  }
+  ids.forEach(i=>document.getElementById(i).addEventListener('input',draw));
+  draw();
+})();
+
+// ---------- STEP 1 : 종속이면 span이 납작 ----------
+(function(){
+  const b = LA.board({W:360,H:360,unit:40});
+  const CASES = {
+    indep: { v:[2,1], w:[-1,1.5] },   // det = 2·1.5 − 1·(−1) = 3+1 = 4 ≠ 0
+    dep:   { v:[2,1], w:[-1,-0.5] },  // w = -0.5·v → det = 0
+  };
+  const tog = document.getElementById('span01');
+  tog.innerHTML = `<button data-c="indep" class="on">독립 → 평면</button><button data-c="dep">종속 → 직선</button>`;
+
+  function draw(key){
+    const {v,w} = CASES[key];
+    const det = LA.det([[v[0],w[0]],[v[1],w[1]]]);
+    const dependent = Math.abs(det) < 0.05;
+
+    let s = `<svg width="${b.W}" height="${b.H}" viewBox="0 0 ${b.W} ${b.H}" style="max-width:100%;display:block">`;
+    s += LA.gridPaths(b, I, 7);
+    // span 음영
+    if(dependent){
+      // 직선: v 방향으로 화면 끝까지 (양/음 방향)
+      const L = 30;
+      const x1=b.X(-v[0]*L), y1=b.Y(-v[1]*L), x2=b.X(v[0]*L), y2=b.Y(v[1]*L);
+      s += `<line x1="${x1.toFixed(1)}" y1="${y1.toFixed(1)}" x2="${x2.toFixed(1)}" y2="${y2.toFixed(1)}" stroke="var(--hot)" stroke-width="7" stroke-linecap="round" opacity="0.32"/>`;
+    } else {
+      // 평면 전체 음영
+      s += `<rect x="0" y="0" width="${b.W}" height="${b.H}" fill="var(--hot)" opacity="0.10"/>`;
+    }
+    s += LA.arrow(b, v[0], v[1], 'var(--q)', 'v', {dot:true});
+    s += LA.arrow(b, w[0], w[1], 'var(--k)', 'w', {dot:true});
+    s += `</svg>`;
+    document.getElementById('board1').innerHTML = s;
+
+    document.getElementById('spanMat').innerHTML = VZ.mxMatrix(
+      [[v[0],w[0]],[v[1],w[1]]],
+      {acc: dependent?'var(--k)':'var(--good)', title:'[ v  w ]', shape:`det = ${VZ.fmt(det,2)}`, fmtCell:x=>VZ.fmt(x,1)}
+    );
+    document.getElementById('spanNote').innerHTML = dependent
+      ? '<b style="color:var(--k)">종속</b> — w가 v의 배수(여기선 w = −0.5·v)라 둘 다 같은 직선 위. 어떻게 조합해도 그 <b>직선(1차원)</b>만 채워요. span은 납작한 직선.'
+      : '<b style="color:var(--good)">독립</b> — v와 w가 다른 방향. 둘의 조합 a·v + b·w로 <b>평면 전체(2차원)</b>를 빈틈없이 채워요. span = 온 평면.';
+  }
+  tog.addEventListener('click',e=>{
+    const x=e.target.closest('button'); if(!x)return;
+    tog.querySelectorAll('button').forEach(z=>z.classList.toggle('on',z===x));
+    draw(x.dataset.c);
+  });
+  draw('indep');
+})();
+
+// ---------- STEP 2 : 차원 = 독립 벡터의 개수 ----------
+(function(){
+  const b = LA.board({W:360,H:360,unit:40});
+  const v1=[1,0], v2=[0,1], v3=[2,3];   // v3 = 2·v1 + 3·v2
+  let s = `<svg width="${b.W}" height="${b.H}" viewBox="0 0 ${b.W} ${b.H}" style="max-width:100%;display:block">`;
+  s += LA.gridPaths(b, I, 7);
+  // v3로 가는 조합 경로 (점선): 원점→2·v1→2·v1+3·v2
+  const p0=[b.X(0),b.Y(0)], pa=[b.X(v3[0]),b.Y(0)], pb=[b.X(v3[0]),b.Y(v3[1])];
+  s += `<polyline points="${p0[0]},${p0[1]} ${pa[0]},${pa[1]} ${pb[0]},${pb[1]}" fill="none" stroke="var(--good)" stroke-width="1.5" stroke-dasharray="5 4" opacity="0.7"/>`;
+  s += LA.arrow(b, v1[0], v1[1], 'var(--q)', 'v₁');
+  s += LA.arrow(b, v2[0], v2[1], 'var(--k)', 'v₂');
+  s += LA.arrow(b, v3[0], v3[1], 'var(--good)', 'v₃', {dot:true});
+  s += `</svg>`;
+  document.getElementById('board2').innerHTML = s;
+})();
+
+// ---------- STEP 3 : 왜 중요한가 (좌표 유일성) ----------
+(function(){
+  const b = LA.board({W:360,H:360,unit:40});
+  const target=[3,2];
+  const CASES = {
+    indep: {
+      v:[2,0], w:[0,2],
+      // target = a·v + b·w → a=1.5, b=1
+    },
+    dep: { v:[1,1], w:[2,2] },   // 평행 → 종속
+  };
+  const tog = document.getElementById('why03');
+  tog.innerHTML = `<button data-c="indep" class="on">독립 기저 → 유일</button><button data-c="dep">종속 → 애매</button>`;
+
+  function draw(key){
+    const {v,w} = CASES[key];
+    const det = LA.det([[v[0],w[0]],[v[1],w[1]]]);
+    const dependent = Math.abs(det) < 0.05;
+
+    let s = `<svg width="${b.W}" height="${b.H}" viewBox="0 0 ${b.W} ${b.H}" style="max-width:100%;display:block">`;
+    s += LA.gridPaths(b, I, 7);
+    s += LA.arrow(b, v[0], v[1], 'var(--q)', 'v');
+    s += LA.arrow(b, w[0], w[1], 'var(--k)', 'w');
+
+    if(!dependent){
+      // 유일한 좌표 (a,b) = M⁻¹·target
+      const a=(target[0]*w[1]-target[1]*w[0])/det;
+      const bb=(v[0]*target[1]-v[1]*target[0])/det;
+      // 경로: 원점 → a·v → a·v + b·w
+      const p0=[b.X(0),b.Y(0)], pa=[b.X(a*v[0]),b.Y(a*v[1])], pt=[b.X(target[0]),b.Y(target[1])];
+      s += `<polyline points="${p0[0]},${p0[1]} ${pa[0]},${pa[1]} ${pt[0]},${pt[1]}" fill="none" stroke="var(--good)" stroke-width="1.5" stroke-dasharray="5 4" opacity="0.8"/>`;
+      s += LA.arrow(b, target[0], target[1], 'var(--good)', 'P', {dot:true});
+      s += `</svg>`;
+      document.getElementById('board3').innerHTML = s;
+      document.getElementById('whyNote').className='callout good';
+      document.getElementById('whyNote').innerHTML =
+        `<div class="ttl">유일한 좌표 ✓</div>
+         <p style="margin:0">점 <span class="mono">P = (${target[0]}, ${target[1]})</span> 를 독립 기저로 쓰는 법은 딱 하나:</p>
+         <p style="margin:8px 0 0" class="mono"><b style="color:var(--good)">P = ${VZ.fmt(a,1)}·v + ${VZ.fmt(bb,1)}·w</b></p>
+         <p style="margin:10px 0 0">det = ${VZ.fmt(det,1)} ≠ 0 → 좌표 (a, b)가 유일하게 결정돼요. 그래서 가역(→ 역행렬).</p>`;
+    } else {
+      // 종속: P는 직선 위가 아니면 표현 불가, 직선 위면 무한 표현. 여기선 직선 위 점 하나로 예시.
+      const Pd=[3,3];   // = 1·v + 1·w = 3·v + 0·w = ...  (v=[1,1], w=[2,2])
+      const L=30;
+      const x1=b.X(-v[0]*L), y1=b.Y(-v[1]*L), x2=b.X(v[0]*L), y2=b.Y(v[1]*L);
+      s += `<line x1="${x1.toFixed(1)}" y1="${y1.toFixed(1)}" x2="${x2.toFixed(1)}" y2="${y2.toFixed(1)}" stroke="var(--hot)" stroke-width="7" stroke-linecap="round" opacity="0.30"/>`;
+      s += LA.arrow(b, Pd[0], Pd[1], 'var(--good)', 'P', {dot:true});
+      s += `</svg>`;
+      document.getElementById('board3').innerHTML = s;
+      document.getElementById('whyNote').className='callout';
+      document.getElementById('whyNote').style.borderColor='var(--k)';
+      document.getElementById('whyNote').innerHTML =
+        `<div class="ttl" style="color:var(--k)">애매한 좌표 ✗</div>
+         <p style="margin:0">v=(1,1), w=(2,2)는 평행(종속, det=${VZ.fmt(det,1)}). 직선 위 점 <span class="mono">P=(3,3)</span>을 쓰는 법이 <b>무한히</b> 많아요:</p>
+         <p style="margin:8px 0 0" class="mono"><b style="color:var(--k)">P = 3·v + 0·w</b></p>
+         <p style="margin:2px 0 0" class="mono"><b style="color:var(--k)">P = 1·v + 1·w</b></p>
+         <p style="margin:2px 0 0" class="mono"><b style="color:var(--k)">P = 5·v − 1·w</b> … 끝없이</p>
+         <p style="margin:10px 0 0">좌표가 하나로 안 정해져요. 게다가 직선 밖 점은 아예 표현 불가 → 비가역.</p>`;
+    }
+  }
+  tog.addEventListener('click',e=>{
+    const x=e.target.closest('button'); if(!x)return;
+    tog.querySelectorAll('button').forEach(z=>z.classList.toggle('on',z===x));
+    draw(x.dataset.c);
+  });
+  draw('indep');
+})();
+</script>
+</body>
+</html>

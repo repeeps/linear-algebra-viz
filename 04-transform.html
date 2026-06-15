@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>04 선형변환 · 선형대수, 눈으로 보기</title>
+<link rel="stylesheet" href="shared/theme.css">
+</head>
+<body>
+<div class="wrap">
+  <div class="topnav" id="topnav"></div>
+
+  <header>
+    <div class="tag">PART 2 · TRANSFORMATIONS</div>
+    <h1>선형변환 — 공간 전체를 늘이고 돌리기</h1>
+    <p class="intro">행렬은 단순한 숫자표가 아니라 <b>공간을 변형하는 함수</b>예요. 입력 공간의 모든 점을 한꺼번에 옮기되, <b>격자선은 평행·등간격을 유지</b>하고 원점은 고정됩니다. 슬라이더로 행렬을 직접 바꿔 격자가 휘는 걸 보세요.</p>
+  </header>
+
+  <nav class="stepper" id="stepper">
+    <button data-s="0" class="active">00 · 선형이란?</button>
+    <button data-s="1">01 · 행렬 = î,ĵ의 행선지</button>
+    <button data-s="2">02 · 점 따라가기</button>
+    <button data-s="3">03 · 대표 변환들</button>
+  </nav>
+
+  <!-- STEP 0 -->
+  <section class="panel show" data-panel="0">
+    <span class="kicker" style="color:var(--hot)">Step 00 — What is Linear?</span>
+    <h2>격자가 평행·등간격을 유지하면 "선형"</h2>
+    <p class="lead">선형변환의 조건은 두 가지: <b>① 직선은 변환 후에도 직선</b>, <b>② 원점은 제자리</b>. 그러면 격자선이 휘거나 굽지 않고 <b>평행·등간격</b>을 유지해요. 오른쪽이 변환된 모습입니다.</p>
+    <div class="row" style="gap:24px;justify-content:center">
+      <div style="text-align:center"><div class="label">변환 전 (항등)</div><div id="board0a"></div></div>
+      <div style="text-align:center"><div class="label" style="color:var(--hot)">변환 후 (M 적용)</div><div id="board0b"></div></div>
+    </div>
+    <p class="note" style="margin-top:14px">→ <b>î</b>(파랑)와 <b>ĵ</b>(빨강)는 원래 (1,0),(0,1)이던 <b>기저벡터</b>예요. 변환은 이 둘을 새 위치로 보내고, 나머지 모든 점은 자동으로 따라갑니다.</p>
+  </section>
+
+  <!-- STEP 1 -->
+  <section class="panel" data-panel="1">
+    <span class="kicker" style="color:var(--q)">Step 01 — Matrix = Where î, ĵ Land</span>
+    <h2>행렬의 두 열 = î와 ĵ가 도착하는 좌표</h2>
+    <p class="lead">행렬 <code class="mono">M</code>의 <b>첫 번째 열</b>은 î가 가는 곳, <b>두 번째 열</b>은 ĵ가 가는 곳이에요. 슬라이더로 네 숫자를 바꾸면 격자 전체가 그에 맞춰 실시간으로 변형됩니다.</p>
+    <div class="row" style="gap:24px;align-items:flex-start;justify-content:center">
+      <div id="board1"></div>
+      <div style="flex:1;min-width:240px">
+        <div class="label">행렬 M (열 = î, ĵ의 행선지)</div>
+        <div id="matDisp" style="margin-bottom:14px"></div>
+        <div class="ctrl"><label style="color:var(--q)">î.x (a)</label><input type="range" id="a" min="-2" max="2" step="0.1" value="1"><span class="val" id="av">1.0</span></div>
+        <div class="ctrl"><label style="color:var(--q)">î.y (b)</label><input type="range" id="b" min="-2" max="2" step="0.1" value="0"><span class="val" id="bv">0.0</span></div>
+        <div class="ctrl"><label style="color:var(--k)">ĵ.x (c)</label><input type="range" id="c" min="-2" max="2" step="0.1" value="0"><span class="val" id="cv">0.0</span></div>
+        <div class="ctrl"><label style="color:var(--k)">ĵ.y (d)</label><input type="range" id="d" min="-2" max="2" step="0.1" value="1"><span class="val" id="dv">1.0</span></div>
+        <p class="note" id="detNote" style="margin-top:8px"></p>
+      </div>
+    </div>
+    <p class="note" style="margin-top:6px">→ 슬라이더를 움직여 보세요. î만 옮기면 세로선들이, ĵ만 옮기면 가로선들이 따라 기울어요.</p>
+  </section>
+
+  <!-- STEP 2 -->
+  <section class="panel" data-panel="2">
+    <span class="kicker" style="color:var(--v)">Step 02 — Follow a Point</span>
+    <h2>임의의 점은 M·v 로 계산된다</h2>
+    <p class="lead">점 <code class="mono">v=(x,y)</code>가 어디로 가는지는 <b>î·x + ĵ·y</b>, 즉 행렬곱 <code class="mono">M·v</code>로 정해져요. 점을 옮기며 계산이 어떻게 나오는지 보세요.</p>
+    <div class="row" style="gap:24px;align-items:flex-start;justify-content:center">
+      <div id="board2"></div>
+      <div style="flex:1;min-width:240px">
+        <div class="ctrl"><label>점 x</label><input type="range" id="px" min="-3" max="3" step="0.5" value="2"><span class="val" id="pxv">2.0</span></div>
+        <div class="ctrl"><label>점 y</label><input type="range" id="py" min="-3" max="3" step="0.5" value="1"><span class="val" id="pyv">1.0</span></div>
+        <div id="ptCalc" class="callout v" style="margin-top:12px"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- STEP 3 -->
+  <section class="panel" data-panel="3">
+    <span class="kicker" style="color:var(--good)">Step 03 — Famous Transforms</span>
+    <h2>회전 · 스케일 · 전단 · 반사</h2>
+    <p class="lead">자주 쓰는 변환들을 버튼으로 적용해 보세요. 각 변환이 격자를 어떻게 바꾸는지가 곧 그 행렬의 의미예요.</p>
+    <div class="view-toggle" id="presets" style="flex-wrap:wrap"></div>
+    <div class="row" style="gap:24px;align-items:flex-start;justify-content:center;margin-top:8px">
+      <div id="board3"></div>
+      <div style="flex:1;min-width:220px">
+        <div id="presetMat"></div>
+        <p class="note" id="presetNote" style="margin-top:12px"></p>
+      </div>
+    </div>
+  </section>
+
+  <p class="foot">// 모든 격자는 행렬을 점마다 실제로 적용해 그립니다. · <a href="index.html">목차</a></p>
+</div>
+
+<script src="shared/lib.js"></script>
+<script>
+VZ.mountTopnav('#topnav', '04 · Transform');
+VZ.setupStepper();
+const LA = VZ.LA;
+const matHTML = (M) => VZ.mxMatrix(M, {acc:'var(--hot)', fmtCell:v=>VZ.fmt(v,1)});
+
+// ---------- STEP 0 ----------
+(function(){
+  const ba = LA.board({W:280,H:280,unit:34}), bb = LA.board({W:280,H:280,unit:34});
+  document.getElementById('board0a').innerHTML = LA.transformSVG(ba, [[1,0],[0,1]], {R:5});
+  document.getElementById('board0b').innerHTML = LA.transformSVG(bb, [[1,0.5],[0.5,1.2]], {R:5});
+})();
+
+// ---------- STEP 1 ----------
+(function(){
+  const b = LA.board({W:360,H:360,unit:40});
+  const ids = ['a','b','c','d'];
+  function read(){ return ids.map(i=>+document.getElementById(i).value); }
+  function draw(){
+    const [a,bb,c,d] = read();
+    ids.forEach(i=>document.getElementById(i+'v').textContent = VZ.fmt(+document.getElementById(i).value,1));
+    const M = [[a,c],[bb,d]];           // 열 = î(a,b), ĵ(c,d)
+    document.getElementById('board1').innerHTML = LA.transformSVG(b, M, {R:6});
+    document.getElementById('matDisp').innerHTML = matHTML(M);
+    const det = LA.det(M);
+    document.getElementById('detNote').innerHTML =
+      `행렬식 det = ${VZ.fmt(det,2)} → 넓이 ${det<0?'<b style="color:var(--k)">뒤집힘(음수)</b>':'배율 '+VZ.fmt(Math.abs(det),2)}. ` +
+      (Math.abs(det)<0.05?'<b style="color:var(--k)">0에 가까움 = 공간이 납작해짐(차원 붕괴)!</b>':'');
+  }
+  ids.forEach(i=>document.getElementById(i).addEventListener('input',draw));
+  draw();
+})();
+
+// ---------- STEP 2 ----------
+(function(){
+  const b = LA.board({W:360,H:360,unit:40});
+  const M = [[1,0.6],[0.4,1.2]];        // 고정 변환 예시
+  function draw(){
+    const x=+document.getElementById('px').value, y=+document.getElementById('py').value;
+    document.getElementById('pxv').textContent=VZ.fmt(x,1);
+    document.getElementById('pyv').textContent=VZ.fmt(y,1);
+    document.getElementById('board2').innerHTML = LA.transformSVG(b, M, {R:6, showBasis:true, shape:null, pts:[[x,y,'var(--good)',"v'"]]});
+    const nx = M[0][0]*x+M[0][1]*y, ny = M[1][0]*x+M[1][1]*y;
+    document.getElementById('ptCalc').innerHTML =
+      `<div class="ttl">M · v 계산</div>
+       <p style="margin:0" class="mono">v = (${VZ.fmt(x,1)}, ${VZ.fmt(y,1)})</p>
+       <p style="margin:6px 0 0" class="mono">x' = ${M[0][0]}·${VZ.fmt(x,1)} + ${M[0][1]}·${VZ.fmt(y,1)} = <b style="color:var(--good)">${VZ.fmt(nx,2)}</b></p>
+       <p style="margin:2px 0 0" class="mono">y' = ${M[1][0]}·${VZ.fmt(x,1)} + ${M[1][1]}·${VZ.fmt(y,1)} = <b style="color:var(--good)">${VZ.fmt(ny,2)}</b></p>`;
+  }
+  document.getElementById('px').addEventListener('input',draw);
+  document.getElementById('py').addEventListener('input',draw);
+  draw();
+})();
+
+// ---------- STEP 3 ----------
+(function(){
+  const b = LA.board({W:360,H:360,unit:40});
+  const r = Math.PI/6;
+  const PRESETS = [
+    ['회전 30°', [[Math.cos(r),-Math.sin(r)],[Math.sin(r),Math.cos(r)]], '모양·크기 보존, 방향만 회전 (det=1)'],
+    ['스케일 2×', [[2,0],[0,2]], '모든 방향으로 2배 확대 (det=4 → 넓이 4배)'],
+    ['x-전단', [[1,1],[0,1]], '위로 갈수록 옆으로 밀림 (shear). 평행사변형이 됨 (det=1)'],
+    ['반사 (x축)', [[1,0],[0,-1]], 'x축 기준 뒤집기. det=-1 → 방향이 반전돼요'],
+    ['납작하게', [[1,0.5],[2,1]], 'det=0 → 모든 점이 한 직선 위로! 차원이 무너짐(비가역)'],
+  ];
+  const btns = document.getElementById('presets');
+  btns.innerHTML = PRESETS.map((p,i)=>`<button data-i="${i}" class="${i===0?'on':''}">${p[0]}</button>`).join('');
+  let anim3 = null;
+  function show(i){
+    const [name,M,desc] = PRESETS[i];
+    if (anim3) anim3();   // 이전 애니메이션 취소(연타 시 겹침/깜빡임 방지)
+    anim3 = LA.animateTo(M, cur=>{ document.getElementById('board3').innerHTML = LA.transformSVG(b, cur, {R:6}); });
+    document.getElementById('presetMat').innerHTML = matHTML(M);
+    document.getElementById('presetNote').innerHTML = `<b>${name}</b> — ${desc}`;
+  }
+  btns.addEventListener('click',e=>{
+    const x=e.target.closest('button'); if(!x)return;
+    btns.querySelectorAll('button').forEach(z=>z.classList.toggle('on',z===x));
+    show(+x.dataset.i);
+  });
+  show(0);
+})();
+</script>
+</body>
+</html>

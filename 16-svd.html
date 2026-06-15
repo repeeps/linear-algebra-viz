@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>16 SVD · 선형대수, 눈으로 보기</title>
+<link rel="stylesheet" href="shared/theme.css">
+</head>
+<body>
+<div class="wrap">
+  <div class="topnav" id="topnav"></div>
+
+  <header>
+    <div class="tag">PART 5 · EIGEN & DECOMPOSITION</div>
+    <h1>SVD — 모든 행렬은 회전·스케일·회전</h1>
+    <p class="intro">고윳값 분해는 정사각·대칭 행렬에서만 깔끔했어요. <b>특이값 분해(SVD)</b>는 <b>어떤 행렬이든</b> 세 단계로 쪼갭니다: <b>A = U Σ Vᵀ</b> — 먼저 <b>회전(Vᵀ)</b>, 다음 <b>축 스케일(Σ)</b>, 마지막 <b>회전(U)</b>. 단위원이 타원으로 바뀌는 그 변형의 정체예요.</p>
+  </header>
+
+  <nav class="stepper" id="stepper">
+    <button data-s="0" class="active">00 · 회전→스케일→회전</button>
+    <button data-s="1">01 · 특이값 σ = 타원 반축</button>
+    <button data-s="2">02 · 2×2 SVD 계산</button>
+    <button data-s="3">03 · 저랭크 근사·압축</button>
+  </nav>
+
+  <!-- STEP 0 -->
+  <section class="panel show" data-panel="0">
+    <span class="kicker" style="color:var(--hot)">Step 00 — Rotate · Scale · Rotate</span>
+    <h2>어떤 행렬이든 "회전 → 축 스케일 → 회전"</h2>
+    <p class="lead">행렬 <code class="mono">A</code>를 단위원(과 격자)에 적용하면 <b>항상 타원</b>이 나와요. SVD는 이 변형을 <b>Vᵀ(회전)</b> → <b>Σ(축만 늘이기)</b> → <b>U(회전)</b> 세 단계로 분해합니다. 버튼을 누르면 순서대로 애니메이션돼요.</p>
+    <div class="view-toggle" id="stages0"></div>
+    <div class="row" style="gap:24px;align-items:flex-start;justify-content:center;margin-top:8px">
+      <div id="board0"></div>
+      <div style="flex:1;min-width:230px">
+        <div class="label">현재 적용된 행렬</div>
+        <div id="mat0" style="margin-bottom:14px"></div>
+        <div id="note0" class="callout q"></div>
+        <p class="note" style="margin-top:10px">→ <b>파란 점선 원</b>은 변환 전 단위원, <b>노란 타원</b>은 변환 후 모습이에요. 회전 단계는 모양을 안 바꾸고, 스케일 단계에서만 원이 타원으로 늘어납니다.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- STEP 1 -->
+  <section class="panel" data-panel="1">
+    <span class="kicker" style="color:var(--q)">Step 01 — Singular Values</span>
+    <h2>특이값 σ = 타원의 반축 길이</h2>
+    <p class="lead">단위원이 변해서 생긴 타원의 <b>장축 반지름이 σ₁</b>, <b>단축 반지름이 σ₂</b>예요. 가장 큰 <b>σ₁</b>은 이 행렬이 한 방향으로 <b>늘일 수 있는 최대 배율</b>이고, σ₂는 최소 배율이죠. 슬라이더로 행렬을 바꿔 보세요.</p>
+    <div class="row" style="gap:24px;align-items:flex-start;justify-content:center">
+      <div id="board1"></div>
+      <div style="flex:1;min-width:240px">
+        <div class="label">행렬 A (열 = î, ĵ의 행선지)</div>
+        <div id="mat1" style="margin-bottom:12px"></div>
+        <div class="ctrl"><label style="color:var(--q)">a</label><input type="range" id="a" min="-3" max="3" step="0.1" value="2"><span class="val" id="av">2.0</span></div>
+        <div class="ctrl"><label style="color:var(--q)">b</label><input type="range" id="b" min="-3" max="3" step="0.1" value="1"><span class="val" id="bv">1.0</span></div>
+        <div class="ctrl"><label style="color:var(--k)">c</label><input type="range" id="c" min="-3" max="3" step="0.1" value="-0.5"><span class="val" id="cv">-0.5</span></div>
+        <div class="ctrl"><label style="color:var(--k)">d</label><input type="range" id="d" min="-3" max="3" step="0.1" value="1.5"><span class="val" id="dv">1.5</span></div>
+        <div id="sigBox" class="callout good" style="margin-top:12px"></div>
+      </div>
+    </div>
+    <p class="note" style="margin-top:6px">→ <b style="color:var(--good)">초록 화살표</b>가 타원의 두 반축(σ₁, σ₂). 행렬을 납작하게 만들면 σ₂가 0으로 줄며 타원이 선분으로 무너져요(= 차원 붕괴).</p>
+  </section>
+
+  <!-- STEP 2 -->
+  <section class="panel" data-panel="2">
+    <span class="kicker" style="color:var(--v)">Step 02 — Computing 2×2 SVD</span>
+    <h2>AᵀA의 고윳값 = σ²</h2>
+    <p class="lead">SVD의 핵심 공식: <b>AᵀA의 고윳값이 σ₁², σ₂²</b>이고, 그 <b>고유벡터가 V의 열</b>이에요. 그다음 <b>U = A·V·Σ⁻¹</b>로 U를 얻습니다. 아래는 구체 행렬로 직접 계산한 결과예요.</p>
+    <div class="view-toggle" id="demos2"></div>
+    <div class="formula" style="margin:14px 0 18px">AᵀA v = σ² v &nbsp;&nbsp;→&nbsp;&nbsp; σ = √(AᵀA의 고윳값) &nbsp;&nbsp;|&nbsp;&nbsp; U = A V Σ⁻¹</div>
+    <div id="calc2"></div>
+    <div id="prod2" style="margin-top:20px"></div>
+    <div id="check2" class="callout good" style="margin-top:16px"></div>
+  </section>
+
+  <!-- STEP 3 -->
+  <section class="panel" data-panel="3">
+    <span class="kicker" style="color:var(--good)">Step 03 — Low-Rank Approximation</span>
+    <h2>큰 σ만 남기면 = 압축</h2>
+    <p class="lead">SVD는 행렬을 <b>σ가 큰 성분부터 차곡차곡</b> 더한 합으로 봐요: <code class="mono">A = σ₁u₁v₁ᵀ + σ₂u₂v₂ᵀ + …</code>. 작은 σ 항을 <b>버리면</b> 정보를 거의 안 잃고 행렬을 <b>근사</b>할 수 있어요. 이게 압축의 원리입니다.</p>
+    <div class="row" style="gap:24px;align-items:flex-start;justify-content:center">
+      <div style="flex:1;min-width:260px">
+        <div class="ctrl"><label>유지할 σ 개수 (rank)</label><input type="range" id="rank" min="1" max="2" step="1" value="2"><span class="val" id="rankv">2</span></div>
+        <div id="rankMat" style="margin-top:10px"></div>
+        <div id="rankNote" class="callout v" style="margin-top:14px"></div>
+      </div>
+      <div style="flex:1;min-width:220px">
+        <div id="board3"></div>
+      </div>
+    </div>
+    <div class="grid3" style="margin-top:22px">
+      <div class="card"><h4 style="color:var(--q)">이미지 압축</h4><p class="note">사진을 행렬로 보고 큰 σ 수십 개만 저장 → 용량 ↓, 화질은 거의 그대로.</p></div>
+      <div class="card"><h4 style="color:var(--v)">PCA (다음 17장)</h4><p class="note">데이터의 σ가 큰 방향 = 분산이 가장 큰 축. 차원축소의 토대예요.</p></div>
+      <div class="card"><h4 style="color:var(--hot)">추천 시스템</h4><p class="note">사용자×영화 행렬을 저랭크로 근사 → 빈칸(안 본 영화) 평점을 예측.</p></div>
+      <div class="card"><h4 style="color:var(--good)">임베딩 축소</h4><p class="note">고차원 임베딩을 큰 σ 방향만 남겨 압축. 의미는 유지, 차원은 절감.</p></div>
+    </div>
+    <p class="note" style="margin-top:18px">→ rank를 1로 내리면 타원이 <b>선분</b>으로 납작해져요. 가장 중요한 한 방향만 남긴 거죠. 다음 <b>17장 PCA</b>에서 이 아이디어를 데이터에 그대로 적용합니다.</p>
+  </section>
+
+  <p class="foot">// 모든 SVD는 AᵀA 고윳값을 닫힌형으로 풀어 실제 계산합니다. · <a href="index.html">목차</a></p>
+</div>
+
+<script src="shared/lib.js"></script>
+<script>
+VZ.mountTopnav('#topnav', '16 · SVD');
+VZ.setupStepper();
+const LA = VZ.LA;
+const fmt = VZ.fmt;
+
+/* ============================================================
+   2×2 SVD — 닫힌형. A = U Σ Vᵀ
+   AᵀA의 고윳값 = σ², 고유벡터 = V의 열. U = A V Σ⁻¹.
+   (node로 UΣVᵀ=A 검산 통과)
+   ============================================================ */
+function svd2(A){
+  const a=A[0][0], b=A[0][1], c=A[1][0], d=A[1][1];
+  // AᵀA = [[a²+c², ab+cd],[ab+cd, b²+d²]]
+  const p = a*a+c*c, q = a*b+c*d, r = b*b+d*d;
+  const ata = [[p,q],[q,r]];
+  const T = p + r, D = p*r - q*q;
+  const disc = Math.sqrt(Math.max(0, T*T/4 - D));
+  const l1 = Math.max(0, T/2 + disc);
+  const l2 = Math.max(0, T/2 - disc);
+  const s1 = Math.sqrt(l1), s2 = Math.sqrt(l2);
+  function eigvec(l){
+    const m00 = p-l, m01 = q, m10 = q, m11 = r-l;
+    let vx, vy;
+    if (Math.abs(m00)+Math.abs(m01) > Math.abs(m10)+Math.abs(m11)){ vx=-m01; vy=m00; }
+    else { vx=-m11; vy=m10; }
+    let n = Math.hypot(vx,vy);
+    if (n < 1e-12){ vx=1; vy=0; n=1; }
+    return [vx/n, vy/n];
+  }
+  const v1 = eigvec(l1);
+  const v2 = [-v1[1], v1[0]];
+  const V = [[v1[0], v2[0]],[v1[1], v2[1]]];
+  const mv = (M,v)=>[M[0][0]*v[0]+M[0][1]*v[1], M[1][0]*v[0]+M[1][1]*v[1]];
+  let u1, u2;
+  if (s1 > 1e-9){ const av=mv(A,v1); u1=[av[0]/s1, av[1]/s1]; } else u1=[1,0];
+  if (s2 > 1e-9){ const av=mv(A,v2); u2=[av[0]/s2, av[1]/s2]; } else u2=[-u1[1],u1[0]];
+  const U = [[u1[0],u2[0]],[u1[1],u2[1]]];
+  const S = [[s1,0],[0,s2]];
+  return {U,S,V, s1,s2, u1,u2,v1,v2, ata};
+}
+const mul = (A,B)=>[
+  [A[0][0]*B[0][0]+A[0][1]*B[1][0], A[0][0]*B[0][1]+A[0][1]*B[1][1]],
+  [A[1][0]*B[0][0]+A[1][1]*B[1][0], A[1][0]*B[0][1]+A[1][1]*B[1][1]]
+];
+const Tr = M=>[[M[0][0],M[1][0]],[M[0][1],M[1][1]]];
+const matHTML = (M,acc)=>VZ.mxMatrix(M, {acc:acc||'var(--hot)', fmtCell:v=>fmt(v,2)});
+
+// 단위원 → (M 적용) 타원 path 점 생성
+function ellipsePath(b, M, N=72){
+  let pts='';
+  for(let k=0;k<=N;k++){
+    const t = k/N*2*Math.PI;
+    const [x,y] = LA.apply(M, Math.cos(t), Math.sin(t));
+    pts += `${b.X(x).toFixed(1)},${b.Y(y).toFixed(1)} `;
+  }
+  return pts.trim();
+}
+// 단위원(변환 전) 점선
+function unitCircleSVG(b){
+  const r = b.unit;
+  return `<circle cx="${b.cx}" cy="${b.cy}" r="${r}" fill="none" stroke="var(--q)" stroke-width="1.5" stroke-dasharray="4 4" opacity="0.7"/>`;
+}
+// 격자+타원+기저 통합 SVG
+function svdBoard(b, M, opts={}){
+  const {showCircle=true, axes=null, R=6} = opts;
+  let s = `<svg width="${b.W}" height="${b.H}" viewBox="0 0 ${b.W} ${b.H}" style="max-width:100%;display:block">`;
+  s += LA.gridPaths(b, M, R);
+  if (showCircle) s += unitCircleSVG(b);
+  // 타원
+  s += `<polyline points="${ellipsePath(b,M)}" fill="rgba(251,191,36,.12)" stroke="var(--hot)" stroke-width="2.5"/>`;
+  // 기저
+  const i = LA.apply(M,1,0), j = LA.apply(M,0,1);
+  s += LA.arrow(b, i[0], i[1], 'var(--q)', 'î');
+  s += LA.arrow(b, j[0], j[1], 'var(--k)', 'ĵ');
+  // 반축 화살표 (σ방향)
+  if (axes){
+    axes.forEach(([vx,vy,label])=>{ s += LA.arrow(b, vx, vy, 'var(--good)', label, {lw:3, dot:true}); });
+  }
+  s += `</svg>`;
+  return s;
+}
+
+// ---------- STEP 0 ----------
+(function(){
+  const b = LA.board({W:340,H:340,unit:34});
+  const A = [[2,1],[0,3]];           // det>0 → U·V 둘 다 진짜 회전(반사 아님), σ비≈1.8로 타원도 뚜렷
+  const r = svd2(A);
+  const Vt = Tr(r.V);
+  const SVt = mul(r.S, Vt);
+  // 단계 행렬: 0=항등, 1=Vᵀ, 2=Σ·Vᵀ, 3=U·Σ·Vᵀ(=A)
+  const STAGES = [
+    ['시작', [[1,0],[0,1]], '변환 전 — 깨끗한 단위원. 아직 아무것도 안 했어요.'],
+    ['① Vᵀ 회전', Vt, '<b>회전</b>만 — 원은 그대로 원. 좌표축을 σ 방향에 맞추는 정렬 단계예요. (det=±1, 모양 보존)'],
+    ['② Σ 스케일', SVt, '<b>축 방향으로만 늘이기</b> — 여기서 원이 <b>타원</b>이 돼요. σ₁='+fmt(r.s1,2)+', σ₂='+fmt(r.s2,2)+' 배율.'],
+    ['③ U 회전', A, '<b>다시 회전</b>해 최종 위치로. 이제 전체가 A와 똑같아요: <b>U·Σ·Vᵀ = A</b>.'],
+  ];
+  let cur = 0, anim0 = null;
+  const tog = document.getElementById('stages0');
+  tog.innerHTML = STAGES.map((st,i)=>`<button data-i="${i}" class="${i===0?'on':''}">${st[0]}</button>`).join('');
+  function render(M){
+    document.getElementById('board0').innerHTML = svdBoard(b, M, {showCircle:true});
+  }
+  function show(i){
+    cur = i;
+    const [name,M,desc] = STAGES[i];
+    const from = (i===0) ? [[1,0],[0,1]] : STAGES[i-1][1];  // 직전 단계에서 보간 → 단계 누적
+    if (anim0) anim0();                                      // 이전 애니메이션 취소(겹침 방지)
+    anim0 = LA.animateTo(M, render, 700, null, from);
+    document.getElementById('mat0').innerHTML = matHTML(M, i===0?'var(--line)':(i===2?'var(--hot)':'var(--good)'));
+    document.getElementById('note0').innerHTML = `<div class="ttl">${name}</div><p style="margin:0">${desc}</p>`;
+  }
+  tog.addEventListener('click',e=>{
+    const x=e.target.closest('button'); if(!x)return;
+    tog.querySelectorAll('button').forEach(z=>z.classList.toggle('on',z===x));
+    show(+x.dataset.i);
+  });
+  show(0);
+})();
+
+// ---------- STEP 1 ----------
+(function(){
+  const b = LA.board({W:360,H:360,unit:40});
+  const ids = ['a','b','c','d'];
+  function read(){ return ids.map(i=>+document.getElementById(i).value); }
+  function draw(){
+    const [a,bb,c,d] = read();
+    ids.forEach(i=>document.getElementById(i+'v').textContent = fmt(+document.getElementById(i).value,1));
+    const M = [[a,c],[bb,d]];          // 열 = î(a,bb), ĵ(c,d)
+    const r = svd2(M);
+    // 타원 반축 끝점 = σ_i · u_i
+    const ax1 = [r.s1*r.u1[0], r.s1*r.u1[1], 'σ₁'];
+    const ax2 = [r.s2*r.u2[0], r.s2*r.u2[1], 'σ₂'];
+    document.getElementById('board1').innerHTML = svdBoard(b, M, {showCircle:true, axes:[ax1,ax2]});
+    document.getElementById('mat1').innerHTML = matHTML(M);
+    const ratio = r.s2>1e-6 ? (r.s1/r.s2) : Infinity;
+    document.getElementById('sigBox').innerHTML =
+      `<div class="ttl">특이값</div>
+       <p style="margin:0" class="mono">σ₁ = <b style="color:var(--good)">${fmt(r.s1,3)}</b> &nbsp;(최대 늘임 배율)</p>
+       <p style="margin:4px 0 0" class="mono">σ₂ = <b style="color:var(--good)">${fmt(r.s2,3)}</b> &nbsp;(최소 늘임 배율)</p>
+       <p style="margin:8px 0 0" class="mono">조건수 σ₁/σ₂ = ${ratio===Infinity?'∞':fmt(ratio,2)}</p>
+       <p style="margin:2px 0 0;font-size:12px;color:var(--muted)">조건수 = 가장 늘이는 배율 ÷ 가장 안 늘이는 배율. 클수록 "찌그러진" 변환이라 계산이 불안정해요(클수록 역변환 시 오차 증폭).</p>
+       <p style="margin:8px 0 0;font-size:13px;color:var(--muted)">넓이 배율 = σ₁·σ₂ = ${fmt(r.s1*r.s2,3)} = |det| ${r.s2<0.04?'<b style="color:var(--k)">→ 거의 0, 타원이 선분으로!</b>':''}</p>`;
+  }
+  ids.forEach(i=>document.getElementById(i).addEventListener('input',draw));
+  draw();
+})();
+
+// ---------- STEP 2 ----------
+(function(){
+  const DEMOS = [
+    ['대칭 [[2,1],[1,2]]', [[2,1],[1,2]]],
+    ['비대칭 [[3,1],[0,2]]', [[3,1],[0,2]]],
+    ['전단 [[1,1],[0,1]]', [[1,1],[0,1]]],
+  ];
+  const tog = document.getElementById('demos2');
+  tog.innerHTML = DEMOS.map((d,i)=>`<button data-i="${i}" class="${i===0?'on':''}">${d[0]}</button>`).join('');
+  function show(i){
+    const A = DEMOS[i][1];
+    const r = svd2(A);
+    const ata = r.ata;
+    const Tt = ata[0][0]+ata[1][1], Dd = ata[0][0]*ata[1][1]-ata[0][1]*ata[1][0];
+    // 계산 과정 행렬들
+    document.getElementById('calc2').innerHTML =
+      VZ.opRow([
+        matHTML(A,'var(--hot)'),
+        matHTML(Tr(A),'var(--q)'),
+        matHTML(ata,'var(--v)'),
+      ], ['Aᵀ →', '= AᵀA']) +
+      `<p class="mx-note">AᵀA의 trace=${fmt(Tt,2)}, det=${fmt(Dd,2)} → 고윳값 λ = ½(tr ± √(tr²−4det))
+       = <b style="color:var(--good)">${fmt(r.s1*r.s1,3)}</b>, <b style="color:var(--good)">${fmt(r.s2*r.s2,3)}</b>.
+       σ = √λ = <b style="color:var(--good)">${fmt(r.s1,3)}, ${fmt(r.s2,3)}</b>.</p>`;
+    document.getElementById('prod2').innerHTML =
+      `<div class="label" style="margin-bottom:8px">분해 결과: A = U Σ Vᵀ</div>` +
+      VZ.opRow([
+        matHTML(r.U,'var(--q)'),
+        matHTML(r.S,'var(--hot)'),
+        matHTML(Tr(r.V),'var(--v)'),
+      ], ['×','×']);
+    // 검산
+    const recon = mul(mul(r.U, r.S), Tr(r.V));
+    let maxErr = 0;
+    for(let p=0;p<2;p++)for(let q=0;q<2;q++) maxErr=Math.max(maxErr, Math.abs(recon[p][q]-A[p][q]));
+    document.getElementById('check2').innerHTML =
+      `<div class="ttl">✓ 검산: U·Σ·Vᵀ</div>` +
+      VZ.opRow([ matHTML(recon,'var(--good)'), matHTML(A,'var(--hot)') ], ['= A?']) +
+      `<p style="margin:6px 0 0" class="mono">최대 오차 = ${maxErr.toExponential(1)} → <b style="color:var(--good)">A와 일치 ✓</b></p>`;
+  }
+  tog.addEventListener('click',e=>{
+    const x=e.target.closest('button'); if(!x)return;
+    tog.querySelectorAll('button').forEach(z=>z.classList.toggle('on',z===x));
+    show(+x.dataset.i);
+  });
+  show(0);
+})();
+
+// ---------- STEP 3 ----------
+(function(){
+  const b = LA.board({W:300,H:300,unit:34});
+  const A = [[2,1.6],[0.4,1.2]];     // σ 둘이 꽤 차이나는 행렬
+  const r = svd2(A);
+  // rank-k 근사: Σ에서 작은 σ를 0으로
+  function rankK(k){
+    const S = [[r.s1, 0],[0, k>=2 ? r.s2 : 0]];
+    return mul(mul(r.U, S), Tr(r.V));
+  }
+  function draw(){
+    const k = +document.getElementById('rank').value;
+    document.getElementById('rankv').textContent = k;
+    const Ak = rankK(k);
+    document.getElementById('board3').innerHTML = svdBoard(b, Ak, {showCircle:true, R:6});
+    document.getElementById('rankMat').innerHTML =
+      VZ.opRow([ matHTML(A,'var(--hot)'), matHTML(Ak,'var(--good)') ], [k>=2?'= (rank 2, 원본)':'≈ (rank 1)']);
+    let err=0; for(let p=0;p<2;p++)for(let q=0;q<2;q++) err=Math.max(err,Math.abs(Ak[p][q]-A[p][q]));
+    if (k>=2){
+      document.getElementById('rankNote').innerHTML =
+        `<div class="ttl">rank 2 — 완전 복원</div>
+         <p style="margin:0">σ₁=${fmt(r.s1,2)}, σ₂=${fmt(r.s2,2)} 둘 다 유지 → <b>A 그대로</b>. 타원도 온전해요.</p>`;
+    } else {
+      document.getElementById('rankNote').innerHTML =
+        `<div class="ttl">rank 1 — 가장 큰 σ만</div>
+         <p style="margin:0 0 6px">σ₁=${fmt(r.s1,2)}만 남기고 σ₂=${fmt(r.s2,2)}는 버림. <code class="mono">A ≈ σ₁u₁v₁ᵀ</code></p>
+         <p style="margin:0">최대 오차 ${fmt(err,3)}. 타원이 <b>선분</b>으로 — 가장 중요한 한 방향만 남았어요. 이게 압축의 핵심.</p>`;
+    }
+  }
+  document.getElementById('rank').addEventListener('input',draw);
+  draw();
+})();
+</script>
+</body>
+</html>

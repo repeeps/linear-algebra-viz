@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>15 대각화 · 선형대수, 눈으로 보기</title>
+<link rel="stylesheet" href="shared/theme.css">
+</head>
+<body>
+<div class="wrap">
+  <div class="topnav" id="topnav"></div>
+
+  <header>
+    <div class="tag">PART 5 · EIGEN &amp; DECOMPOSITION</div>
+    <h1>대각화 — 변환을 고유기저에서 보기</h1>
+    <p class="intro">고유벡터를 새 좌표축으로 삼으면, 복잡해 보이던 변환이 <b>각 축에서 그냥 λ배 스케일</b>로 단순해져요. 이게 <b>A = P D P⁻¹</b> 분해이고, 덕분에 <b>행렬 거듭제곱 Aⁿ</b>도 한순간에 계산됩니다. 마지막엔 가장 큰 고유값이 장기 거동을 어떻게 지배하는지 봐요.</p>
+  </header>
+
+  <nav class="stepper" id="stepper">
+    <button data-s="0" class="active">00 · 고유기저로 보면</button>
+    <button data-s="1">01 · A = P D P⁻¹</button>
+    <button data-s="2">02 · Aⁿ = P Dⁿ P⁻¹</button>
+    <button data-s="3">03 · 장기 거동</button>
+  </nav>
+
+  <!-- STEP 0 -->
+  <section class="panel show" data-panel="0">
+    <span class="kicker" style="color:var(--hot)">Step 00 — Through the Eigenbasis</span>
+    <h2>고유기저로 보면 변환은 그냥 축별 스케일</h2>
+    <p class="lead">일반 좌표(파랑·빨강 축)에서 보면 변환 <code class="mono">A</code>는 격자를 비스듬히 늘이고 기울여 복잡해 보여요. 하지만 <b>고유벡터를 축</b>으로 삼아 보면, 변환은 그 두 축을 각각 <b>λ₁배, λ₂배</b>로 늘릴 뿐입니다.</p>
+    <div class="row" style="gap:24px;justify-content:center;align-items:flex-start">
+      <div style="text-align:center"><div class="label">일반 격자에 A 적용 (복잡해 보임)</div><div id="board0a"></div></div>
+      <div style="text-align:center"><div class="label" style="color:var(--hot)">고유벡터(보라·초록)는 방향 유지, 길이만 λ배</div><div id="board0b"></div></div>
+    </div>
+    <div class="callout q" style="margin-top:18px">
+      <div class="ttl">핵심 아이디어</div>
+      <p>고유벡터 <code>v</code>는 <code>A·v = λ·v</code>를 만족해요 — 변환해도 <b>방향이 안 바뀌고</b> 길이만 <b>λ배</b>. 그래서 고유벡터 두 개를 좌표축으로 쓰면, A는 각 축에서 독립적인 스케일링일 뿐이에요. 이 "좌표 갈아끼우기 → 스케일 → 되돌리기"가 바로 <code>A = P D P⁻¹</code> 입니다.</p>
+    </div>
+  </section>
+
+  <!-- STEP 1 -->
+  <section class="panel" data-panel="1">
+    <span class="kicker" style="color:var(--q)">Step 01 — A = P D P⁻¹</span>
+    <h2>고유벡터로 분해하기</h2>
+    <p class="lead"><code class="mono">P</code>의 <b>열</b>은 고유벡터, <code class="mono">D</code>의 <b>대각</b>은 그에 대응하는 고유값이에요. 아래 예시 행렬로 P, D, P⁻¹를 <b>실제로 계산</b>해 곱했더니 정말 A가 나오는지 확인해요.</p>
+    <div id="eigInfo" class="callout v" style="margin-bottom:18px"></div>
+    <div class="label">분해: A = P · D · P⁻¹</div>
+    <div id="decompRow" style="margin:8px 0 6px"></div>
+    <div class="label" style="margin-top:18px">곱해서 되돌리기: P · D · P⁻¹ = ?</div>
+    <div id="recombRow" style="margin:8px 0 6px"></div>
+    <p class="mx-note" id="recombNote"></p>
+  </section>
+
+  <!-- STEP 2 -->
+  <section class="panel" data-panel="2">
+    <span class="kicker" style="color:var(--v)">Step 02 — Matrix Powers</span>
+    <h2>Aⁿ = P Dⁿ P⁻¹ — 거듭제곱이 쉬워진다</h2>
+    <p class="lead">A를 n번 곱하면 가운데 <code class="mono">P⁻¹P = I</code>가 줄줄이 약분돼서 <b>Aⁿ = P Dⁿ P⁻¹</b>만 남아요. 그리고 <code class="mono">Dⁿ</code>은 대각의 λ를 <b>n제곱만</b> 하면 끝! n을 바꿔보세요.</p>
+    <div class="ctrl"><label>거듭제곱 n</label><input type="range" id="nPow" min="1" max="12" step="1" value="3"><span class="val" id="nPowV">3</span></div>
+    <div class="label" style="margin-top:10px">Dⁿ = 대각의 λ를 n제곱</div>
+    <div id="dpowRow" style="margin:8px 0 6px"></div>
+    <div class="label" style="margin-top:16px">Aⁿ = P · Dⁿ · P⁻¹</div>
+    <div id="apowRow" style="margin:8px 0 6px"></div>
+    <div id="powCheck" class="callout good" style="margin-top:14px"></div>
+  </section>
+
+  <!-- STEP 3 -->
+  <section class="panel" data-panel="3">
+    <span class="kicker" style="color:var(--good)">Step 03 — Long-Term Behavior</span>
+    <h2>가장 큰 고유값 방향이 모든 걸 지배한다</h2>
+    <p class="lead">아무 벡터에 A를 반복해서 곱하면, <b>가장 큰 |λ|</b>(주고유값)의 방향이 점점 압도해요. 다른 성분은 상대적으로 작아져서, 방향이 <b>주고유벡터</b>로 수렴합니다. n을 키워보세요.</p>
+    <div class="row" style="gap:24px;align-items:flex-start;justify-content:center">
+      <div id="board3"></div>
+      <div style="flex:1;min-width:240px">
+        <div class="ctrl"><label>반복 횟수 n</label><input type="range" id="nIter" min="0" max="14" step="1" value="0"><span class="val" id="nIterV">0</span></div>
+        <div id="iterCalc" class="callout v" style="margin-top:12px"></div>
+      </div>
+    </div>
+    <div class="callout good" style="margin-top:6px">
+      <div class="ttl">머신러닝 연결</div>
+      <p><b>마르코프 연쇄·페이지랭크</b>가 바로 이거예요. 전이행렬을 계속 곱하면 분포가 <b>정상분포(주고유벡터, λ=1)</b>로 수렴해요. 페이지랭크의 웹페이지 점수, 추천시스템의 수렴, 거듭제곱법(power iteration)으로 주성분(PCA의 1축) 찾기 — 전부 "가장 큰 고유값 방향이 이긴다"는 같은 원리입니다.</p>
+    </div>
+  </section>
+
+  <p class="foot">// 고유값·고유벡터·역행렬·거듭제곱 모두 JS로 실제 계산합니다. · <a href="index.html">목차</a></p>
+</div>
+
+<script src="shared/lib.js"></script>
+<script>
+VZ.mountTopnav('#topnav', '15 · Diagonalize');
+VZ.setupStepper();
+const LA = VZ.LA;
+const f = (n,d=2)=>VZ.fmt(n,d);
+
+/* ====================================================================
+   실제 선형대수 계산 — 2×2, 실고유값 가정
+   예시 행렬 A = [[2,1],[0,3]]  →  고유값 2, 3 (clean, 실수)
+   ==================================================================== */
+const A = [[2,1],[0,3]];
+
+// 2×2 행렬곱
+const mul = (X,Y) => [
+  [X[0][0]*Y[0][0]+X[0][1]*Y[1][0], X[0][0]*Y[0][1]+X[0][1]*Y[1][1]],
+  [X[1][0]*Y[0][0]+X[1][1]*Y[1][0], X[1][0]*Y[0][1]+X[1][1]*Y[1][1]],
+];
+// 2×2 역행렬
+function inv(M){
+  const d = M[0][0]*M[1][1]-M[0][1]*M[1][0];
+  return [[ M[1][1]/d, -M[0][1]/d],[ -M[1][0]/d, M[0][0]/d]];
+}
+// 행렬 × 벡터
+const mv = (M,v)=>[M[0][0]*v[0]+M[0][1]*v[1], M[1][0]*v[0]+M[1][1]*v[1]];
+const norm = v => Math.hypot(v[0],v[1]);
+
+// 특성방정식 λ² − (tr)λ + det = 0 의 실근
+function eigenvalues(M){
+  const tr = M[0][0]+M[1][1];
+  const dt = M[0][0]*M[1][1]-M[0][1]*M[1][0];
+  const disc = tr*tr - 4*dt;
+  const s = Math.sqrt(Math.max(disc,0));
+  return [(tr+s)/2, (tr-s)/2];   // 큰 것 먼저
+}
+// (A − λI)v = 0 의 영공간 벡터 (정규화)
+function eigenvector(M, lam){
+  const a = M[0][0]-lam, b = M[0][1], c = M[1][0], d = M[1][1]-lam;
+  // [a b; c d] v = 0 → 0이 아닌 행에서 v 추출
+  let v;
+  if (Math.abs(a)>1e-9 || Math.abs(b)>1e-9) v = [-b, a];
+  else if (Math.abs(c)>1e-9 || Math.abs(d)>1e-9) v = [-d, c];
+  else v = [1,0];
+  const n = norm(v) || 1;
+  v = [v[0]/n, v[1]/n];
+  // 부호 보기 좋게: 첫 0 아닌 성분 양수로
+  if (v[0] < -1e-9 || (Math.abs(v[0])<1e-9 && v[1]<0)) v = [-v[0], -v[1]];
+  return v;
+}
+
+const [l1, l2] = eigenvalues(A);
+const v1 = eigenvector(A, l1);
+const v2 = eigenvector(A, l2);
+// P = 고유벡터 열, D = 고유값 대각
+const P = [[v1[0], v2[0]],[v1[1], v2[1]]];
+const D = [[l1, 0],[0, l2]];
+const Pinv = inv(P);
+
+const matHTML = (M, acc='var(--hot)', d=2) => VZ.mxMatrix(M, {acc, fmtCell:v=>f(v,d)});
+
+/* ---------- STEP 0 ---------- */
+(function(){
+  const ba = LA.board({W:300,H:300,unit:34}), bb = LA.board({W:300,H:300,unit:34});
+  // 왼쪽: A 적용한 일반 격자
+  document.getElementById('board0a').innerHTML = LA.transformSVG(ba, A, {R:5});
+  // 오른쪽: 항등 격자 위에 고유벡터와 그 변환(λ배) 표시
+  let s = `<svg width="${bb.W}" height="${bb.H}" viewBox="0 0 ${bb.W} ${bb.H}" style="max-width:100%;display:block">`;
+  s += LA.gridPaths(bb, [[1,0],[0,1]], 5);
+  // 원래 고유벡터 (희미)
+  s += LA.arrow(bb, v1[0]*1, v1[1]*1, 'rgba(192,132,252,.45)', null);
+  s += LA.arrow(bb, v2[0]*1, v2[1]*1, 'rgba(52,211,153,.45)', null);
+  // 변환된 고유벡터 = λ배 (같은 방향, 길이만 변함)
+  s += LA.arrow(bb, v1[0]*l1, v1[1]*l1, 'var(--v)', `λ₁v₁`, {dot:true});
+  s += LA.arrow(bb, v2[0]*l2, v2[1]*l2, 'var(--good)', `λ₂v₂`, {dot:true});
+  s += `</svg>`;
+  document.getElementById('board0b').innerHTML = s;
+})();
+
+/* ---------- STEP 1 ---------- */
+(function(){
+  document.getElementById('eigInfo').innerHTML =
+    `<div class="ttl">예시 행렬 A 의 고유값·고유벡터 (실제 계산)</div>
+     <p class="mono" style="margin:0">A = [[${A[0][0]}, ${A[0][1]}], [${A[1][0]}, ${A[1][1]}]]</p>
+     <p class="mono" style="margin:6px 0 0">특성방정식: λ² − ${A[0][0]+A[1][1]}λ + ${LA.det(A)} = 0 →
+        <b style="color:var(--v)">λ₁ = ${f(l1)}</b>, <b style="color:var(--good)">λ₂ = ${f(l2)}</b></p>
+     <p class="mono" style="margin:6px 0 0">고유벡터: <b style="color:var(--v)">v₁ = (${f(v1[0])}, ${f(v1[1])})</b>,
+        <b style="color:var(--good)">v₂ = (${f(v2[0])}, ${f(v2[1])})</b></p>`;
+
+  const Pblock = VZ.mxMatrix(P, {acc:'var(--v)', title:'P (고유벡터 열)', fmtCell:v=>f(v,2)});
+  const Dblock = VZ.mxMatrix(D, {acc:'var(--hot)', title:'D (고유값 대각)', fmtCell:v=>f(v,2)});
+  const Piblock = VZ.mxMatrix(Pinv, {acc:'var(--good)', title:'P⁻¹', fmtCell:v=>f(v,2)});
+  const Ablock = VZ.mxMatrix(A, {acc:'var(--q)', title:'A', fmtCell:v=>f(v,2)});
+  document.getElementById('decompRow').innerHTML = VZ.opRow([Ablock, Pblock, Dblock, Piblock], ['=','·','·']);
+
+  const PD = mul(P, D);
+  const PDPi = mul(PD, Pinv);
+  document.getElementById('recombRow').innerHTML = VZ.opRow(
+    [Pblock, Dblock, Piblock, VZ.mxMatrix(PDPi,{acc:'var(--hot)', title:'결과', fmtCell:v=>f(v,2)})],
+    ['·','·','=']);
+  const ok = PDPi.every((r,i)=>r.every((x,j)=>Math.abs(x-A[i][j])<1e-6));
+  document.getElementById('recombNote').innerHTML =
+    `→ 곱한 결과가 원래 <b>A = [[${A[0][0]},${A[0][1]}],[${A[1][0]},${A[1][1]}]]</b> 와 ${ok?'<b style="color:var(--good)">정확히 일치</b>해요 ✓':'다릅니다 ✗'}. 분해가 맞다는 검산입니다.`;
+})();
+
+/* ---------- STEP 2 ---------- */
+(function(){
+  const slider = document.getElementById('nPow'), valEl = document.getElementById('nPowV');
+  function matPow(M,n){ let R=[[1,0],[0,1]]; for(let i=0;i<n;i++) R=mul(R,M); return R; }
+  function draw(){
+    const n = +slider.value; valEl.textContent = n;
+    // Dⁿ
+    const Dn = [[Math.pow(l1,n),0],[0,Math.pow(l2,n)]];
+    const Dblock = VZ.mxMatrix(D, {acc:'var(--hot)', title:'D', fmtCell:v=>f(v,1)});
+    const Dnblock = VZ.mxMatrix(Dn, {acc:'var(--hot)', title:`Dⁿ (n=${n})`, fmtCell:v=>Number.isInteger(v)?String(v):f(v,1)});
+    document.getElementById('dpowRow').innerHTML = VZ.opRow(
+      [Dblock, Dnblock], [`ⁿ →`]);
+
+    // Aⁿ = P Dⁿ P⁻¹
+    const An_decomp = mul(mul(P, Dn), Pinv);
+    const Pblock = VZ.mxMatrix(P, {acc:'var(--v)', title:'P', fmtCell:v=>f(v,2)});
+    const Piblock = VZ.mxMatrix(Pinv, {acc:'var(--good)', title:'P⁻¹', fmtCell:v=>f(v,2)});
+    const Anblock = VZ.mxMatrix(An_decomp, {acc:'var(--q)', title:'Aⁿ', fmtCell:v=>f(v,1)});
+    document.getElementById('apowRow').innerHTML = VZ.opRow(
+      [Pblock, Dnblock, Piblock, Anblock], ['·','·','=']);
+
+    // 직접 n번 곱한 것과 비교
+    const An_direct = matPow(A, n);
+    const ok = An_decomp.every((r,i)=>r.every((x,j)=>Math.abs(x-An_direct[i][j])<1e-5));
+    document.getElementById('powCheck').innerHTML =
+      `<div class="ttl">검산: A를 직접 ${n}번 곱한 결과와 비교</div>
+       <p class="mono" style="margin:0">직접 A^${n} = [[${f(An_direct[0][0],1)}, ${f(An_direct[0][1],1)}], [${f(An_direct[1][0],1)}, ${f(An_direct[1][1],1)}]]</p>
+       <p class="mono" style="margin:6px 0 0">P Dⁿ P⁻¹ = [[${f(An_decomp[0][0],1)}, ${f(An_decomp[0][1],1)}], [${f(An_decomp[1][0],1)}, ${f(An_decomp[1][1],1)}]]</p>
+       <p style="margin:8px 0 0">→ ${ok?'<b style="color:var(--good)">두 방법 결과가 일치해요 ✓</b>':'불일치 ✗'} — Dⁿ은 λ를 n제곱만 하면 되니, 큰 n도 한 번에 계산됩니다.</p>`;
+  }
+  slider.addEventListener('input', draw);
+  draw();
+})();
+
+/* ---------- STEP 3 ---------- */
+(function(){
+  const b = LA.board({W:360,H:360,unit:40});
+  const slider = document.getElementById('nIter'), valEl = document.getElementById('nIterV');
+  const start = [1.6, -1.4];   // 주고유벡터에서 일부러 벗어난 시작 벡터
+  function draw(){
+    const n = +slider.value; valEl.textContent = n;
+    // A를 n번 적용
+    let v = start.slice();
+    for(let i=0;i<n;i++) v = mv(A, v);
+    // 보드에 들어오게 정규화해서 방향만 길이 4로 그림 (시각화용)
+    const len = norm(v) || 1;
+    const dir = [v[0]/len*4, v[1]/len*4];
+    // 주고유벡터 방향(점선 기준선)
+    const pv = [v1[0]*5, v1[1]*5];
+
+    let s = `<svg width="${b.W}" height="${b.H}" viewBox="0 0 ${b.W} ${b.H}" style="max-width:100%;display:block">`;
+    s += LA.gridPaths(b, [[1,0],[0,1]], 6);
+    // 주고유벡터 기준선 (양/음 방향 모두, 희미한 점선)
+    const x1=b.X(-pv[0]),y1=b.Y(-pv[1]),x2=b.X(pv[0]),y2=b.Y(pv[1]);
+    s += `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="rgba(192,132,252,.5)" stroke-width="1.5" stroke-dasharray="5 5"/>`;
+    s += LA.arrow(b, v1[0]*4, v1[1]*4, 'rgba(192,132,252,.55)', '주고유벡터 v₁');
+    // 현재 방향
+    s += LA.arrow(b, dir[0], dir[1], 'var(--hot)', `Aⁿv`, {dot:true});
+    s += `</svg>`;
+    document.getElementById('board3').innerHTML = s;
+
+    // 주고유벡터와의 각도 차이
+    const cosang = (v[0]*v1[0]+v[1]*v1[1])/(norm(v)*norm(v1));
+    const ang = Math.acos(Math.min(1,Math.abs(cosang)))*180/Math.PI;
+    document.getElementById('iterCalc').innerHTML =
+      `<div class="ttl">Aⁿ · v 의 방향</div>
+       <p class="mono" style="margin:0">시작 v = (${f(start[0],1)}, ${f(start[1],1)})</p>
+       <p class="mono" style="margin:6px 0 0">Aⁿv = (${f(v[0],1)}, ${f(v[1],1)})  ·  길이 ${f(len,1)}</p>
+       <p style="margin:8px 0 0">주고유벡터 <b style="color:var(--v)">v₁</b>(λ₁=${f(l1)})과 이루는 각: <b style="color:var(--hot)">${f(ang,1)}°</b>
+        ${ang<2?' → <b style="color:var(--good)">거의 정렬됨!</b>':''}</p>
+       <p class="note" style="margin:8px 0 0">큰 λ₁=${f(l1)} 성분이 ${f(l1/l2,2)}배씩 빠르게 커져, 작은 λ₂=${f(l2)} 방향을 압도해요.</p>`;
+  }
+  slider.addEventListener('input', draw);
+  draw();
+})();
+</script>
+</body>
+</html>

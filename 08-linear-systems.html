@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>08 연립방정식 · 선형대수, 눈으로 보기</title>
+<link rel="stylesheet" href="shared/theme.css">
+</head>
+<body>
+<div class="wrap">
+  <div class="topnav" id="topnav"></div>
+
+  <header>
+    <div class="tag">PART 3 · EQUATIONS &amp; INVERSE</div>
+    <h1>연립방정식 — 두 직선이 만나는 곳이 해</h1>
+    <p class="intro"><code class="mono">Ax = b</code> 한 줄에는 두 개의 그림이 숨어 있어요. 각 방정식은 <b>한 개의 직선</b>이고, 두 직선이 <b>만나는 점</b>이 바로 해예요. 슬라이더로 계수를 바꿔 직선이 움직이고 교점이 따라오는 걸 보세요.</p>
+  </header>
+
+  <nav class="stepper" id="stepper">
+    <button data-s="0" class="active">00 · 두 방정식 = 두 직선</button>
+    <button data-s="1">01 · 해 계산</button>
+    <button data-s="2">02 · 특수한 경우</button>
+    <button data-s="3">03 · 소거법</button>
+  </nav>
+
+  <!-- STEP 0 -->
+  <section class="panel show" data-panel="0">
+    <span class="kicker" style="color:var(--hot)">Step 00 — Two Equations, Two Lines</span>
+    <h2>방정식 하나 = 직선 하나</h2>
+    <p class="lead">2×2 연립방정식 <code class="mono">ax+by=e</code>, <code class="mono">cx+dy=f</code>를 슬라이더로 바꿔 보세요. 각 식은 평면 위의 <b>한 직선</b>이고, 두 직선의 <b>교점</b>이 두 식을 동시에 만족하는 해 (x, y)예요.</p>
+    <div class="row" style="gap:24px;align-items:flex-start;justify-content:center">
+      <div id="board0"></div>
+      <div style="flex:1;min-width:240px">
+        <div id="eq0" class="formula" style="margin-bottom:14px"></div>
+        <div class="ctrl"><label style="color:var(--q)">a</label><input type="range" id="s0a" min="-3" max="3" step="0.1" value="1"><span class="val" id="s0av">1.0</span></div>
+        <div class="ctrl"><label style="color:var(--q)">b</label><input type="range" id="s0b" min="-3" max="3" step="0.1" value="1"><span class="val" id="s0bv">1.0</span></div>
+        <div class="ctrl"><label style="color:var(--q)">e</label><input type="range" id="s0e" min="-6" max="6" step="0.5" value="4"><span class="val" id="s0ev">4.0</span></div>
+        <div class="ctrl"><label style="color:var(--k)">c</label><input type="range" id="s0c" min="-3" max="3" step="0.1" value="1"><span class="val" id="s0cv">1.0</span></div>
+        <div class="ctrl"><label style="color:var(--k)">d</label><input type="range" id="s0d" min="-3" max="3" step="0.1" value="-1"><span class="val" id="s0dv">-1.0</span></div>
+        <div class="ctrl"><label style="color:var(--k)">f</label><input type="range" id="s0f" min="-6" max="6" step="0.5" value="0"><span class="val" id="s0fv">0.0</span></div>
+        <p class="note" id="note0" style="margin-top:8px"></p>
+      </div>
+    </div>
+    <p class="note" style="margin-top:6px">→ <b style="color:var(--q)">파란 직선</b>은 식①, <b style="color:var(--k)">빨간 직선</b>은 식②예요. <b style="color:var(--good)">초록 점</b>이 교점, 곧 연립방정식의 해입니다.</p>
+  </section>
+
+  <!-- STEP 1 -->
+  <section class="panel" data-panel="1">
+    <span class="kicker" style="color:var(--q)">Step 01 — Solve It</span>
+    <h2>실제로 풀어서 (x, y) 구하기</h2>
+    <p class="lead">연립방정식을 행렬로 쓰면 <code class="mono">A·x = b</code> 예요. 여기서 <code class="mono">A=[[a,b],[c,d]]</code> (이 장에선 <b>행 순서</b>로 읽어요 — 1행 a·b, 2행 c·d). <b>행렬식 det(A)=ad−bc</b>가 0이 아니면 두 직선이 정확히 한 점에서 만나 <b>유일한 해</b>가 있어요. 크라메르 공식으로 직접 계산합니다.</p>
+    <div class="row" style="gap:24px;align-items:flex-start;justify-content:center">
+      <div id="board1"></div>
+      <div style="flex:1;min-width:240px">
+        <div id="eq1" class="formula" style="margin-bottom:14px"></div>
+        <div class="ctrl"><label style="color:var(--q)">a</label><input type="range" id="s1a" min="-3" max="3" step="0.5" value="2"><span class="val" id="s1av">2.0</span></div>
+        <div class="ctrl"><label style="color:var(--q)">b</label><input type="range" id="s1b" min="-3" max="3" step="0.5" value="1"><span class="val" id="s1bv">1.0</span></div>
+        <div class="ctrl"><label style="color:var(--q)">e</label><input type="range" id="s1e" min="-8" max="8" step="0.5" value="5"><span class="val" id="s1ev">5.0</span></div>
+        <div class="ctrl"><label style="color:var(--k)">c</label><input type="range" id="s1c" min="-3" max="3" step="0.5" value="1"><span class="val" id="s1cv">1.0</span></div>
+        <div class="ctrl"><label style="color:var(--k)">d</label><input type="range" id="s1d" min="-3" max="3" step="0.5" value="3"><span class="val" id="s1dv">3.0</span></div>
+        <div class="ctrl"><label style="color:var(--k)">f</label><input type="range" id="s1f" min="-8" max="8" step="0.5" value="6"><span class="val" id="s1fv">6.0</span></div>
+        <div id="solve1" class="callout good" style="margin-top:12px"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- STEP 2 -->
+  <section class="panel" data-panel="2">
+    <span class="kicker" style="color:var(--v)">Step 02 — Special Cases</span>
+    <h2>해가 없거나, 무한히 많을 때</h2>
+    <p class="lead">두 직선이 <b>평행</b>하면 절대 안 만나서 <b>해가 없고</b>, 완전히 <b>겹치면</b> 모든 점이 해라서 <b>해가 무한</b>해요. 둘 다 <code class="mono">det(A)=0</code>일 때 일어납니다. 버튼으로 두 상황을 재현해 보세요.</p>
+    <div class="view-toggle" id="cases2"></div>
+    <div class="row" style="gap:24px;align-items:flex-start;justify-content:center;margin-top:8px">
+      <div id="board2"></div>
+      <div style="flex:1;min-width:240px">
+        <div id="eq2" class="formula" style="margin-bottom:12px"></div>
+        <p class="note" style="margin-bottom:12px">식②의 절편을 슬라이더로 움직여 보세요. 기울기는 식①과 같게 고정돼 있어서 두 직선은 항상 평행해요.</p>
+        <div class="ctrl"><label style="color:var(--k)">식② 절편 f</label><input type="range" id="s2f" min="-6" max="6" step="0.5" value="2"><span class="val" id="s2fv">2.0</span></div>
+        <div id="solve2" class="callout v" style="margin-top:12px"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- STEP 3 -->
+  <section class="panel" data-panel="3">
+    <span class="kicker" style="color:var(--good)">Step 03 — Elimination</span>
+    <h2>소거법 — 한 변수를 지워 삼각형 만들기</h2>
+    <p class="lead">가우스 소거법은 <b>식① − k·식②</b> 같은 <b>행 연산</b>으로 한 변수를 0으로 만들어요. 그러면 마지막 식엔 변수가 하나만 남아 바로 풀리고, 그 값을 위로 대입(후진대입)해 나머지를 구합니다. 단계별로 따라가 보세요.</p>
+    <div class="row" style="gap:24px;align-items:flex-start;justify-content:center">
+      <div style="flex:1;min-width:280px">
+        <div class="ctrl"><label style="color:var(--q)">a</label><input type="range" id="s3a" min="1" max="4" step="1" value="2"><span class="val" id="s3av">2</span></div>
+        <div class="ctrl"><label style="color:var(--q)">b</label><input type="range" id="s3b" min="1" max="4" step="1" value="1"><span class="val" id="s3bv">1</span></div>
+        <div class="ctrl"><label style="color:var(--q)">e</label><input type="range" id="s3e" min="-8" max="12" step="1" value="8"><span class="val" id="s3ev">8</span></div>
+        <div class="ctrl"><label style="color:var(--k)">c</label><input type="range" id="s3c" min="1" max="4" step="1" value="1"><span class="val" id="s3cv">1</span></div>
+        <div class="ctrl"><label style="color:var(--k)">d</label><input type="range" id="s3d" min="1" max="4" step="1" value="3"><span class="val" id="s3dv">3</span></div>
+        <div class="ctrl"><label style="color:var(--k)">f</label><input type="range" id="s3f" min="-8" max="12" step="1" value="9"><span class="val" id="s3fv">9</span></div>
+      </div>
+      <div style="flex:1;min-width:280px">
+        <div id="elim3"></div>
+      </div>
+    </div>
+    <p class="note" style="margin-top:10px">→ <b>식① − k·식②</b>로 x를 소거해 마지막 식을 <code class="mono">(…)y = (…)</code> 꼴로 만든 뒤, 거기서 y를 구하고 그 y를 식②에 넣어 x를 구합니다.</p>
+  </section>
+
+  <p class="foot">// 모든 직선과 해는 계수로부터 실제로 계산해 그립니다. · <a href="index.html">목차</a></p>
+</div>
+
+<script src="shared/lib.js"></script>
+<script>
+VZ.mountTopnav('#topnav', '08 · Linear Systems');
+VZ.setupStepper();
+const LA = VZ.LA;
+const fmt = VZ.fmt;
+
+// 직선 ax+by=e 을 보드 영역 안의 두 끝점으로 잘라 그리는 SVG path.
+// R: 좌표 반경. 거의 수직/수평 모두 처리.
+function lineSeg(b, a, bb, e, color, R){
+  let pts = [];
+  // x = -R, x = R 일 때 y
+  if (Math.abs(bb) > 1e-9){
+    [-R, R].forEach(x=>{ const y=(e-a*x)/bb; if(y>=-R-1e-6 && y<=R+1e-6) pts.push([x,y]); });
+  }
+  // y = -R, y = R 일 때 x
+  if (Math.abs(a) > 1e-9){
+    [-R, R].forEach(y=>{ const x=(e-bb*y)/a; if(x>=-R-1e-6 && x<=R+1e-6) pts.push([x,y]); });
+  }
+  // 중복 제거 후 두 점 선택
+  const uniq = [];
+  pts.forEach(p=>{ if(!uniq.some(q=>Math.abs(q[0]-p[0])<1e-4 && Math.abs(q[1]-p[1])<1e-4)) uniq.push(p); });
+  if (uniq.length < 2) return '';
+  const [p1, p2] = uniq;
+  return `<line x1="${b.X(p1[0]).toFixed(1)}" y1="${b.Y(p1[1]).toFixed(1)}" x2="${b.X(p2[0]).toFixed(1)}" y2="${b.Y(p2[1]).toFixed(1)}" stroke="${color}" stroke-width="2.6"/>`;
+}
+
+// 점 마커 SVG
+function dot(b, x, y, color, label){
+  const px=b.X(x), py=b.Y(y);
+  let s = `<circle cx="${px.toFixed(1)}" cy="${py.toFixed(1)}" r="5.5" fill="${color}" stroke="#04121f" stroke-width="1.5"/>`;
+  if(label) s += `<text x="${(px+9).toFixed(1)}" y="${(py-9).toFixed(1)}" fill="${color}" font-size="13" font-weight="700" font-family="JetBrains Mono">${label}</text>`;
+  return s;
+}
+
+// 직선들 + 교점을 그리는 보드 SVG (항등 격자 위에)
+function systemSVG(b, lines, point, R){
+  let s = `<svg width="${b.W}" height="${b.H}" viewBox="0 0 ${b.W} ${b.H}" style="max-width:100%;display:block">`;
+  s += LA.gridPaths(b, [[1,0],[0,1]], R);
+  lines.forEach(L => { s += lineSeg(b, L.a, L.b, L.e, L.color, R); });
+  if (point) s += dot(b, point[0], point[1], 'var(--good)', point[2]);
+  s += `</svg>`;
+  return s;
+}
+
+// det 으로 2x2 풀이 (크라메르). {kind:'unique'|'none'|'inf', x, y, det, detx, dety}
+function solve2(a,b,e,c,d,f){
+  const det = a*d - b*c;
+  if (Math.abs(det) > 1e-9){
+    const detx = e*d - b*f;   // x 열을 (e,f)로 교체
+    const dety = a*f - e*c;   // y 열을 (e,f)로 교체
+    return { kind:'unique', det, detx, dety, x: detx/det, y: dety/det };
+  }
+  // det=0: 같은 직선인지(무한) 평행(없음)인지 판정
+  const consistent =
+    Math.abs(a*f - c*e) < 1e-9 && Math.abs(b*f - d*e) < 1e-9;
+  return { kind: consistent ? 'inf' : 'none', det };
+}
+
+// ---------- STEP 0 ----------
+(function(){
+  const R = 6;
+  const b = LA.board({W:360,H:360,unit:30});
+  const ids = ['s0a','s0b','s0e','s0c','s0d','s0f'];
+  function read(){ return ids.map(i=>+document.getElementById(i).value); }
+  function draw(){
+    const [a,bb,e,c,d,f] = read();
+    ids.forEach(i=>document.getElementById(i+'v').textContent = fmt(+document.getElementById(i).value,1));
+    const sol = solve2(a,bb,e,c,d,f);
+    const pt = sol.kind==='unique' ? [sol.x, sol.y, "해"] : null;
+    document.getElementById('board0').innerHTML = systemSVG(b, [
+      {a, b:bb, e, color:'var(--q)'},
+      {a:c, b:d, e:f, color:'var(--k)'}
+    ], pt, R);
+    document.getElementById('eq0').innerHTML =
+      `<div style="color:var(--q)">${fmt(a,1)}x + ${fmt(bb,1)}y = ${fmt(e,1)}</div>` +
+      `<div style="color:var(--k);margin-top:4px">${fmt(c,1)}x + ${fmt(d,1)}y = ${fmt(f,1)}</div>`;
+    let msg;
+    if (sol.kind==='unique') msg = `두 직선이 한 점에서 만나요 → 해 <b style="color:var(--good)">(${fmt(sol.x,2)}, ${fmt(sol.y,2)})</b>`;
+    else if (sol.kind==='inf') msg = `두 직선이 <b>완전히 겹쳐요</b> → 해가 무한히 많아요 (det=0)`;
+    else msg = `두 직선이 <b>평행</b>해요 → 만나지 않아 <b>해가 없어요</b> (det=0)`;
+    document.getElementById('note0').innerHTML = msg;
+  }
+  ids.forEach(i=>document.getElementById(i).addEventListener('input',draw));
+  draw();
+})();
+
+// ---------- STEP 1 ----------
+(function(){
+  const R = 8;
+  const b = LA.board({W:360,H:360,unit:22});
+  const ids = ['s1a','s1b','s1e','s1c','s1d','s1f'];
+  function read(){ return ids.map(i=>+document.getElementById(i).value); }
+  function draw(){
+    const [a,bb,e,c,d,f] = read();
+    ids.forEach(i=>document.getElementById(i+'v').textContent = fmt(+document.getElementById(i).value,1));
+    const sol = solve2(a,bb,e,c,d,f);
+    const pt = sol.kind==='unique' ? [sol.x, sol.y, "(x,y)"] : null;
+    document.getElementById('board1').innerHTML = systemSVG(b, [
+      {a, b:bb, e, color:'var(--q)'},
+      {a:c, b:d, e:f, color:'var(--k)'}
+    ], pt, R);
+    document.getElementById('eq1').innerHTML =
+      `<div style="color:var(--q)">${fmt(a,1)}x + ${fmt(bb,1)}y = ${fmt(e,1)}</div>` +
+      `<div style="color:var(--k);margin-top:4px">${fmt(c,1)}x + ${fmt(d,1)}y = ${fmt(f,1)}</div>`;
+    let html;
+    if (sol.kind==='unique'){
+      // 검산: 두 식에 대입
+      const chk1 = a*sol.x + bb*sol.y, chk2 = c*sol.x + d*sol.y;
+      html = `<div class="ttl">det ≠ 0 → 유일한 해</div>
+        <p class="mono" style="margin:0">det(A) = ${fmt(a,1)}·${fmt(d,1)} − ${fmt(bb,1)}·${fmt(c,1)} = <b style="color:var(--good)">${fmt(sol.det,2)}</b></p>
+        <p class="mono" style="margin:6px 0 0">x = det&#8339; / det = ${fmt(sol.detx,1)} / ${fmt(sol.det,1)} = <b style="color:var(--good)">${fmt(sol.x,3)}</b></p>
+        <p class="mono" style="margin:2px 0 0">y = det&#8340; / det = ${fmt(sol.dety,1)} / ${fmt(sol.det,1)} = <b style="color:var(--good)">${fmt(sol.y,3)}</b></p>
+        <p class="mono" style="margin:8px 0 0;color:var(--muted)">검산: ${fmt(a,1)}·${fmt(sol.x,2)}+${fmt(bb,1)}·${fmt(sol.y,2)} = ${fmt(chk1,2)} (=${fmt(e,1)}) ✓</p>
+        <p class="mono" style="margin:2px 0 0;color:var(--muted)">검산: ${fmt(c,1)}·${fmt(sol.x,2)}+${fmt(d,1)}·${fmt(sol.y,2)} = ${fmt(chk2,2)} (=${fmt(f,1)}) ✓</p>`;
+    } else if (sol.kind==='inf'){
+      html = `<div class="ttl">det = 0 → 무한히 많은 해</div>
+        <p class="mono" style="margin:0">두 식이 같은 직선이에요. 그 위 모든 점이 해입니다.</p>`;
+    } else {
+      html = `<div class="ttl">det = 0 → 해 없음</div>
+        <p class="mono" style="margin:0">두 직선이 평행해 만나지 않아요.</p>`;
+    }
+    document.getElementById('solve1').innerHTML = html;
+  }
+  ids.forEach(i=>document.getElementById(i).addEventListener('input',draw));
+  draw();
+})();
+
+// ---------- STEP 2 ----------
+(function(){
+  const R = 6;
+  const b = LA.board({W:360,H:360,unit:30});
+  // 식①: x + y = 2 (고정). 식②: x + y = f  (같은 기울기 → 항상 평행)
+  const A1 = 1, B1 = 1, E1 = 2;
+  let mode = 'parallel'; // 'parallel' | 'same'
+  const toggle = document.getElementById('cases2');
+  toggle.innerHTML =
+    `<button data-m="parallel" class="on">평행 (해 없음)</button>` +
+    `<button data-m="same">일치 (무한해)</button>`;
+  function draw(){
+    let f = +document.getElementById('s2f').value;
+    document.getElementById('s2fv').textContent = fmt(f,1);
+    if (mode === 'same') f = E1; // 같은 직선으로 강제
+    const sol = solve2(A1,B1,E1, A1,B1,f);
+    document.getElementById('board2').innerHTML = systemSVG(b, [
+      {a:A1, b:B1, e:E1, color:'var(--q)'},
+      {a:A1, b:B1, e:f, color:'var(--k)'}
+    ], null, R);
+    document.getElementById('eq2').innerHTML =
+      `<div style="color:var(--q)">${fmt(A1,1)}x + ${fmt(B1,1)}y = ${fmt(E1,1)}</div>` +
+      `<div style="color:var(--k);margin-top:4px">${fmt(A1,1)}x + ${fmt(B1,1)}y = ${fmt(f,1)}</div>`;
+    let html;
+    if (sol.kind==='inf'){
+      html = `<div class="ttl">일치 → 무한히 많은 해</div>
+        <p style="margin:0">두 식의 우변까지 똑같아요 (${fmt(E1,1)} = ${fmt(f,1)}). 직선이 포개져 그 위 모든 점이 해입니다. det = ${fmt(sol.det,1)}.</p>`;
+    } else {
+      html = `<div class="ttl">평행 → 해 없음</div>
+        <p style="margin:0">좌변(기울기)은 같은데 우변이 달라요 (${fmt(E1,1)} ≠ ${fmt(f,1)}). 직선이 나란히 떨어져 만나지 않아요. det = ${fmt(sol.det,1)}.</p>`;
+    }
+    document.getElementById('solve2').innerHTML = html;
+  }
+  toggle.addEventListener('click', e=>{
+    const x = e.target.closest('button'); if(!x) return;
+    mode = x.dataset.m;
+    toggle.querySelectorAll('button').forEach(z=>z.classList.toggle('on', z===x));
+    document.getElementById('s2f').disabled = (mode==='same');
+    draw();
+  });
+  document.getElementById('s2f').addEventListener('input', draw);
+  draw();
+})();
+
+// ---------- STEP 3 ----------
+(function(){
+  const ids = ['s3a','s3b','s3e','s3c','s3d','s3f'];
+  function read(){ return ids.map(i=>+document.getElementById(i).value); }
+  function row(eqno, a, bb, e, color){
+    return `<span style="color:${color}">식${eqno}:&nbsp; ${fmt(a,1)}x ${bb<0?'−':'+'} ${fmt(Math.abs(bb),1)}y = ${fmt(e,1)}</span>`;
+  }
+  function draw(){
+    const [a,bb,e,c,d,f] = read();
+    ids.forEach(i=>document.getElementById(i+'v').textContent = fmt(+document.getElementById(i).value,0));
+    const sol = solve2(a,bb,e,c,d,f);
+    const k = a / c; // 식① − k·식② 로 x 소거
+    // 새 식: (bb - k*d) y = (e - k*f)
+    const ny = bb - k*d, ne = e - k*f;
+    let steps = [];
+    steps.push(`<div class="formula" style="text-align:left">${row(1,a,bb,e,'var(--q)')}<br>${row(2,c,d,f,'var(--k)')}</div>`);
+
+    if (sol.kind !== 'unique'){
+      steps.push(`<div class="callout v" style="margin-top:10px"><div class="ttl">소거 불가 (det=0)</div>
+        <p style="margin:0">${sol.kind==='inf'?'두 식이 같은 직선이라 해가 무한해요.':'두 식이 평행이라 해가 없어요.'} 슬라이더를 바꿔 유일해가 되게 해보세요.</p></div>`);
+      document.getElementById('elim3').innerHTML = steps.join('');
+      return;
+    }
+
+    steps.push(`<div class="mx-flowtag">① 소거: 식① − (${fmt(k,2)})·식② → x 항 제거</div>`);
+    steps.push(`<div class="formula" style="text-align:left">
+      <span style="color:var(--muted)">x항: ${fmt(a,1)} − ${fmt(k,2)}·${fmt(c,1)} = ${fmt(a-k*c,2)} → 0</span><br>
+      <span style="color:var(--good)">${fmt(ny,2)}·y = ${fmt(ne,2)}</span></div>`);
+
+    const yval = ne / ny;
+    steps.push(`<div class="mx-flowtag">② y 구하기 (마지막 식에서)</div>`);
+    steps.push(`<div class="formula" style="text-align:left"><span class="mono">y = ${fmt(ne,2)} / ${fmt(ny,2)} = <b style="color:var(--good)">${fmt(yval,3)}</b></span></div>`);
+
+    // 후진대입: 식②에 y 넣어 x
+    const xval = (f - d*yval) / c;
+    steps.push(`<div class="mx-flowtag">③ 후진대입: 식②에 y 넣어 x 구하기</div>`);
+    steps.push(`<div class="formula" style="text-align:left"><span class="mono">${fmt(c,1)}x = ${fmt(f,1)} − ${fmt(d,1)}·${fmt(yval,2)} = ${fmt(f-d*yval,2)}<br>x = ${fmt(f-d*yval,2)} / ${fmt(c,1)} = <b style="color:var(--good)">${fmt(xval,3)}</b></span></div>`);
+
+    const chk1 = a*xval + bb*yval, chk2 = c*xval + d*yval;
+    steps.push(`<div class="callout good" style="margin-top:10px"><div class="ttl">해 (x, y) = (${fmt(xval,2)}, ${fmt(yval,2)})</div>
+      <p class="mono" style="margin:0;color:var(--muted)">검산①: ${fmt(chk1,2)} = ${fmt(e,1)} ✓</p>
+      <p class="mono" style="margin:2px 0 0;color:var(--muted)">검산②: ${fmt(chk2,2)} = ${fmt(f,1)} ✓</p></div>`);
+
+    document.getElementById('elim3').innerHTML = steps.join('');
+  }
+  ids.forEach(i=>document.getElementById(i).addEventListener('input',draw));
+  draw();
+})();
+</script>
+</body>
+</html>

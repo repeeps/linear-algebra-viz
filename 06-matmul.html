@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>06 행렬곱 · 선형대수, 눈으로 보기</title>
+<link rel="stylesheet" href="shared/theme.css">
+</head>
+<body>
+<div class="wrap">
+  <div class="topnav" id="topnav"></div>
+
+  <header>
+    <div class="tag">PART 2 · TRANSFORMATIONS</div>
+    <h1>행렬곱 — 변환을 차곡차곡 합치기</h1>
+    <p class="intro">행렬곱 <code class="mono">AB</code>는 단순 계산 규칙이 아니라 <b>두 변환을 연달아 적용한 합성</b>이에요. 먼저 <b>B로 공간을 변형</b>한 뒤, 그 위에 <b>A를 또 변형</b>하면 — 그 한 번의 결과가 바로 <code class="mono">AB</code>라는 단일 변환이 됩니다. 순서가 바뀌면 결과도 달라져요.</p>
+  </header>
+
+  <nav class="stepper" id="stepper">
+    <button data-s="0" class="active">00 · 두 변환 연달아</button>
+    <button data-s="1">01 · 합성 = AB</button>
+    <button data-s="2">02 · AB ≠ BA</button>
+    <button data-s="3">03 · 곱 분해</button>
+  </nav>
+
+  <!-- STEP 0 -->
+  <section class="panel show" data-panel="0">
+    <span class="kicker" style="color:var(--hot)">Step 00 — Two Transforms in a Row</span>
+    <h2>B로 변형한 뒤, 다시 A로 변형</h2>
+    <p class="lead">합성변환 <code class="mono">A(Bv)</code>는 <b>① 먼저 B를 적용</b>하고, <b>② 그 결과에 A를 적용</b>해요. 오른쪽 항상 안쪽(B)부터 작동한다는 점이 핵심이에요. 버튼을 눌러 격자가 <b>B로 한 번</b>, 다시 <b>A로 한 번</b> 두 단계로 변형되는 걸 보세요.</p>
+    <div class="row" style="gap:24px;align-items:flex-start;justify-content:center">
+      <div style="text-align:center"><div class="label" id="stage0lab" style="color:var(--hot)">변환 전 (항등)</div><div id="board0"></div></div>
+      <div style="flex:1;min-width:230px">
+        <div class="label">B = x-전단 (먼저 적용)</div>
+        <div id="mat0B" style="margin-bottom:14px"></div>
+        <div class="label">A = 회전 45° (나중 적용)</div>
+        <div id="mat0A" style="margin-bottom:16px"></div>
+        <button class="btn" id="play0">▶ B 적용 → A 적용</button>
+        <p class="note" id="note0" style="margin-top:14px">두 변환을 차례로 적용하면 격자가 두 번 휘어요. 이 둘을 합치면 단 하나의 행렬이 됩니다 → Step 01.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- STEP 1 -->
+  <section class="panel" data-panel="1">
+    <span class="kicker" style="color:var(--q)">Step 01 — Composition is AB</span>
+    <h2>두 변환의 합성 = 행렬곱 AB</h2>
+    <p class="lead"><b>B후A</b>를 한 행렬로 미리 계산해 둘 수 있어요. 그게 바로 <code class="mono">A·B</code>예요. <code class="mono">AB</code> 한 번을 적용한 결과가 <b>B 적용 후 A 적용</b>과 정확히 같음을 격자로 확인해 보세요.</p>
+    <div id="abEq" class="mx-op-row" style="justify-content:center;margin-bottom:8px"></div>
+    <div class="row" style="gap:24px;align-items:flex-start;justify-content:center;margin-top:8px">
+      <div style="text-align:center"><div class="label">B 적용 후 A 적용 (2단계)</div><div id="board1a"></div></div>
+      <div style="text-align:center"><div class="label" style="color:var(--good)">AB 한 번 적용</div><div id="board1b"></div></div>
+    </div>
+    <p class="note" id="note1" style="margin-top:14px;text-align:center"></p>
+    <div class="row" style="justify-content:center;margin-top:6px"><button class="btn" id="play1">▶ 다시 보기</button></div>
+  </section>
+
+  <!-- STEP 2 -->
+  <section class="panel" data-panel="2">
+    <span class="kicker" style="color:var(--v)">Step 02 — Order Matters!</span>
+    <h2>순서가 중요해요: AB ≠ BA</h2>
+    <p class="lead">행렬곱은 <b>교환법칙이 성립하지 않아요</b>. <b>회전 후 전단</b>과 <b>전단 후 회전</b>은 전혀 다른 모양이 돼요. 같은 두 변환인데도 순서만 바꾸면 격자가 달라집니다.</p>
+    <div class="row" style="gap:24px;align-items:flex-start;justify-content:center">
+      <div style="text-align:center">
+        <div class="label" style="color:var(--q)">AB = 회전 ∘ 전단 (전단 먼저)</div>
+        <div id="board2a"></div>
+        <div id="mat2a" style="margin-top:10px;display:flex;justify-content:center"></div>
+      </div>
+      <div style="text-align:center">
+        <div class="label" style="color:var(--k)">BA = 전단 ∘ 회전 (회전 먼저)</div>
+        <div id="board2b"></div>
+        <div id="mat2b" style="margin-top:10px;display:flex;justify-content:center"></div>
+      </div>
+    </div>
+    <div class="callout v" style="margin-top:18px">
+      <div class="ttl">결과 행렬이 다르죠?</div>
+      <p class="mono" id="cmp2" style="margin:0"></p>
+      <p style="margin:8px 0 0">A = 회전 30°, B = x-전단. 두 곱의 숫자가 서로 달라요 — 그래서 <b class="h">AB ≠ BA</b>.</p>
+    </div>
+  </section>
+
+  <!-- STEP 3 -->
+  <section class="panel" data-panel="3">
+    <span class="kicker" style="color:var(--good)">Step 03 — Inside the Product</span>
+    <h2>곱 계산 분해: 각 원소 = 행 · 열 내적</h2>
+    <p class="lead"><code class="mono">AB</code>의 <b>(i, j) 원소</b>는 <b>A의 i번째 행</b>과 <b>B의 j번째 열</b>의 <b>내적</b>이에요. 아래 네 칸 중 하나를 <b>클릭</b>하면 해당하는 A의 행과 B의 열이 강조됩니다.</p>
+    <div class="row" id="row3" style="gap:14px;align-items:center;justify-content:center;flex-wrap:wrap"></div>
+    <div id="calc3" class="callout good" style="margin-top:18px"></div>
+    <p class="note" style="margin-top:6px;text-align:center">→ 셀을 클릭해 보세요. (행 번호, 열 번호)에 맞춰 A의 행·B의 열이 함께 빛나요.</p>
+  </section>
+
+  <p class="foot">// 모든 격자는 행렬을 점마다 실제로 적용해 그립니다. · <a href="index.html">목차</a></p>
+</div>
+
+<script src="shared/lib.js"></script>
+<script>
+VZ.mountTopnav('#topnav', '06 · MatMul');
+VZ.setupStepper();
+const LA = VZ.LA;
+const matHTML = (M, acc) => VZ.mxMatrix(M, {acc: acc || 'var(--hot)', fmtCell: v => VZ.fmt(v,2)});
+// AB = A·B (VZ.matMul 사용; 폴백 2×2 직접 계산)
+const matMul = VZ.matMul || ((A,B) =>
+  A.map(row => B[0].map((_,j) => +row.reduce((s,x,k)=>s+x*B[k][j],0).toFixed(4))));
+
+// ---------- STEP 0 ----------
+(function(){
+  const b = LA.board({W:300,H:300,unit:30});
+  const B = [[1,1],[0,1]];                                  // x-전단 (먼저)
+  const r45 = Math.PI/4;
+  const A = [[Math.cos(r45),-Math.sin(r45)],[Math.sin(r45),Math.cos(r45)]]; // 회전45 (나중)
+  document.getElementById('mat0B').innerHTML = matHTML(B, 'var(--q)');
+  document.getElementById('mat0A').innerHTML = matHTML(A, 'var(--k)');
+  const draw = M => { document.getElementById('board0').innerHTML = LA.transformSVG(b, M, {R:6}); };
+  const lab = document.getElementById('stage0lab');
+  draw([[1,0],[0,1]]);
+  document.getElementById('play0').addEventListener('click', function(){
+    this.disabled = true;
+    lab.textContent = '① B 적용 중 (전단)…'; lab.style.color = 'var(--q)';
+    // 1단계: 항등 → B
+    LA.animateTo(B, draw, 850, () => {
+      lab.textContent = '② A 적용 중 (회전)…'; lab.style.color = 'var(--k)';
+      // 2단계: B → A∘B 로 보간 (각 프레임 = A의 부분변환 ∘ B)
+      const AB = matMul(A, B);
+      const t0 = performance.now();
+      const frame = now => {
+        let t = Math.min(1, (now - t0)/850);
+        t = t<.5 ? 2*t*t : 1 - Math.pow(-2*t+2,2)/2;
+        const Apart = LA.lerpM(A, t);            // 항등→A 보간
+        draw(matMul(Apart, B));                   // (부분 A) ∘ B
+        if (t<1) requestAnimationFrame(frame);
+        else { lab.textContent = '완료: A(Bv)'; lab.style.color = 'var(--good)';
+               document.getElementById('play0').disabled = false; }
+      };
+      requestAnimationFrame(frame);
+    });
+  });
+})();
+
+// ---------- STEP 1 ----------
+(function(){
+  const ba = LA.board({W:300,H:300,unit:30}), bb = LA.board({W:300,H:300,unit:30});
+  const B = [[1,0.8],[0,1]];                                 // x-전단
+  const A = [[1.2,0],[0.5,1.2]];                             // 스케일+전단 섞은 A
+  const AB = matMul(A, B);
+  // 식 표시:  A · B = AB
+  document.getElementById('abEq').innerHTML =
+    VZ.mxMatrix(A,{acc:'var(--k)',title:'A'}) + '<div class="mx-bigop">·</div>' +
+    VZ.mxMatrix(B,{acc:'var(--q)',title:'B'}) + '<div class="mx-bigop">=</div>' +
+    VZ.mxMatrix(AB,{acc:'var(--good)',title:'AB',fmtCell:v=>VZ.fmt(v,2)});
+  const drawB = M => document.getElementById('board1a').innerHTML = LA.transformSVG(ba, M, {R:6});
+  const drawR = M => document.getElementById('board1b').innerHTML = LA.transformSVG(bb, M, {R:6});
+
+  let running = false, cancelR = null;
+  function run(){
+    if (running) return;                 // 진행 중 재클릭 무시(겹침 방지)
+    running = true;
+    const btn = document.getElementById('play1'); btn.disabled = true;
+    drawB([[1,0],[0,1]]); drawR([[1,0],[0,1]]);
+    // 오른쪽: AB 한 번에 (한 단계 애니메이션)
+    if (cancelR) cancelR();
+    cancelR = LA.animateTo(AB, drawR, 1500);
+    // 왼쪽: B 먼저 → 그다음 A
+    LA.animateTo(B, drawB, 750, () => {
+      const t0 = performance.now();
+      const frame = now => {
+        let t = Math.min(1,(now-t0)/750);
+        t = t<.5 ? 2*t*t : 1 - Math.pow(-2*t+2,2)/2;
+        drawB(matMul(LA.lerpM(A,t), B));
+        if (t<1) requestAnimationFrame(frame);
+        else { running = false; btn.disabled = false; }
+      };
+      requestAnimationFrame(frame);
+    });
+  }
+  document.getElementById('note1').innerHTML =
+    `왼쪽 <b>B후A</b>와 오른쪽 <b>AB 한 번</b>이 같은 격자에 도착해요. ` +
+    `→ 두 변환을 미리 곱해 두면 매번 따로 적용할 필요 없이 <b class="h">한 번의 곱</b>으로 끝나요.`;
+  document.getElementById('play1').addEventListener('click', run);
+  run();
+})();
+
+// ---------- STEP 2 ----------
+(function(){
+  const r = Math.PI/6;
+  const ROT = [[Math.cos(r),-Math.sin(r)],[Math.sin(r),Math.cos(r)]];  // A: 회전30
+  const SHR = [[1,1],[0,1]];                                            // B: x-전단
+  const ba = LA.board({W:300,H:300,unit:30}), bb = LA.board({W:300,H:300,unit:30});
+  const AB = matMul(ROT, SHR);   // 회전 ∘ 전단 (전단 먼저)
+  const BA = matMul(SHR, ROT);   // 전단 ∘ 회전 (회전 먼저)
+  document.getElementById('board2a').innerHTML = LA.transformSVG(ba, AB, {R:6});
+  document.getElementById('board2b').innerHTML = LA.transformSVG(bb, BA, {R:6});
+  document.getElementById('mat2a').innerHTML = matHTML(AB, 'var(--q)');
+  document.getElementById('mat2b').innerHTML = matHTML(BA, 'var(--k)');
+  const f = v => VZ.fmt(v,3);
+  document.getElementById('cmp2').innerHTML =
+    `AB = [[${f(AB[0][0])}, ${f(AB[0][1])}], [${f(AB[1][0])}, ${f(AB[1][1])}]]<br>` +
+    `BA = [[${f(BA[0][0])}, ${f(BA[0][1])}], [${f(BA[1][0])}, ${f(BA[1][1])}]]`;
+})();
+
+// ---------- STEP 3 ----------
+(function(){
+  const A = [[2,1],[0,3]];
+  const B = [[1,2],[4,1]];
+  const AB = matMul(A, B);
+  let selR = -1, selC = -1;
+
+  function render(){
+    document.getElementById('row3').innerHTML =
+      VZ.mxMatrix(A, {acc:'var(--k)', title:'A', hlRow:selR}) +
+      '<div class="mx-bigop">·</div>' +
+      VZ.mxMatrix(B, {acc:'var(--q)', title:'B', hlCol:selC}) +
+      '<div class="mx-bigop">=</div>' +
+      VZ.mxMatrix(AB, {acc:'var(--good)', title:'AB', fmtCell:(v,r,c)=>VZ.fmt(v,0),
+        // 선택 셀만 강조: hlRow/hlCol 으론 한 칸만 못 잡으므로 fmtCell로 표시 후 클릭 핸들러로 처리
+      });
+    // AB 그리드 셀에 클릭 핸들러 부착 + 선택 셀 강조
+    const grids = document.querySelectorAll('#row3 .mx-grid');
+    const abGrid = grids[grids.length - 1];
+    [...abGrid.children].forEach((cell, idx) => {
+      const r = Math.floor(idx/2), c = idx % 2;
+      cell.style.cursor = 'pointer';
+      if (r === selR && c === selC) cell.classList.add('hl2');
+      cell.addEventListener('click', () => { selR = r; selC = c; render(); calc(); });
+    });
+  }
+  function calc(){
+    const box = document.getElementById('calc3');
+    if (selR < 0){ box.innerHTML = '<div class="ttl">AB 의 한 칸을 클릭하세요</div><p style="margin:0">각 원소는 <b>A의 행 · B의 열</b> 내적이에요.</p>'; return; }
+    const aRow = A[selR], bCol = [B[0][selC], B[1][selC]];
+    const prod = aRow.map((a,k)=>a*bCol[k]);
+    box.innerHTML =
+      `<div class="ttl">AB[${selR}][${selC}] = (A의 ${selR}행) · (B의 ${selC}열)</div>` +
+      `<p class="mono" style="margin:0">A행 = (${aRow.join(', ')}),  B열 = (${bCol.join(', ')})</p>` +
+      `<p class="mono" style="margin:6px 0 0">= ${aRow[0]}·${bCol[0]} + ${aRow[1]}·${bCol[1]} ` +
+      `= ${prod[0]} + ${prod[1]} = <b style="color:var(--good)">${AB[selR][selC]}</b></p>`;
+  }
+  render(); calc();
+})();
+</script>
+</body>
+</html>
