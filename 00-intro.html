@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>00 시작하기 — 왜 선형대수인가 · 선형대수, 눈으로 보기</title>
+<link rel="stylesheet" href="shared/theme.css">
+<style>
+  .use-card{cursor:pointer; user-select:none;}
+  .use-card .reveal{display:none; margin-top:10px; font-size:13px; color:var(--muted); line-height:1.6;}
+  .use-card.open .reveal{display:block;}
+  .use-card.open{border-color:var(--q);}
+  .use-card.open .clickhint{display:none;}
+  .use-emoji{font-size:30px; line-height:1;}
+  .pix{display:inline-grid; grid-template-columns:repeat(5,22px); gap:2px;}
+  .pix div{width:22px; height:22px; border-radius:3px; font-family:'JetBrains Mono',monospace; font-size:9px;
+    display:flex; align-items:center; justify-content:center; color:rgba(255,255,255,.5);}
+  .maprow{display:flex; align-items:center; gap:10px; padding:10px 0; text-decoration:none;}
+  .mapnum{font-family:'JetBrains Mono',monospace; font-size:12px; color:var(--accent,var(--q)); font-weight:700; min-width:64px;}
+  .maparrow{text-align:center; color:var(--faint); font-size:16px; margin:-2px 0;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="topnav" id="topnav"></div>
+
+  <header>
+    <div class="tag">START HERE · Chapter 00</div>
+    <h1>왜 선형대수인가 — 데이터를 다루는 공통 언어</h1>
+    <p class="intro">"수학을 왜 또…" 싶겠지만, 선형대수는 <b>당신이 다루는 모든 데이터의 공통 언어</b>예요. 사진·소리·글·취향 — 전부 <b>숫자 배열(벡터·행렬)</b>로 변하고, 그걸 <b>변형·비교·압축</b>하는 게 선형대수입니다. 딥러닝·게임 그래픽·추천·검색이 전부 이 위에 서 있어요. 수식 없이 직관부터 봅시다.</p>
+  </header>
+
+  <nav class="stepper" id="stepper">
+    <button data-s="0" class="active">00 · 다 숫자다</button>
+    <button data-s="1">01 · 벡터 = 데이터</button>
+    <button data-s="2">02 · 행렬 = 변환</button>
+    <button data-s="3">03 · 코스 지도</button>
+  </nav>
+
+  <!-- STEP 0 -->
+  <section class="panel show" data-panel="0">
+    <span class="kicker" style="color:var(--hot)">Step 00 — It's All Numbers</span>
+    <h2>당신의 데이터는 이미 숫자 배열이다</h2>
+    <p class="lead">컴퓨터는 사진도 글도 모릅니다 — 전부 <b>숫자</b>로 바꿔서 다뤄요. 그 숫자들이 줄지어 있으면 <b>벡터</b>, 격자로 놓이면 <b>행렬</b>입니다. 카드를 눌러 확인해 보세요.</p>
+    <div class="grid3" id="useCards"></div>
+    <p class="note" style="margin-top:16px">→ 공통점: 무엇이든 <b>숫자의 배열</b>이 돼요. 그러면 "이 둘은 얼마나 비슷하지?", "이걸 회전·압축하면?" 같은 질문을 <b>수학으로</b> 풀 수 있습니다. 그 도구가 선형대수예요.</p>
+  </section>
+
+  <!-- STEP 1 -->
+  <section class="panel" data-panel="1">
+    <span class="kicker" style="color:var(--q)">Step 01 — A Vector Is Data</span>
+    <h2>숫자 목록 = 공간 속 한 점(화살표)</h2>
+    <p class="lead">숫자 몇 개를 묶으면 <b>벡터</b>예요. 그리고 벡터는 <b>공간 속 한 점(또는 화살표)</b>으로 그릴 수 있어요. 예를 들어 사람을 <b>두 특징</b>(예: 키·몸무게를 평균 0 기준으로)으로 나타내면, 각 사람이 평면 위의 점이 됩니다.</p>
+    <div class="row" style="gap:24px;align-items:flex-start">
+      <div id="vecBoard"></div>
+      <div style="flex:1;min-width:220px">
+        <div class="ctrl"><label>특징 A (x)</label><input type="range" id="vx" min="-4" max="4" step="0.5" value="3"><span class="val" id="vxv">3</span></div>
+        <div class="ctrl"><label>특징 B (y)</label><input type="range" id="vy" min="-4" max="4" step="0.5" value="2"><span class="val" id="vyv">2</span></div>
+        <div id="vecInfo" class="callout q" style="margin-top:12px"></div>
+      </div>
+    </div>
+    <p class="note" style="margin-top:14px">→ 특징이 3개면 3차원, 100개면 100차원 벡터예요(그림은 못 그려도 수학은 똑같이 동작). <b>이미지·단어·사용자</b>가 전부 이런 벡터가 되고, "가까운 벡터 = 비슷한 것"이라는 직관이 <b>추천·검색</b>의 핵심이 돼요.</p>
+  </section>
+
+  <!-- STEP 2 -->
+  <section class="panel" data-panel="2">
+    <span class="kicker" style="color:var(--v)">Step 02 — A Matrix Is a Transformation</span>
+    <h2>행렬은 "공간을 통째로 휘는" 함수다</h2>
+    <p class="lead">선형대수의 가장 강력한 발상: <b>행렬은 숫자표가 아니라 공간을 변형하는 함수</b>예요. 격자 전체를 <b>회전·확대·기울이기</b> 합니다. 버튼을 눌러 격자가 어떻게 휘는지 보세요.</p>
+    <div class="view-toggle" id="mBtns" style="flex-wrap:wrap"></div>
+    <div class="row" style="gap:24px;align-items:flex-start;margin-top:8px">
+      <div id="mBoard"></div>
+      <div style="flex:1;min-width:200px"><div id="mInfo" class="callout v"></div></div>
+    </div>
+    <p class="note" style="margin-top:14px">→ <b>게임 캐릭터를 회전</b>시키는 것도, <b>신경망의 한 층</b>이 데이터를 변형하는 것도, 전부 "행렬을 곱하는" 같은 연산이에요. 그래서 행렬을 이해하면 그래픽·딥러닝이 한꺼번에 보입니다.</p>
+  </section>
+
+  <!-- STEP 3 -->
+  <section class="panel" data-panel="3">
+    <span class="kicker" style="color:var(--good)">Step 03 — Your Learning Map</span>
+    <h2>이 코스에서 배울 것 — 그리고 왜 이 순서인지</h2>
+    <p class="lead">벡터(데이터)에서 출발해 → 변환(행렬) → 풀기(연립·역) → 비교(내적·직교) → 분해(고유값·SVD/PCA)로 쌓아 올려요. 뒤로 갈수록 추천·압축·딥러닝에 바로 쓰이는 도구가 됩니다.</p>
+    <div id="courseMap"></div>
+    <div class="callout good" style="margin-top:16px">
+      <div class="ttl">딥러닝과의 다리</div>
+      <p style="margin:0">신경망은 결국 <b>행렬곱의 연쇄</b>예요(04·06장: 변환·행렬곱). 어텐션의 유사도는 <b>내적</b>(11장), 임베딩 차원 축소는 <b>SVD·PCA</b>(16·17장)죠. 여기서 익힌 직관이 딥러닝 코스의 토대가 됩니다.</p>
+    </div>
+    <p class="note" style="margin-top:14px">→ 준비됐다면 <a href="01-vectors.html" style="color:var(--q);font-weight:700">CH 01 · 벡터란 무엇인가</a>부터 시작하세요.</p>
+  </section>
+
+  <p class="foot">// 수식 없는 입문 챕터 · 직관 먼저, 계산은 다음 챕터부터 · <a href="index.html">목차</a></p>
+</div>
+
+<script src="shared/lib.js"></script>
+<script>
+VZ.mountTopnav('#topnav', '00 · Intro');
+VZ.setupStepper();
+const LA = VZ.LA;
+
+// ---------- STEP 0 : 다 숫자다 ----------
+(function(){
+  // 미니 5x5 픽셀 그리드(하트 모양) → 이미지=숫자 행렬
+  const HEART = [
+    [0,9,0,9,0],
+    [9,6,9,6,9],
+    [9,6,6,6,9],
+    [0,9,6,9,0],
+    [0,0,9,0,0],
+  ];
+  const pixHTML = HEART.map(r=>r.map(v=>{
+    const a = v/9;
+    return `<div style="background:rgba(55,189,248,${0.08+a*0.6})">${v}</div>`;
+  }).join('')).join('');
+  const USES = [
+    ['🖼️','이미지 = 숫자 격자',`<div class="pix" style="margin:6px 0">${pixHTML}</div>각 칸이 밝기(0~9). 사진 한 장은 이런 <b>숫자 행렬</b>이에요(컬러면 R·G·B 3장). 28×28 흑백이면 784개 숫자의 벡터죠.`],
+    ['📍','위치·특징 = 벡터','지도 좌표 (위도, 경도), 사람 (키, 몸무게, 나이)… 여러 숫자를 묶은 게 <b>벡터</b>. 데이터 한 줄이 곧 한 벡터예요.'],
+    ['🔤','단어 = 임베딩 벡터','딥러닝은 단어도 숫자 벡터로 바꿔요(임베딩). 뜻이 비슷한 단어는 <b>벡터도 가까이</b> 모입니다 — "왕"과 "여왕"처럼.'],
+    ['🎬','취향 = 벡터 유사도','넷플릭스는 당신과 콘텐츠를 벡터로 보고, <b>벡터가 가까운(=취향이 닮은)</b> 것을 추천해요. 이게 내적·코사인 유사도예요.'],
+  ];
+  document.getElementById('useCards').innerHTML = USES.map((u,i)=>
+    `<div class="card use-card" data-i="${i}">
+       <div class="use-emoji">${u[0]}</div>
+       <h4 style="margin:8px 0 0">${u[1]}</h4>
+       <div class="reveal">${u[2]}</div>
+       <div class="note clickhint" style="margin-top:8px;font-size:11px;color:var(--faint)">클릭해서 보기 ▾</div>
+     </div>`).join('');
+  document.getElementById('useCards').addEventListener('click', e=>{
+    const c=e.target.closest('.use-card'); if(!c) return; c.classList.toggle('open');
+  });
+})();
+
+// ---------- STEP 1 : 벡터 = 데이터 ----------
+(function(){
+  const b = LA.board({W:320,H:320,unit:34});
+  // 고정 데이터 점들(다른 사람들) + 내 점
+  const PEOPLE = [[-2,3],[1,-1],[4,4],[-3,-2],[2,1]];
+  function render(){
+    const x=+document.getElementById('vx').value, y=+document.getElementById('vy').value;
+    document.getElementById('vxv').textContent=x;
+    document.getElementById('vyv').textContent=y;
+    let inner='';
+    PEOPLE.forEach(p=> inner += LA.arrow(b, p[0], p[1], 'var(--slate)', '', {lw:1.5, dot:true}));
+    inner += LA.arrow(b, x, y, 'var(--q)', '나', {lw:3, dot:true});
+    // 격자 + 점
+    document.getElementById('vecBoard').innerHTML =
+      `<svg width="${b.W}" height="${b.H}" viewBox="0 0 ${b.W} ${b.H}" style="max-width:100%;display:block">
+        ${LA.gridPaths(b, [[1,0],[0,1]], 6)}${inner}</svg>`;
+    document.getElementById('vecInfo').innerHTML =
+      `<div class="ttl">나 = 벡터 (${x}, ${y})</div>
+       <p style="margin:0">이 두 숫자가 평면 위 <b style="color:var(--q)">한 점</b>을 정해요. 회색 점들은 다른 사람들. <b>가까운 점일수록 나와 비슷</b>하다고 볼 수 있죠.</p>`;
+  }
+  document.getElementById('vx').addEventListener('input', render);
+  document.getElementById('vy').addEventListener('input', render);
+  render();
+})();
+
+// ---------- STEP 2 : 행렬 = 변환 ----------
+(function(){
+  const b = LA.board({W:340,H:340,unit:36});
+  const r = Math.PI/6;
+  const Ms = [
+    ['그대로', [[1,0],[0,1]], '단위행렬 — 아무것도 안 바꿔요. 변형의 출발점.'],
+    ['회전', [[Math.cos(r),-Math.sin(r)],[Math.sin(r),Math.cos(r)]], '공간을 통째로 30° 돌려요. 게임·그래픽의 회전이 바로 이 행렬.'],
+    ['확대', [[1.6,0],[0,1.6]], '모든 것을 1.6배로. 대각선 숫자가 축별 배율이에요.'],
+    ['기울이기', [[1,0.8],[0,1]], '전단(shear) — 위로 갈수록 옆으로 밀려요. 평행사변형이 되죠.'],
+  ];
+  const btns = document.getElementById('mBtns');
+  btns.innerHTML = Ms.map((m,i)=>`<button data-i="${i}" class="${i===0?'on':''}">${m[0]}</button>`).join('');
+  let anim=null;
+  function show(i){
+    const [name,M,desc]=Ms[i];
+    if(anim) anim();
+    anim = LA.animateTo(M, cur=>{ document.getElementById('mBoard').innerHTML = LA.transformSVG(b, cur, {R:6}); });
+    document.getElementById('mInfo').innerHTML =
+      `<div class="ttl">${name}</div><p style="margin:0">${desc}</p>
+       <p class="mono" style="margin:8px 0 0;font-size:12px;color:var(--muted)">행렬 = [[${M[0][0].toFixed(1)}, ${M[0][1].toFixed(1)}], [${M[1][0].toFixed(1)}, ${M[1][1].toFixed(1)}]]</p>`;
+  }
+  btns.addEventListener('click', e=>{
+    const x=e.target.closest('button'); if(!x)return;
+    btns.querySelectorAll('button').forEach(z=>z.classList.toggle('on',z===x));
+    show(+x.dataset.i);
+  });
+  show(0);
+})();
+
+// ---------- STEP 3 : 코스 지도 ----------
+(function(){
+  const MAP = [
+    ['CH 01~03','벡터와 공간','데이터를 벡터로. 선형결합·기저로 공간을 만들고, 독립·차원을 이해해요.','01-vectors.html','var(--hot)'],
+    ['CH 04~07','선형변환과 행렬','행렬 = 공간을 휘는 함수. 행렬곱(변환 합성)과 행렬식(넓이 배율)까지.','04-transform.html','var(--q)'],
+    ['CH 08~10','연립방정식과 역','Ax=b 풀기, 역행렬로 되돌리기, rank로 "정보가 얼마나 남나" 보기.','08-linear-systems.html','var(--v)'],
+    ['CH 11~13','내적과 직교','내적 = 닮은 정도·투영. 최소제곱(회귀의 기하), 직교기저.','11-dot-product.html','var(--blue)'],
+    ['CH 14~17','고유값과 분해','변하지 않는 방향(고유값), 그리고 SVD·PCA로 데이터 압축·차원 축소.','14-eigen.html','var(--good)'],
+  ];
+  document.getElementById('courseMap').innerHTML = MAP.map((m,i)=>
+    `${i>0?'<div class="maparrow">↓</div>':''}
+     <a class="maprow" href="${m[3]}" style="--accent:${m[4]}">
+       <span class="mapnum">${m[0]}</span>
+       <span style="flex:1"><b style="color:var(--ink)">${m[1]}</b><div class="note" style="margin-top:2px">${m[2]}</div></span>
+       <span style="color:${m[4]};font-size:18px">→</span>
+     </a>`).join('');
+})();
+</script>
+</body>
+</html>
