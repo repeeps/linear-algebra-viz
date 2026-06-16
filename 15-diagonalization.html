@@ -43,6 +43,7 @@
     <span class="kicker" style="color:var(--q)">Step 01 — A = P D P⁻¹</span>
     <h2>고유벡터로 분해하기</h2>
     <p class="lead"><code class="mono">P</code>의 <b>열</b>은 고유벡터, <code class="mono">D</code>의 <b>대각</b>은 그에 대응하는 고유값이에요. 아래 예시 행렬로 P, D, P⁻¹를 <b>실제로 계산</b>해 곱했더니 정말 A가 나오는지 확인해요.</p>
+    <p class="note" style="margin-top:-2px;color:var(--faint)">세 조각의 역할: <b>P⁻¹</b>(P의 역행렬, 9장)는 일반 좌표를 "고유벡터 좌표"로 <b>갈아끼우고</b> → <b>D</b>가 각 축을 λ배 <b>스케일</b>하고 → <b>P</b>가 다시 <b>원래 좌표로 되돌려요</b>. 그래서 A = P·D·P⁻¹ 가 "복잡한 변환 = 좌표 바꿔서 단순 스케일"이 돼요.</p>
     <div id="eigInfo" class="callout v" style="margin-bottom:18px"></div>
     <div class="label">분해: A = P · D · P⁻¹</div>
     <div id="decompRow" style="margin:8px 0 6px"></div>

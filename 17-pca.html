@@ -40,6 +40,7 @@
     <span class="kicker" style="color:var(--q)">Step 01 — Covariance → Eigen-decomposition</span>
     <h2>공분산 행렬을 만들고 고유분해해요</h2>
     <p class="lead">먼저 데이터를 <b>평균 0으로 센터링</b>한 뒤, 2×2 <b>공분산 행렬 C</b>를 계산해요. 이 행렬의 <b>고유벡터가 주성분 방향</b>, <b>고유값이 그 방향의 분산</b>이 됩니다. 2×2는 닫힌형 공식으로 바로 풀 수 있어요.</p>
+    <p class="note" style="margin-top:-2px;color:var(--faint)"><b>공분산</b>이 처음이면: 두 축(예: 키·몸무게)이 <b>얼마나 함께 커지고 작아지는지</b>를 잰 값이에요. 공분산 행렬 C는 그 "함께 움직임"을 표로 담은 것 — 대각은 각 축의 퍼짐(분산), 비대각은 두 축의 동행 정도. 그래서 C를 고유분해하면 "데이터가 가장 길게 퍼진 방향"이 나와요.</p>
     <div class="row" style="gap:24px;align-items:flex-start;justify-content:center">
       <div style="text-align:center"><div class="label" style="color:var(--q)">센터링된 데이터 (평균=원점)</div><div id="board1"></div></div>
       <div style="flex:1;min-width:280px">

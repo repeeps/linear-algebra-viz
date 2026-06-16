@@ -65,6 +65,7 @@
     <span class="kicker" style="color:var(--v)">Step 02 — Computing 2×2 SVD</span>
     <h2>AᵀA의 고윳값 = σ²</h2>
     <p class="lead">SVD의 핵심 공식: <b>AᵀA의 고윳값이 σ₁², σ₂²</b>이고, 그 <b>고유벡터가 V의 열</b>이에요. 그다음 <b>U = A·V·Σ⁻¹</b>로 U를 얻습니다. 아래는 구체 행렬로 직접 계산한 결과예요.</p>
+    <p class="note" style="margin-top:-2px;color:var(--faint)">이 계산 한 줄에 전치·고유분해·역행렬이 다 들어가 어렵게 보여요. <b>유도는 신뢰하고 넘어가도 괜찮아요</b> — 꼭 가져갈 한 줄은 "<b>σ(특이값) = 늘이는 배율</b>이고, AᵀA의 고윳값에 √를 씌운 것"뿐이에요. (검산은 아래에서 실제로 통과해요.)</p>
     <div class="view-toggle" id="demos2"></div>
     <div class="formula" style="margin:14px 0 18px">AᵀA v = σ² v &nbsp;&nbsp;→&nbsp;&nbsp; σ = √(AᵀA의 고윳값) &nbsp;&nbsp;|&nbsp;&nbsp; U = A V Σ⁻¹</div>
     <div id="calc2"></div>

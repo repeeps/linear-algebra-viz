@@ -60,6 +60,7 @@
     <span class="kicker" style="color:var(--v)">Step 02 — Computing Eigenvalues</span>
     <h2>2×2 고유값 계산</h2>
     <p class="lead">고유값은 <b>특성방정식</b> <code class="mono">λ² − (tr)·λ + det = 0</code>의 해예요. 여기서 <code class="mono">tr = a+d</code>(대각합), <code class="mono">det = ad − bc</code>. 닫힌형으로 바로 풉니다: <code class="mono">λ = (tr ± √(tr²−4det)) / 2</code>.</p>
+    <p class="note" style="margin-top:-2px;color:var(--faint)">슬라이더 위치 ↔ 행렬 칸: <b>a = 왼쪽 위</b>, <b>b = 왼쪽 아래</b>, <b>c = 오른쪽 위</b>, <b>d = 오른쪽 아래</b> (열 기준). 그래서 대각은 a·d, 반대각은 b·c예요.</p>
     <div class="row" style="gap:24px;align-items:flex-start;justify-content:center">
       <div id="board2"></div>
       <div style="flex:1;min-width:240px">
