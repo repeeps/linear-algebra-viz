@@ -60,7 +60,7 @@
       </div>
       <div style="flex:1;min-width:240px">
         <div id="calc1" class="callout q"></div>
-        <p class="note" style="margin-top:12px">→ <b style="color:var(--good)">a·d</b>는 î와 ĵ가 만드는 "기본 넓이", <b style="color:var(--k)">b·c</b>는 둘이 서로 엇갈린 정도. 그 차이가 실제 평행사변형 넓이(부호 포함)예요.</p>
+        <p class="note" style="margin-top:12px">→ <b style="color:var(--good)">a·d</b>는 주대각 성분의 곱(b,c가 0일 때의 기준 넓이), <b style="color:var(--k)">b·c</b>는 둘이 서로 엇갈린 정도. 그 차이가 실제 평행사변형 넓이(부호 포함)예요.</p>
       </div>
     </div>
   </section>
@@ -202,7 +202,7 @@ const matHTML = (M) => VZ.mxMatrix(M, {acc:'var(--hot)', fmtCell:v=>VZ.fmt(v,1)}
     document.getElementById('board3').innerHTML = LA.transformSVG(b, M, {R:6, shape:'square'});
     document.getElementById('mat3').innerHTML = matHTML(M);
     const det = LA.det(M);
-    const flat = Math.abs(det) < 0.06;
+    const flat = Math.abs(det) < 0.04;
     const el = document.getElementById('state3');
     el.className = 'callout ' + (flat ? 'v' : 'good');
     el.innerHTML = flat

@@ -230,7 +230,7 @@ const matMul = VZ.matMul || ((A,B) =>
     const aRow = A[selR], bCol = [B[0][selC], B[1][selC]];
     const prod = aRow.map((a,k)=>a*bCol[k]);
     box.innerHTML =
-      `<div class="ttl">AB[${selR}][${selC}] = (A의 ${selR}행) · (B의 ${selC}열)</div>` +
+      `<div class="ttl">AB[${selR+1}][${selC+1}] = (A의 ${selR+1}행) · (B의 ${selC+1}열)</div>` +
       `<p class="mono" style="margin:0">A행 = (${aRow.join(', ')}),  B열 = (${bCol.join(', ')})</p>` +
       `<p class="mono" style="margin:6px 0 0">= ${aRow[0]}·${bCol[0]} + ${aRow[1]}·${bCol[1]} ` +
       `= ${prod[0]} + ${prod[1]} = <b style="color:var(--good)">${AB[selR][selC]}</b></p>`;

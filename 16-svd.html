@@ -28,7 +28,7 @@
   <section class="panel show" data-panel="0">
     <span class="kicker" style="color:var(--hot)">Step 00 — Rotate · Scale · Rotate</span>
     <h2>어떤 행렬이든 "회전 → 축 스케일 → 회전"</h2>
-    <p class="lead">행렬 <code class="mono">A</code>를 단위원(과 격자)에 적용하면 <b>항상 타원</b>이 나와요. SVD는 이 변형을 <b>Vᵀ(회전)</b> → <b>Σ(축만 늘이기)</b> → <b>U(회전)</b> 세 단계로 분해합니다. 버튼을 누르면 순서대로 애니메이션돼요.</p>
+    <p class="lead">행렬 <code class="mono">A</code>를 단위원(과 격자)에 적용하면 <b>항상 타원</b>이 나와요. SVD는 이 변형을 <b>Vᵀ(직교변환)</b> → <b>Σ(축만 늘이기)</b> → <b>U(직교변환)</b> 세 단계로 분해합니다. U·Vᵀ는 직교행렬이라 길이를 보존하는데, det=+1이면 회전, det=−1이면 반사도 포함돼요. 버튼을 누르면 순서대로 애니메이션돼요.</p>
     <div class="view-toggle" id="stages0"></div>
     <div class="row" style="gap:24px;align-items:flex-start;justify-content:center;margin-top:8px">
       <div id="board0"></div>

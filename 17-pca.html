@@ -134,7 +134,11 @@ function eig2x2sym(C){
   const l1=tr/2+disc, l2=tr/2-disc;
   const evec=(l)=>{
     let vx=b, vy=l-a;
-    if(Math.abs(b)<1e-9){ vx=(l-d); vy=b; }
+    if(Math.abs(b)<1e-9){
+      // 대각 공분산: 고유벡터는 좌표축. l≈a면 (1,0), l≈d면 (0,1)
+      if(Math.abs(l-a) <= Math.abs(l-d)){ vx=1; vy=0; }
+      else { vx=0; vy=1; }
+    }
     if(Math.abs(vx)<1e-12 && Math.abs(vy)<1e-12){ vx=1; vy=0; }
     const n=Math.hypot(vx,vy);
     let r=[vx/n, vy/n];

@@ -222,9 +222,9 @@ const degBetween = (ax,ay,bx,by) => {
        <p class="mono" style="margin:6px 0 0">a·b = ${VZ.fmt(ax,1)}·${VZ.fmt(bx,2)} + ${VZ.fmt(ay,1)}·${VZ.fmt(by,2)} = <b style="color:${col}">${VZ.fmt(d,2)}</b></p>`;
     const between = deg>180 ? 360-deg : deg;
     document.getElementById('signNote').innerHTML =
-      between<89.4 ? '<b>같은 편</b>이에요 — 두 벡터가 예각을 이뤄요 (내적 양수).' :
-      between>90.6 ? '<b>반대 편</b>이에요 — 두 벡터가 둔각을 이뤄요 (내적 음수).' :
-      '<b style="color:var(--v)">거의 직교!</b> 사이각이 90°에 가까워 내적이 0에 붙어요.';
+      near0 ? '<b style="color:var(--v)">거의 직교!</b> 사이각이 90°에 가까워 내적이 0에 붙어요.' :
+      between<90 ? '<b>같은 편</b>이에요 — 두 벡터가 예각을 이뤄요 (내적 양수).' :
+      '<b>반대 편</b>이에요 — 두 벡터가 둔각을 이뤄요 (내적 음수).';
   }
   document.getElementById('ang').addEventListener('input',draw);
   draw();
