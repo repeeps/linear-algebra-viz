@@ -142,8 +142,10 @@ const degBetween = (ax,ay,bx,by) => {
 
     const algeb = dot2(ax,ay,bx,by);
     const ma = mag(ax,ay), mb = mag(bx,by);
-    const theta = degBetween(ax,ay,bx,by);
-    const geo = ma*mb*Math.cos(theta*Math.PI/180);
+    // 사이각은 두 벡터의 방향각 차이로 독립 계산(대수 내적과 무관) → 두 정의가 같음을 진짜로 교차검증
+    let dRad = Math.abs(angOf(ax,ay) - angOf(bx,by)); if(dRad > Math.PI) dRad = 2*Math.PI - dRad;
+    const theta = dRad*180/Math.PI;
+    const geo = ma*mb*Math.cos(dRad);
     document.getElementById('dotCalc').innerHTML =
       `<div class="ttl">a · b = ${VZ.fmt(algeb,2)}</div>
        <p class="mono" style="margin:0">대수: ${VZ.fmt(ax,1)}·${VZ.fmt(bx,1)} + ${VZ.fmt(ay,1)}·${VZ.fmt(by,1)} = <b style="color:var(--good)">${VZ.fmt(algeb,2)}</b></p>
